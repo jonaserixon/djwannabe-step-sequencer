@@ -11,8 +11,15 @@
    float: left;
    margin: 0 10px 10px 0;
    font-size: .9em;
+   border: 1px;
+   border-radius: 10px 5px 10px;
 }
 
 .draggable-content:hover {
   opacity: 0.8;
+}
+
+#sample-list {
+  float: right;
+  margin-right: 400px;
 }
