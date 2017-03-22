@@ -2,17 +2,20 @@
 
 let wrapper = document.getElementById('wrapper');
 
+/**
+ * The draggable div that snaps to .main-timeline
+ */
 $( function() {
   $('#draggableBox').draggable({
     snap: ".main-timeline",
-    drag: function( event, ui ) {
+    drag: function(event, ui) {
       sound.stop();
     }
   });
 });
 
 /**
- * Logic running when a div is dropped
+ * Logic running when a div is dropped on the droppable
  */
 $('.main-timeline').droppable({
   drop: function( event, ui ) {
@@ -21,12 +24,9 @@ $('.main-timeline').droppable({
   }
 });
 
-var sound = new Howl({
+let sound = new Howl({
   src: ['loop1.wav'],
   volume: 0.5,
-  onend: function() {
-    console.log('Finished!');
-  }
 });
 
 let playButton = document.createElement('div');
