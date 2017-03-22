@@ -1,6 +1,8 @@
 "use strict";
 
 let idCounter = 0;
+let playChecker = true;
+
 let wrapper = document.getElementById('wrapper');
 
 /**
@@ -28,31 +30,72 @@ $('.main-timeline').droppable({
 
 
 
+let playAllButton = document.createElement('button');
+playAllButton.textContent = 'Play all samples';
+
+
+
+function playAllSamples(sound) {
+    
+
+    playAllButton.addEventListener('click', function() {
+
+    let numberOfBoxes = $(".draggable-content").length;
+      
+        $('.draggable-content').find('button').each(function(){
+          var innerDivId = $(this).attr('id');
+              sound.play();
+        });
+    });
+}
+
+
+
+
+wrapper.appendChild(playAllButton);
+
+let sampleList = document.querySelector('#sample-list'); //The list with the samples
+
 
 /**
- * Audio sample
+ * listen for click on a new sample and loads it with the samplebox();
  */
-
-
-let sampleList = document.querySelector('#sample-list');
-
 sampleList.addEventListener('click', function(event) {
-    
-    let playChecker = true;
-
-    let sampleBox = document.createElement('div');
-    sampleBox.setAttribute('class', 'draggable-content');
-    sampleBox.setAttribute('sample', $(event.target).text());
-
-    let playButton = document.createElement('button');
-    playButton.textContent = 'Play';
-    
-
     let sound = new Howl({
-      src: [$(event.target).text()]
+      src: [$(event.target).text()],
+      vol: 1,
+      onend: function() {
+        playChecker = true
+      }
     });
+    
+    samplebox(idCounter, sound, $(event.target).text());
+    playAllSamples(sound);
+    idCounter += 1;
+});
 
-    playButton.addEventListener('click', function() {
+
+document.addEventListener('click', function(event) {
+  console.log(event.target);
+})
+
+
+
+/**
+ * Create the samplebox with an audio sample
+ */
+function samplebox(id, sound, sample) {
+    
+    let sampleBox = document.createElement('div');
+        sampleBox.setAttribute('class', 'draggable-content');
+        sampleBox.setAttribute('id', 'samplebox' + id)
+        sampleBox.setAttribute('sample', sample);
+
+        let playButton = document.createElement('button');
+        playButton.textContent = 'Play';
+        playButton.setAttribute('id', 'playbutton' + id);
+
+        playButton.addEventListener('click', function() {
       if(playChecker) {
         sound.play();
         playChecker = false;
@@ -60,13 +103,13 @@ sampleList.addEventListener('click', function(event) {
         sound.stop();
         playChecker = true;
       }
-      
     })
 
     wrapper.appendChild(sampleBox);
     sampleBox.appendChild(playButton);
+}
 
-});
+
 
 
 
