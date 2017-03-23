@@ -2,7 +2,7 @@
   "name": "1dv430",
   "version": "1.0.0",
   "description": "projekt music app",
-  "main": "app.js",
+  "main": "build.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,11 +14,7 @@
   "author": "Jonas Erixon",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.17.1",
-    "express": "^4.15.2",
-    "express-handlebars": "^3.0.0",
-    "path": "^0.12.7",
-    "socket.io": "^1.7.3"
+    "browserify": "^14.1.0"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"

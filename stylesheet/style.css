@@ -8,10 +8,9 @@ body {
 }
 
 .main-timeline {
-  /*background-color: #eeeeee;*/
   margin-top: 30px;
   margin-bottom: 5px;
-  background-image: url("playlist_bg.jpg");
+  background-image: url("../images/playlist_bg.jpg");
   border: solid black;
   border-radius: 10px 10px 10px;
   opacity: 0.9;
@@ -38,7 +37,7 @@ body {
 
 #sample-list {
   float: right;
-  margin-right: 700px;
+  margin-right: 500px;
 }
 
 #sample-list li:hover {
