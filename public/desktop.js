@@ -8,14 +8,7 @@ let wrapper = document.getElementById('wrapper');
 /**
  * The draggable div that snaps to .main-timeline
  */
-$( function() {
-  $('#draggableBox').draggable({
-    snap: ".main-timeline",
-    drag: function(event, ui) {
-      
-    }
-  });
-});
+
 
 
 
@@ -35,15 +28,16 @@ playAllButton.textContent = 'Play all samples';
 
 
 
-function playAllSamples(sound) {
+function playAllSamples(sound, id) {
     
-
+    if($(".draggable-content").length > 0) {
+        wrapper.appendChild(playAllButton);
+    }
     playAllButton.addEventListener('click', function() {
-
-    let numberOfBoxes = $(".draggable-content").length;
-      
         $('.draggable-content').find('button').each(function(){
-          var innerDivId = $(this).attr('id');
+          var innerDivId = $(this).attr('id'); //the id of the play buttons
+
+          document.querySelector('#samplebox' + id).style.border = 'solid limegreen';
               sound.play();
         });
     });
@@ -52,8 +46,6 @@ function playAllSamples(sound) {
 
 
 
-wrapper.appendChild(playAllButton);
-
 let sampleList = document.querySelector('#sample-list'); //The list with the samples
 
 
@@ -61,16 +53,11 @@ let sampleList = document.querySelector('#sample-list'); //The list with the sam
  * listen for click on a new sample and loads it with the samplebox();
  */
 sampleList.addEventListener('click', function(event) {
-    let sound = new Howl({
-      src: [$(event.target).text()],
-      vol: 1,
-      onend: function() {
-        playChecker = true
-      }
-    });
+  console.log(event.target);
     
-    samplebox(idCounter, sound, $(event.target).text());
-    playAllSamples(sound);
+    
+    samplebox(idCounter, $(event.target).text());
+    
     idCounter += 1;
 });
 
@@ -84,8 +71,27 @@ document.addEventListener('click', function(event) {
 /**
  * Create the samplebox with an audio sample
  */
-function samplebox(id, sound, sample) {
-    
+function samplebox(id, sample) {
+      $( function() {
+      $('#samplebox' + id).draggable({      //draggable div
+        snap: ".main-timeline",
+        drag: function(event, ui) {
+        }
+      });
+    });
+
+    let sound = new Howl({
+      src: [sample],
+      vol: 1,
+      onend: function() {
+        playChecker = true;
+        sampleBox.style.border = 'solid black';
+        playButton.textContent = 'Play';
+      }
+    });
+
+    playAllSamples(sound, id);
+
     let sampleBox = document.createElement('div');
         sampleBox.setAttribute('class', 'draggable-content');
         sampleBox.setAttribute('id', 'samplebox' + id)
@@ -98,12 +104,18 @@ function samplebox(id, sound, sample) {
         playButton.addEventListener('click', function() {
       if(playChecker) {
         sound.play();
+        playButton.textContent = 'Stop';
+        sampleBox.style.border = 'solid limegreen';
         playChecker = false;
       } else {
         sound.stop();
+        playButton.textContent = 'Play';
+        sampleBox.style.border = 'solid black';
         playChecker = true;
       }
     })
+
+    
 
     wrapper.appendChild(sampleBox);
     sampleBox.appendChild(playButton);
