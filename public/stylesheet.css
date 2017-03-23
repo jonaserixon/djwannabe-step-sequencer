@@ -21,7 +21,7 @@ body {
 #snaptarget { height: 80px;   width:800px; }
 
 .draggable-content {
-   background-color: #333c42;
+   background-color: black;
    width: 80px;
    height: 80px;
    float: left;
@@ -33,6 +33,7 @@ body {
 
 .draggable-content:hover {
   opacity: 0.9;
+  cursor: pointer;
 }
 
 #sample-list {
@@ -41,7 +42,8 @@ body {
 }
 
 #sample-list li:hover {
-  background-color: ghostwhite;
+  background-color: #008395;
+  cursor: pointer;
 }
 
 #play-all-button {
