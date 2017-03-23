@@ -5,9 +5,7 @@ let playChecker = true;
 
 let wrapper = document.getElementById('wrapper');
 
-/**
- * The draggable div that snaps to .main-timeline
- */
+//dela upp allt i funktioner...
 
 
 
@@ -24,22 +22,40 @@ $('.main-timeline').droppable({
 
 
 let playAllButton = document.createElement('button');
+playAllButton.setAttribute('id', 'play-all-button');
 playAllButton.textContent = 'Play all samples';
 
 
 
 function playAllSamples(sound, id) {
-    
-    if($(".draggable-content").length > 0) {
+    let checker = true;
+
+    if($(".draggable-content").length > 0) {   //play all button appears if 2 sampleboxes on screen
         wrapper.appendChild(playAllButton);
     }
-    playAllButton.addEventListener('click', function() {
-        $('.draggable-content').find('button').each(function(){
-          var innerDivId = $(this).attr('id'); //the id of the play buttons
 
-          document.querySelector('#samplebox' + id).style.border = 'solid limegreen';
-              sound.play();
-        });
+    // $('.draggable-content').find('button').each(function(){  //finds all buttons in the class
+    //           // let innerDivId = $(this).attr('id'); //the id of the play buttons            
+    // });
+
+    playAllButton.addEventListener('click', function() {
+        if(checker) {
+            document.querySelector('#samplebox' + id).style.border = 'solid limegreen';
+            document.querySelector('#playbutton' + id).textContent = 'Stop';
+            playAllButton.textContent = 'Stop all samples';
+            sound.play();
+            checker = false;
+        } else {
+          document.querySelector('#samplebox' + id).style.border = 'solid black';
+            document.querySelector('#playbutton' + id).textContent = 'Play';
+            playAllButton.textContent = 'Play all samples';
+            sound.stop();
+            checker = true;
+        }
+        
+
+        
+        
     });
 }
 
@@ -53,9 +69,6 @@ let sampleList = document.querySelector('#sample-list'); //The list with the sam
  * listen for click on a new sample and loads it with the samplebox();
  */
 sampleList.addEventListener('click', function(event) {
-  console.log(event.target);
-    
-    
     samplebox(idCounter, $(event.target).text());
     
     idCounter += 1;

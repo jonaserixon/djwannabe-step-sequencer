@@ -1,20 +1,27 @@
 body {
-  background-color: ghostwhite;
-  
-  
+  background-color: #bae1ff;
+  font-family: 'Lato', sans-serif;
+}
+
+#header {
+  font-size: 70px;
 }
 
 .main-timeline {
-  background-color: #eeeeee;
+  /*background-color: #eeeeee;*/
+  margin-top: 30px;
+  margin-bottom: 5px;
+  background-image: url("playlist_bg.jpg");
   border: solid black;
   border-radius: 10px 10px 10px;
+  opacity: 0.9;
   box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.5);
 }
 
 #snaptarget { height: 80px;   width:800px; }
 
 .draggable-content {
-   background-color: black;
+   background-color: #333c42;
    width: 80px;
    height: 80px;
    float: left;
@@ -30,9 +37,15 @@ body {
 
 #sample-list {
   float: right;
-  margin-right: 400px;
+  margin-right: 700px;
 }
 
 #sample-list li:hover {
-  background-color: lightgrey;
+  background-color: ghostwhite;
+}
+
+#play-all-button {
+  position: absolute;
+  top: 265px;
+  left: 850px;
 }
