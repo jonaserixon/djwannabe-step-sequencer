@@ -59,23 +59,32 @@ let wrapper = document.querySelector('#wrapper');
 
 let sampleName;
 
-let sound;
+let samples = [];
 
 /**
  * The audio sample creator
  * sample - path to audio sample
  */
-function sampleFile(sample, playButton, sampleBox) {
-    let sound = new Howl({
-        src: ['./audio/' + sample],
-        vol: 1,
-        onend: function() {
-            playChecker = true;
-            sampleBox.style.border = 'solid black';
-            playButton.textContent = 'Play';
-        }
-    });
-}
+// function sampleFile(sample, playButton, sampleBox) {
+//     let sound = new Howl({
+//         src: './audio/' + sample,
+//         vol: 1,
+//         onend: function() {
+//             playChecker = true;
+//             sampleBox.style.border = 'solid black';
+//             playButton.textContent = 'Play';
+//         }
+//     });
+// }
+//
+//
+// const sample1 = new Howl({
+//     src: ['./audio/' + sample],
+//     onend: function () {
+//
+//     }
+// });
+
 
 //The 'play-all' button
 let playAllButton = document.createElement('button');
@@ -85,13 +94,11 @@ playAllButton.textContent = 'Play all samples';
 
 
 function playAllSamples(sound, id) {
-    let checker = true;
+    // let checker = true;
 
     if($(".draggable-content").length > 0) {   //play all button appears if 2 sampleboxes on screen
         wrapper.appendChild(playAllButton);
     }
-
-
 
     // playAllButton.addEventListener('click', function() {
     //     if(checker) {
@@ -117,7 +124,7 @@ function playAllSamples(sound, id) {
  */
 function samplebox(id, sample) {
     console.log('samplebox() körs');
-    sampleName = sample;
+    console.log(sample);
     $(function() {
         $('#samplebox' + id).draggable({
             snap: ".main-timeline" //Snappar till playlisten
@@ -136,8 +143,9 @@ function samplebox(id, sample) {
      */
     let playButton = document.createElement('button');
     playButton.textContent = 'Play';
-    playButton.setAttribute('id', 'playButton' + id);
+    playButton.setAttribute('data-playbuttonid', id);
     playButton.setAttribute('class', 'sampleButton');
+    playButton.setAttribute('id', 'playbutton' + id);
 
     // playButton.addEventListener('click', function() {
     //     if(playChecker) {
@@ -153,11 +161,19 @@ function samplebox(id, sample) {
     //     }
     // });
 
+    samples.push(new Howl({
+        src: './audio/' + sample,
+        vol: 1,
+        onend: function() {
+            playChecker = true;
+            sampleBox.style.border = 'solid black';
+            playButton.textContent = 'Play';
+        }
+    }));
+
     wrapper.appendChild(sampleBox);
     sampleBox.appendChild(playButton);
 }
-
-
 
 /**
  * Sample player
@@ -167,53 +183,38 @@ document.addEventListener('click', function(event) {
     // console.log($(event.target).text());
     console.log(playButton);
 
-    let getSample = playButton.parentNode.getAttribute('sample');
-
-        sound = new Howl({
-        src: ['./audio/' + getSample],
-        vol: 1,
-        onend: function() {
-            playChecker = true;
-            sampleBox.style.border = 'solid black';
-            playButton.textContent = 'Play';
-        }
-    });
-
     /**
      * Play specific sample
      */
-
         if(playButton.tagName === 'BUTTON' && playButton.className === 'sampleButton') {
             console.log(playButton.tagName);
             playButton.textContent = 'Play';
             //getAttribute från samplebox diven och släng in den i sampleFIle() och spela upp ljudet
             //lägga in sound samplet rakt in här(?)
-
-
-
             if(playChecker) {
                 playButton.parentNode.style.border = 'solid limegreen';
-
                 // sampleFile(getSample, playButton, playButton.parentNode);
-                sound.play();
+                samples[playButton.getAttribute("data-playbuttonid")].play();
                 playButton.textContent = 'Stop';
                 playChecker = false;
             } else {
-                alert('hehe');
                 playButton.textContent = 'Play';
                 playButton.parentNode.style.border = 'solid black';
-
-                sound.stop();
-
+                samples[playButton.getAttribute("data-playbuttonid")].stop();
                 playChecker = true;
             }
         } else if (playButton.tagName === 'BUTTON' && playButton.id === 'play-all-button') {
-            console.log('stoppa alla samples!!!!');
             if(playChecker) {
-                sound.play();
+                for(let i = 0; i < samples.length; i++) {
+                    samples[i].play();
+                }
+                playButton.textContent = 'Stop all samples';
                 playChecker = false;
             } else {
-                sound.stop();
+                for(let i = 0; i < samples.length; i++) {
+                    samples[i].stop();
+                }
+                playButton.textContent = 'Play all samples';
                 playChecker = true;
             }
         }
