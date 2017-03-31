@@ -1,7 +1,7 @@
 "use strict";
 
 const Samplebox = require('./samplebox');
-
+// const $ = require('jquery');
 let idCounter = 0;
 
 function Desktop() {

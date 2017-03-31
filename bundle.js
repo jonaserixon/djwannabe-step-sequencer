@@ -8,7 +8,7 @@ new Desktop();
 "use strict";
 
 const Samplebox = require('./samplebox');
-
+// const $ = require('jquery');
 let idCounter = 0;
 
 function Desktop() {
@@ -52,14 +52,11 @@ module.exports = Desktop;
 
 },{"./samplebox":3}],3:[function(require,module,exports){
 'use strict';
+// const $ = require('jquery');
 
 let playChecker = true;
-
 let wrapper = document.querySelector('#wrapper');
-
-let sampleName;
-
-let samples = [];
+let samples = [];       //Array with all current samples
 
 /**
  * The audio sample creator
@@ -91,32 +88,6 @@ let playAllButton = document.createElement('button');
 playAllButton.setAttribute('id', 'play-all-button');
 playAllButton.textContent = 'Play all samples';
 
-
-
-function playAllSamples(sound, id) {
-    // let checker = true;
-
-    if($(".draggable-content").length > 0) {   //play all button appears if 2 sampleboxes on screen
-        wrapper.appendChild(playAllButton);
-    }
-
-    // playAllButton.addEventListener('click', function() {
-    //     if(checker) {
-    //         document.querySelector('#samplebox' + id).style.border = 'solid limegreen';
-    //         document.querySelector('#playbutton' + id).textContent = 'Stop';
-    //         playAllButton.textContent = 'Stop all samples';
-    //         sound.play();
-    //         checker = false;
-    //     } else {
-    //         document.querySelector('#samplebox' + id).style.border = 'solid black';
-    //         document.querySelector('#playbutton' + id).textContent = 'Play';
-    //         playAllButton.textContent = 'Play all samples';
-    //         sound.stop();
-    //         checker = true;
-    //     }
-    // });
-}
-
 /**
  * Skapar en samplebox div som är draggable + innehåller ett sample + en play knapp
  * @param id
@@ -125,19 +96,58 @@ function playAllSamples(sound, id) {
 function samplebox(id, sample) {
     console.log('samplebox() körs');
     console.log(sample);
-    $(function() {
+    // $(function() {
+    //     $('#samplebox' + id).draggable({
+    //         snap: ".main-timeline" //Snappar till playlisten
+    //     });
+    // });
+
+    let lastPlace;
+
+    $(function () {
         $('#samplebox' + id).draggable({
-            snap: ".main-timeline" //Snappar till playlisten
+            revert: true,
+            zIndex: 10,
+            snap: '.main-timeline',
+            snapTolerance: 40,
+
+            start: function (event, ui) {
+                lastPlace = "#"+$(this).parent().attr("id");
+
+            }
+        });
+
+        $('.main-timeline').droppable({
+            drop: function (event, ui) {
+                var dropped = ui.draggable;
+                var droppedOn = this;
+
+                if ($(droppedOn).children().length > 0) {
+                    $(droppedOn).find('.main-timeline').detach().appendTo($(lastPlace));
+                }
+
+                $(dropped).detach().css({
+                    top: 0,
+                    left: 0
+                }).appendTo($(droppedOn));
+            }
         });
     });
+
+    // $(function () {
+    //
+    // })
+
+
 
     let sampleBox = document.createElement('div');
     sampleBox.setAttribute('class', 'draggable-content');
     sampleBox.setAttribute('id', 'samplebox' + id);
     sampleBox.setAttribute('sample', sample);
 
-    playAllSamples();
-
+    if($(".draggable-content").length > 0) {   //play all button appears when 2 sampleboxes appear on screen
+        wrapper.appendChild(playAllButton);
+    }
     /**
      * The 'play' button for specific samplebox
      */
@@ -189,8 +199,7 @@ document.addEventListener('click', function(event) {
         if(playButton.tagName === 'BUTTON' && playButton.className === 'sampleButton') {
             console.log(playButton.tagName);
             playButton.textContent = 'Play';
-            //getAttribute från samplebox diven och släng in den i sampleFIle() och spela upp ljudet
-            //lägga in sound samplet rakt in här(?)
+
             if(playChecker) {
                 playButton.parentNode.style.border = 'solid limegreen';
                 // sampleFile(getSample, playButton, playButton.parentNode);
@@ -219,12 +228,8 @@ document.addEventListener('click', function(event) {
             }
         }
 
-
-
     // if(playButton.id === 'play-all-button') {
     //     if(playChecker) {
-    //
-    //
     //         // $('.draggable-content').find('button').each(function(){  //finds all buttons in the class
     //         //     let innerDivId = $(this).attr('id'); //the id of the play buttons
     //         //     console.log(innerDivId);
