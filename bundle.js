@@ -65,13 +65,10 @@ wrapper.appendChild(playAllButton);
 
 /**
  * Skapar en samplebox div som är draggable + innehåller ett sample + en play knapp
- * @param id
- * @param sample = <li> texten som klickas på (ex. 'Weird Synth.wav')
+ * @param id = idCounter
+ * @param sample = path to sample
  */
 function samplebox(id, sample) {
-    console.log('samplebox() körs');
-    console.log(sample);
-    
     $(function () {
         $('#samplebox' + id).draggable({
             revert: false,
@@ -79,9 +76,7 @@ function samplebox(id, sample) {
             snap: '.sample-slot',
             snapMode: 'inner',
             snapTolerance: 40
-        });
-
-        
+        });   
     });
 
     let sampleBox = document.createElement('div');
@@ -135,6 +130,7 @@ function playlistHandler (audiosample) {
     $(".main-timeline").droppable({
             drop: function (event, ui) {
                 let dropped = ui.draggable;
+                dropped.destroy();
                 activeSamples.push(audiosample);
                 // activeSamples[2].play();    //gör eventlistener till arrayen
             },
@@ -147,16 +143,12 @@ function playlistHandler (audiosample) {
     });
 }
 
-
-/**
- * Sample player
- */
 document.addEventListener('click', function(event) {
     let playButton = document.getElementById(event.target.id);
     // console.log($(event.target).text());
 
     /**
-     * Play specific sample
+     * Play sample
      */
         if(playButton.tagName === 'BUTTON' && playButton.className === 'sampleButton') {
             console.log(playButton.tagName);
