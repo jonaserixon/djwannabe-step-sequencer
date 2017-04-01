@@ -8,8 +8,22 @@ body {
 }
 
 .main-timeline {
-  margin-top: 30px;
-  margin-bottom: 5px;
+  /*margin-top: 30px;
+  margin-bottom: 5px;*/
+  /*background-image: url("../images/playlist_bg.jpg");*/
+  /*border: solid black;
+  border-radius: 10px 10px 10px;
+  opacity: 0.9;
+  box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.5);*/
+}
+
+#snaptarget { height: 90px;   width:800px; }
+
+.sample-slot {
+  float: left;
+  margin-left: 10px;
+  height: 82px;
+  width: 82px;
   background-image: url("../images/playlist_bg.jpg");
   border: solid black;
   border-radius: 10px 10px 10px;
@@ -17,10 +31,8 @@ body {
   box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.5);
 }
 
-#snaptarget { height: 82px;   width:800px; }
-
 .draggable-content {
-   background-color: black;
+   /*background-color: black;*/
    width: 80px;
    height: 80px;
    float: left;
@@ -47,6 +59,6 @@ body {
 
 #play-all-button {
   position: absolute;
-  top: 265px;
-  left: 850px;
+  top: 135px;
+  left: 250px;
 }
