@@ -6,16 +6,8 @@ let idCounter = 0;
 
 function Desktop() {
     let wrapper = document.querySelector('#wrapper');
-
-    /**
-     * Logic running when a div is dropped on the droppable
-     */
-    // $('.main-timeline').droppable({
-    //     drop: function( event, ui ) {
-    //         $( this );
-    //     }
-    // });
-
+    let channelDiv = document.querySelector('#snaptarget');
+    let removeButton = document.querySelector('#remove-sample');
     let sampleList = document.querySelector('#sample-list'); //The list with the samples
 
     /**
@@ -25,6 +17,12 @@ function Desktop() {
         Samplebox(idCounter, $(event.target).text());
         idCounter += 1;
     });
+
+    removeButton.addEventListener('click', function(event) {
+        
+    });
+
+
 }
 
 module.exports = Desktop;

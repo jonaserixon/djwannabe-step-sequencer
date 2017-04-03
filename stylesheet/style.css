@@ -3,6 +3,17 @@ body {
   font-family: 'Lato', sans-serif;
 }
 
+#wrapper {
+  margin: 0 auto;
+  height: 1000px;
+  width: 1500px;
+  padding: 10px;
+  background-color: #9DCDF2;
+  border-radius: 5px;
+  border: solid darkslategray;
+}
+
+
 #header {
   font-size: 70px;
   text-align: center;
@@ -69,19 +80,15 @@ body {
 
 #inactive-samples {
   float: left;
-  display: block;
-  margin-top: 200px;
-  margin-left: -550px;
+  position: absolute;
+  top: 550px;
+  width: 500px;
   border-radius: 5px;
   border: solid #008395;
 }
 
-#wrapper {
-  margin: 0 auto;
-  height: 1000px;
-  width: 1500px;
-  padding: 10px;
-  background-color: #9DCDF2;
-  border-radius: 5px;
-  border: solid darkslategray;
+.add-remove {
+  display: block;
+  float: right;
+  margin-left: 10px;
 }

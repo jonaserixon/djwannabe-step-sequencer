@@ -10,10 +10,13 @@ new Desktop();
 const Samplebox = require('./samplebox');
 // const $ = require('jquery');
 let idCounter = 0;
+let sampleSlotId = 3;
 
 function Desktop() {
     let wrapper = document.querySelector('#wrapper');
-
+    let channelDiv = document.querySelector('#snaptarget');
+    let removeButton = document.querySelector('#remove-sample');
+   
     /**
      * Logic running when a div is dropped on the droppable
      */
@@ -32,6 +35,12 @@ function Desktop() {
         Samplebox(idCounter, $(event.target).text());
         idCounter += 1;
     });
+
+    removeButton.addEventListener('click', function(event) {
+        
+    });
+
+
 }
 
 module.exports = Desktop;
@@ -63,6 +72,67 @@ playAllButton.setAttribute('id', 'play-all-button');
 playAllButton.textContent = 'Play all samples';
 wrapper.appendChild(playAllButton);
 
+
+$(".sample-slot").droppable({
+            drop: function (event, ui) {
+                //pop()-ish från samples[] och dra in i activeSamples[]
+                
+                let draggableId = ui.draggable.find("button").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
+                let droppableId = $(this).attr("id");    //lägg den i index (droppableId) i playlsit arrayen
+
+                activeSamples.push(samples[draggableId]);
+                console.log(activeSamples);
+                console.log(draggableId);
+                console.log(droppableId);
+                // activeSamples.push(audiosample);
+
+                // ui.draggable.data('droppedin',$(this));
+                // $(this).droppable('disable');
+
+                
+                dropped.draggable('disable');
+            },
+            out: function(event, ui) {  
+                // ui.draggable.find("button").attr("data-playbuttonid");
+                // // let index = activeSamples.indexOf(audiosample);           
+                // // activeSamples.splice(index, 1);                 //Remove the sample 
+                // console.log('active samples: ' + activeSamples);
+                // console.log('all samples: ' + samples);
+                // ui.draggable.remove();
+            }
+        });
+
+        let sampleSlotId = 3;
+        let channelDiv = document.querySelector('#snaptarget');
+        let removeButton = document.querySelector('#remove-sample');
+        let addButton = document.querySelector('#add-sample');
+        
+        addButton.addEventListener('click', function(event) {
+            let sampleSlot = document.createElement('div');
+            sampleSlot.setAttribute('id', 'slot' + sampleSlotId);
+            sampleSlot.classList.add('sample-slot');
+
+            channelDiv.appendChild(sampleSlot);
+
+            $(".sample-slot").droppable({
+                drop: function (event, ui) {
+                    //pop()-ish från samples[] och dra in i activeSamples[]
+                    
+                    let draggableId = ui.draggable.find("button").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
+                    let droppableId = $(this).attr("id");    //lägg den i index (droppableId) i playlsit arrayen
+
+                    activeSamples.push(samples[draggableId]);
+                    // activeSamples.push(audiosample);
+
+                    // ui.draggable.data('droppedin',$(this));
+                    // $(this).droppable('disable');
+
+                    
+                    dropped.draggable('disable');
+                    sampleSlotId++;
+                }        
+            })
+        });
 
 /**
  * Skapar en samplebox div som är draggable + innehåller ett sample + en play knapp
@@ -127,33 +197,8 @@ function samplebox(id, sample) {
 }
 
 
-//lägga in sample i kanal-arrayen här nånstans vid drop
 
-        $(".sample-slot").droppable({
-            drop: function (event, ui) {
-                console.log(event);
-                //pop()-ish från samples[] och dra in i activeSamples[]
-                
-                let draggableId = ui.draggable.find("button").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
-                let droppableId = $(this).attr("id");    //lägg den i index (droppableId) i playlsit arrayen
-
-                
-                activeSamples.push(samples[draggableId]);
-                console.log(activeSamples);
-                console.log(draggableId);
-                console.log(droppableId);
-                // activeSamples.push(audiosample);
-
-                // dropped.draggable('disable');
-            },
-            out: function(event, ui) {
-                ui.draggable.remove();
-                // let index = activeSamples.indexOf(audiosample);           
-                // activeSamples.splice(index, 1);                 //Remove the sample 
-                console.log('active samples: ' + activeSamples);
-                console.log('all samples: ' + samples);
-            }
-        });
+        
 
 
 
@@ -187,7 +232,6 @@ document.addEventListener('click', function(event) {
             if(playChecker) {
                 for(let i = 0; i < activeSamples.length; i++) {
                     activeSamples[i].play();
-                    console.log(activeSamples[i]);
                 }
                 playButton.parentNode.style.border = 'solid limegreen';
                 playButton.textContent = 'Stop all samples';
