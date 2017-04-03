@@ -3,6 +3,7 @@
 
 let playChecker = true;
 let wrapper = document.querySelector('#wrapper');
+let inactiveSamples = document.querySelector('#inactive-samples');
 let samples = [];       //Array with all current samples
 let activeSamples = []; //Array with the channels current samples
 
@@ -27,11 +28,11 @@ wrapper.appendChild(playAllButton);
 function samplebox(id, sample) {
     $(function () {
         $('#samplebox' + id).draggable({
-            revert: false,
+            revert: 'invalid',
             zIndex: 10,
             snap: '.sample-slot',
             snapMode: 'inner',
-            snapTolerance: 40
+            snapTolerance: 80
         });   
     });
 
@@ -40,6 +41,7 @@ function samplebox(id, sample) {
     sampleBox.setAttribute('id', 'samplebox' + id);
     sampleBox.setAttribute('sample', sample);
     
+    //Color-picker for the samples
     switch(sample) {
         case 'Lead Melody.wav':
             sampleBox.style.backgroundColor = 'ghostwhite';
@@ -75,32 +77,47 @@ function samplebox(id, sample) {
         }
     });
     samples.push(audiosample);
-    playlistHandler(audiosample);
 
-    wrapper.appendChild(sampleBox);
+    inactiveSamples.appendChild(sampleBox);
     sampleBox.appendChild(playButton);
 }
 
-function playlistHandler (audiosample) {
-    $(function() {                                             //lägga in sample i kanal-arrayen här nånstans vid drop
-    $(".main-timeline").droppable({
+
+//lägga in sample i kanal-arrayen här nånstans vid drop
+
+        $(".sample-slot").droppable({
             drop: function (event, ui) {
-                let dropped = ui.draggable;
-                dropped.destroy();
-                activeSamples.push(audiosample);
-                // activeSamples[2].play();    //gör eventlistener till arrayen
+                console.log(event);
+                //pop()-ish från samples[] och dra in i activeSamples[]
+                
+                let draggableId = ui.draggable.find("button").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
+                let droppableId = $(this).attr("id");    //lägg den i index (droppableId) i playlsit arrayen
+
+                
+                activeSamples.push(samples[draggableId]);
+                console.log(activeSamples);
+                console.log(draggableId);
+                console.log(droppableId);
+                // activeSamples.push(audiosample);
+
+                // dropped.draggable('disable');
             },
-            out: function( event, ui ) {
-                if($('.draggable-content').length === 0) {
-                    $(playAllButton).remove();
-                }
+            out: function(event, ui) {
+                ui.draggable.remove();
+                // let index = activeSamples.indexOf(audiosample);           
+                // activeSamples.splice(index, 1);                 //Remove the sample 
+                console.log('active samples: ' + activeSamples);
+                console.log('all samples: ' + samples);
             }
         });
-    });
-}
+
+
+
 
 document.addEventListener('click', function(event) {
     let playButton = document.getElementById(event.target.id);
+    console.log('samples[]       = ' + samples);
+    console.log('activeSamples[] = ' + activeSamples);
     // console.log($(event.target).text());
 
     /**
@@ -124,15 +141,16 @@ document.addEventListener('click', function(event) {
             }
         } else if (playButton.tagName === 'BUTTON' && playButton.id === 'play-all-button') {
             if(playChecker) {
-                for(let i = 0; i < samples.length; i++) {
-                    samples[i].play();
+                for(let i = 0; i < activeSamples.length; i++) {
+                    activeSamples[i].play();
+                    console.log(activeSamples[i]);
                 }
                 playButton.parentNode.style.border = 'solid limegreen';
                 playButton.textContent = 'Stop all samples';
                 playChecker = false;
             } else {
-                for(let i = 0; i < samples.length; i++) {
-                    samples[i].stop();
+                for(let i = 0; i < activeSamples.length; i++) {
+                    activeSamples[i].stop();
                 }
                 playButton.parentNode.style.border = 'solid black';
                 playButton.textContent = 'Play all samples';
