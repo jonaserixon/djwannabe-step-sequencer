@@ -1,24 +1,10 @@
 'use strict';
-// const $ = require('jquery');
 
 let playChecker = true;
 let wrapper = document.querySelector('#wrapper');
 let inactiveSamples = document.querySelector('#inactive-samples');
 let samples = [];       //Array with all current samples
 let activeSamples = []; //Array with the channels current samples
-
-/**
- * The audio sample creator
- * sample - path to audio sample
- */
-
-
-//The 'play-all' button
-let playAllButton = document.createElement('button');
-playAllButton.setAttribute('id', 'play-all-button');
-playAllButton.textContent = 'Play all samples';
-wrapper.appendChild(playAllButton);
-
 
 $(".sample-slot").droppable({
             drop: function (event, ui) {
@@ -31,12 +17,8 @@ $(".sample-slot").droppable({
                 console.log(activeSamples);
                 console.log(draggableId);
                 console.log(droppableId);
-                // activeSamples.push(audiosample);
-
                 // ui.draggable.data('droppedin',$(this));
                 // $(this).droppable('disable');
-
-                
                 dropped.draggable('disable');
             },
             out: function(event, ui) {  
@@ -69,12 +51,8 @@ $(".sample-slot").droppable({
                     let droppableId = $(this).attr("id");    //lägg den i index (droppableId) i playlsit arrayen
 
                     activeSamples.push(samples[draggableId]);
-                    // activeSamples.push(audiosample);
-
                     // ui.draggable.data('droppedin',$(this));
                     // $(this).droppable('disable');
-
-                    
                     dropped.draggable('disable');
                     sampleSlotId++;
                 }        

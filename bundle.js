@@ -10,22 +10,11 @@ new Desktop();
 const Samplebox = require('./samplebox');
 // const $ = require('jquery');
 let idCounter = 0;
-let sampleSlotId = 3;
 
 function Desktop() {
     let wrapper = document.querySelector('#wrapper');
     let channelDiv = document.querySelector('#snaptarget');
     let removeButton = document.querySelector('#remove-sample');
-   
-    /**
-     * Logic running when a div is dropped on the droppable
-     */
-    // $('.main-timeline').droppable({
-    //     drop: function( event, ui ) {
-    //         $( this );
-    //     }
-    // });
-
     let sampleList = document.querySelector('#sample-list'); //The list with the samples
 
     /**
@@ -39,8 +28,6 @@ function Desktop() {
     removeButton.addEventListener('click', function(event) {
         
     });
-
-
 }
 
 module.exports = Desktop;
@@ -67,10 +54,10 @@ let activeSamples = []; //Array with the channels current samples
 
 
 //The 'play-all' button
-let playAllButton = document.createElement('button');
-playAllButton.setAttribute('id', 'play-all-button');
-playAllButton.textContent = 'Play all samples';
-wrapper.appendChild(playAllButton);
+// let playAllButton = document.createElement('button');
+// playAllButton.setAttribute('id', 'play-all-button');
+// playAllButton.textContent = 'Play all samples';
+// wrapper.appendChild(playAllButton);
 
 
 $(".sample-slot").droppable({
@@ -106,7 +93,7 @@ $(".sample-slot").droppable({
         let channelDiv = document.querySelector('#snaptarget');
         let removeButton = document.querySelector('#remove-sample');
         let addButton = document.querySelector('#add-sample');
-        
+
         addButton.addEventListener('click', function(event) {
             let sampleSlot = document.createElement('div');
             sampleSlot.setAttribute('id', 'slot' + sampleSlotId);
@@ -195,13 +182,6 @@ function samplebox(id, sample) {
     inactiveSamples.appendChild(sampleBox);
     sampleBox.appendChild(playButton);
 }
-
-
-
-        
-
-
-
 
 document.addEventListener('click', function(event) {
     let playButton = document.getElementById(event.target.id);

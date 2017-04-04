@@ -1,7 +1,6 @@
-"use strict";
+'use strict';
 
 const Samplebox = require('./samplebox');
-// const $ = require('jquery');
 let idCounter = 0;
 
 function Desktop() {
@@ -21,8 +20,6 @@ function Desktop() {
     removeButton.addEventListener('click', function(event) {
         
     });
-
-
 }
 
 module.exports = Desktop;
