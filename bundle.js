@@ -4,11 +4,12 @@
 let Desktop = require('./javascript/desktop');
 
 new Desktop();
+
+    
 },{"./javascript/desktop":2}],2:[function(require,module,exports){
-"use strict";
+'use strict';
 
 const Samplebox = require('./samplebox');
-// const $ = require('jquery');
 let idCounter = 0;
 
 function Desktop() {
@@ -17,6 +18,7 @@ function Desktop() {
     let removeButton = document.querySelector('#remove-sample');
     let sampleList = document.querySelector('#sample-list'); //The list with the samples
 
+    
     /**
      * Sends audiosample path to the samplebox function
      */
@@ -28,6 +30,8 @@ function Desktop() {
     removeButton.addEventListener('click', function(event) {
         
     });
+
+
 }
 
 module.exports = Desktop;
@@ -39,7 +43,6 @@ module.exports = Desktop;
 
 },{"./samplebox":3}],3:[function(require,module,exports){
 'use strict';
-// const $ = require('jquery');
 
 let playChecker = true;
 let wrapper = document.querySelector('#wrapper');
@@ -47,18 +50,7 @@ let inactiveSamples = document.querySelector('#inactive-samples');
 let samples = [];       //Array with all current samples
 let activeSamples = []; //Array with the channels current samples
 
-/**
- * The audio sample creator
- * sample - path to audio sample
- */
-
-
-//The 'play-all' button
-// let playAllButton = document.createElement('button');
-// playAllButton.setAttribute('id', 'play-all-button');
-// playAllButton.textContent = 'Play all samples';
-// wrapper.appendChild(playAllButton);
-
+let context = new AudioContext();
 
 $(".sample-slot").droppable({
             drop: function (event, ui) {
@@ -71,12 +63,8 @@ $(".sample-slot").droppable({
                 console.log(activeSamples);
                 console.log(draggableId);
                 console.log(droppableId);
-                // activeSamples.push(audiosample);
-
                 // ui.draggable.data('droppedin',$(this));
                 // $(this).droppable('disable');
-
-                
                 dropped.draggable('disable');
             },
             out: function(event, ui) {  
@@ -109,12 +97,8 @@ $(".sample-slot").droppable({
                     let droppableId = $(this).attr("id");    //lägg den i index (droppableId) i playlsit arrayen
 
                     activeSamples.push(samples[draggableId]);
-                    // activeSamples.push(audiosample);
-
                     // ui.draggable.data('droppedin',$(this));
                     // $(this).droppable('disable');
-
-                    
                     dropped.draggable('disable');
                     sampleSlotId++;
                 }        
@@ -168,20 +152,45 @@ function samplebox(id, sample) {
     playButton.setAttribute('id', 'playbutton' + id);
 
     //Create new audio sample
-    let audiosample = new Howl({
-        src: './audio/' + sample,
-        vol: 1,
-        onend: function() {
-            playChecker = true;
-            sampleBox.style.border = 'solid black';
-            playButton.textContent = 'Play';
-        }
-    });
-    samples.push(audiosample);
+    let audiosample = ['./audio/' + sample];
+    // activeSamples.push(audiosample);
+    loadSound(audiosample);
+    
 
     inactiveSamples.appendChild(sampleBox);
     sampleBox.appendChild(playButton);
 }
+
+
+//https://dl.dropboxusercontent.com/s/6s6rn6rcdlggdzj/Weird%20Synth.wav?dl=0
+
+    function loadSound(audiosample) {
+        let request = new XMLHttpRequest();
+        request.open('GET', audiosample, true);
+        request.responseType = 'arraybuffer';
+        request.onload = function() {
+            context.decodeAudioData(request.response, function(buffer) {
+                activeSamples.push(buffer); 
+            }, function() {
+                console.error('Could not load a sample');
+            });
+        }
+        request.send();
+    }
+    
+    function playSound(index) {
+        let sound = context.createBufferSource(); 
+		sound.buffer = activeSamples[index]; 
+		sound.connect(context.destination);  
+		sound.start(0); 
+    }
+
+    // function stopSound(index) {
+    //     let sound = context.createBufferSource(); 
+	// 	sound.buffer = activeSamples[index]; 
+	// 	sound.connect(context.destination);  
+	// 	sound.stop(0); 
+    // }
 
 document.addEventListener('click', function(event) {
     let playButton = document.getElementById(event.target.id);
@@ -199,17 +208,19 @@ document.addEventListener('click', function(event) {
             if(playChecker) {
                 playButton.parentNode.style.border = 'solid limegreen';
                 // sampleFile(getSample, playButton, playButton.parentNode);
-                samples[playButton.getAttribute("data-playbuttonid")].play();
+                // samples[playButton.getAttribute("data-playbuttonid")].play();
+                playSound(playButton.getAttribute("data-playbuttonid"));
                 playButton.textContent = 'Stop';
                 playChecker = false;
             } else {
                 playButton.textContent = 'Play';
                 playButton.parentNode.style.border = 'solid black';
-                samples[playButton.getAttribute("data-playbuttonid")].stop();
+                playSound(playButton.getAttribute("data-playbuttonid"));
                 playChecker = true;
             }
         } else if (playButton.tagName === 'BUTTON' && playButton.id === 'play-all-button') {
             if(playChecker) {
+                source.stop();
                 for(let i = 0; i < activeSamples.length; i++) {
                     activeSamples[i].play();
                 }

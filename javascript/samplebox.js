@@ -6,6 +6,8 @@ let inactiveSamples = document.querySelector('#inactive-samples');
 let samples = [];       //Array with all current samples
 let activeSamples = []; //Array with the channels current samples
 
+let context = new AudioContext();
+
 $(".sample-slot").droppable({
             drop: function (event, ui) {
                 //pop()-ish från samples[] och dra in i activeSamples[]
@@ -106,20 +108,40 @@ function samplebox(id, sample) {
     playButton.setAttribute('id', 'playbutton' + id);
 
     //Create new audio sample
-    let audiosample = new Howl({
-        src: './audio/' + sample,
-        vol: 1,
-        onend: function() {
-            playChecker = true;
-            sampleBox.style.border = 'solid black';
-            playButton.textContent = 'Play';
-        }
-    });
-    samples.push(audiosample);
-
+    let audiosample = ['./audio/' + sample];
+    loadSound(audiosample);
+    
     inactiveSamples.appendChild(sampleBox);
     sampleBox.appendChild(playButton);
 }
+
+
+//https://dl.dropboxusercontent.com/s/6s6rn6rcdlggdzj/Weird%20Synth.wav?dl=0
+
+    function loadSound(audiosample) {
+        let request = new XMLHttpRequest();
+        request.open('GET', audiosample, true);
+        request.responseType = 'arraybuffer';
+        request.onload = function() {
+            context.decodeAudioData(request.response, function(buffer) {
+                activeSamples.push(buffer); 
+            }, function() {
+                console.error('Could not load a sample');
+            });
+        }
+        request.send();
+    }
+    
+    function playSound(index) {
+        let sound = context.createBufferSource(); 
+		sound.buffer = activeSamples[index]; 
+		sound.connect(context.destination);  
+		sound.start(0); 
+    }
+
+    // function stopSound(index) {
+	// 	sound.stop(0); 
+    // }
 
 document.addEventListener('click', function(event) {
     let playButton = document.getElementById(event.target.id);
@@ -137,17 +159,19 @@ document.addEventListener('click', function(event) {
             if(playChecker) {
                 playButton.parentNode.style.border = 'solid limegreen';
                 // sampleFile(getSample, playButton, playButton.parentNode);
-                samples[playButton.getAttribute("data-playbuttonid")].play();
+                // samples[playButton.getAttribute("data-playbuttonid")].play();
+                playSound(playButton.getAttribute("data-playbuttonid"));
                 playButton.textContent = 'Stop';
                 playChecker = false;
             } else {
                 playButton.textContent = 'Play';
                 playButton.parentNode.style.border = 'solid black';
-                samples[playButton.getAttribute("data-playbuttonid")].stop();
+                playSound(playButton.getAttribute("data-playbuttonid"));
                 playChecker = true;
             }
         } else if (playButton.tagName === 'BUTTON' && playButton.id === 'play-all-button') {
             if(playChecker) {
+                source.stop();
                 for(let i = 0; i < activeSamples.length; i++) {
                     activeSamples[i].play();
                 }

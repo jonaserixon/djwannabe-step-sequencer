@@ -9,6 +9,7 @@ function Desktop() {
     let removeButton = document.querySelector('#remove-sample');
     let sampleList = document.querySelector('#sample-list'); //The list with the samples
 
+    
     /**
      * Sends audiosample path to the samplebox function
      */
@@ -20,6 +21,8 @@ function Desktop() {
     removeButton.addEventListener('click', function(event) {
         
     });
+
+
 }
 
 module.exports = Desktop;
