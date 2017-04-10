@@ -16,8 +16,8 @@ function Desktop() {
      */
     sampleList.addEventListener('click', function(event) {
         Samplebox.samplebox(idCounter, $(event.target).text());
+        // Samplebox.makeDroppable('slot' + idCounter, idCounter);
         idCounter += 1;
-        Samplebox.makeDroppable('slot' + idCounter);
     });
 
     removeButton.addEventListener('click', function(event) {
