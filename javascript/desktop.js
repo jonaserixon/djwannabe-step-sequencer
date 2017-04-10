@@ -9,13 +9,15 @@ function Desktop() {
     let removeButton = document.querySelector('#remove-sample');
     let sampleList = document.querySelector('#sample-list'); //The list with the samples
 
+    let sampleboxes = document.querySelector('.draggable-content ui-draggable ui-draggable-handle');
     
     /**
      * Sends audiosample path to the samplebox function
      */
     sampleList.addEventListener('click', function(event) {
-        Samplebox(idCounter, $(event.target).text());
+        Samplebox.samplebox(idCounter, $(event.target).text());
         idCounter += 1;
+        Samplebox.makeDroppable('slot' + idCounter);
     });
 
     removeButton.addEventListener('click', function(event) {

@@ -21,16 +21,18 @@ body {
 
 .main-timeline {
   /*margin-top: 30px;
-  margin-bottom: 5px;*/
+  
   /*background-image: url("../images/playlist_bg.jpg");*/
   /*border: solid black;
   border-radius: 10px 10px 10px;
   opacity: 0.9;
   box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.5);*/
+  display: inline-block;
+  margin-bottom: 75px;
 }
 
 #snaptarget { height: 90px;   width:800px; }
-
+#snaptarget1 { height: 90px;   width:800px; }
 .sample-slot {
   float: left;
   margin-left: 10px;

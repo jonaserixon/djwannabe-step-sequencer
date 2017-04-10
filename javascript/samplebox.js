@@ -6,60 +6,81 @@ let inactiveSamples = document.querySelector('#inactive-samples');
 let samples = [];       //Array with all current samples
 let activeSamples = []; //Array with the channels current samples
 
+let channel1 = [];      //Channel 1's list of samples
+let channel2 = [];      //Channel 1's list of samples
+
 let context = new AudioContext();
 
-$(".sample-slot").droppable({
-            drop: function (event, ui) {
-                //pop()-ish från samples[] och dra in i activeSamples[]
-                
-                let draggableId = ui.draggable.find("button").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
-                let droppableId = $(this).attr("id");    //lägg den i index (droppableId) i playlsit arrayen
 
-                activeSamples.push(samples[draggableId]);
-                console.log(activeSamples);
-                console.log(draggableId);
-                console.log(droppableId);
+function makeDroppable(element) {
+    $('#' + element).droppable({
+            drop: function (event, ui) {
+                
                 // ui.draggable.data('droppedin',$(this));
                 // $(this).droppable('disable');
-                dropped.draggable('disable');
-            },
-            out: function(event, ui) {  
-                // ui.draggable.find("button").attr("data-playbuttonid");
-                // // let index = activeSamples.indexOf(audiosample);           
-                // // activeSamples.splice(index, 1);                 //Remove the sample 
-                // console.log('active samples: ' + activeSamples);
-                // console.log('all samples: ' + samples);
-                // ui.draggable.remove();
+                ui.draggable('disable');
             }
         });
+}
 
-        let sampleSlotId = 3;
-        let channelDiv = document.querySelector('#snaptarget');
-        let removeButton = document.querySelector('#remove-sample');
-        let addButton = document.querySelector('#add-sample');
 
-        addButton.addEventListener('click', function(event) {
-            let sampleSlot = document.createElement('div');
-            sampleSlot.setAttribute('id', 'slot' + sampleSlotId);
-            sampleSlot.classList.add('sample-slot');
 
-            channelDiv.appendChild(sampleSlot);
+for(let i = 0; i < samples.length; i++) {
+    console.log(makeDroppable('slot' + 1));
+}
 
-            $(".sample-slot").droppable({
-                drop: function (event, ui) {
-                    //pop()-ish från samples[] och dra in i activeSamples[]
+// $(".sample-slot").droppable({
+//             drop: function (event, ui) {
+//                 //pop()-ish från samples[] och dra in i activeSamples[]
+                
+//                 let draggableId = ui.draggable.find("button").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
+//                 let droppableId = $(this).attr("id");    //lägg den i index (droppableId) i playlsit arrayen
+
+//                 activeSamples.push(samples[draggableId]);
+//                 console.log(activeSamples);
+//                 console.log(draggableId);
+//                 console.log(droppableId);
+//                 // ui.draggable.data('droppedin',$(this));
+//                 // $(this).droppable('disable');
+//                 ui.draggable('disable');
+//             },
+//             out: function(event, ui) {  
+//                 // ui.draggable.find("button").attr("data-playbuttonid");
+//                 // // let index = activeSamples.indexOf(audiosample);           
+//                 // // activeSamples.splice(index, 1);                 //Remove the sample 
+//                 // console.log('active samples: ' + activeSamples);
+//                 // console.log('all samples: ' + samples);
+//                 // ui.draggable.remove();
+//             }
+//         });
+
+//         let sampleSlotId = 3;
+//         let channelDiv = document.querySelector('#snaptarget');
+//         let removeButton = document.querySelector('#remove-sample');
+//         let addButton = document.querySelector('#add-sample');
+
+//         addButton.addEventListener('click', function(event) {
+//             let sampleSlot = document.createElement('div');
+//             sampleSlot.setAttribute('id', 'slot' + sampleSlotId);
+//             sampleSlot.classList.add('sample-slot');
+
+//             channelDiv.appendChild(sampleSlot);
+
+//             $(".sample-slot").droppable({
+//                 drop: function (event, ui) {
+//                     //pop()-ish från samples[] och dra in i activeSamples[]
                     
-                    let draggableId = ui.draggable.find("button").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
-                    let droppableId = $(this).attr("id");    //lägg den i index (droppableId) i playlsit arrayen
+//                     let draggableId = ui.draggable.find("button").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
+//                     let droppableId = $(this).attr("id");    //lägg den i index (droppableId) i playlsit arrayen
 
-                    activeSamples.push(samples[draggableId]);
-                    // ui.draggable.data('droppedin',$(this));
-                    // $(this).droppable('disable');
-                    dropped.draggable('disable');
-                    sampleSlotId++;
-                }        
-            })
-        });
+//                     activeSamples.push(samples[draggableId]);
+//                     // ui.draggable.data('droppedin',$(this));
+//                     // $(this).droppable('disable');
+//                     ui.draggable('disable');
+//                     sampleSlotId++;
+//                 }        
+//             })
+//         });
 
 /**
  * Skapar en samplebox div som är draggable + innehåller ett sample + en play knapp
@@ -108,15 +129,14 @@ function samplebox(id, sample) {
     playButton.setAttribute('id', 'playbutton' + id);
 
     //Create new audio sample
-    let audiosample = ['./audio/' + sample];
+    let audiosample = './audio/' + sample;
     loadSound(audiosample);
     
     inactiveSamples.appendChild(sampleBox);
     sampleBox.appendChild(playButton);
 }
 
-
-//https://dl.dropboxusercontent.com/s/6s6rn6rcdlggdzj/Weird%20Synth.wav?dl=0
+    //https://dl.dropboxusercontent.com/s/6s6rn6rcdlggdzj/Weird%20Synth.wav?dl=0
 
     function loadSound(audiosample) {
         let request = new XMLHttpRequest();
@@ -124,24 +144,31 @@ function samplebox(id, sample) {
         request.responseType = 'arraybuffer';
         request.onload = function() {
             context.decodeAudioData(request.response, function(buffer) {
-                activeSamples.push(buffer); 
+                samples.push(buffer); 
             }, function() {
                 console.error('Could not load a sample');
             });
         }
         request.send();
     }
-    
-    function playSound(index) {
-        let sound = context.createBufferSource(); 
-		sound.buffer = activeSamples[index]; 
+
+    let sound;
+    function playSound(index, checker) {
+        sound = context.createBufferSource(); 
+		sound.buffer = samples[index]; 
 		sound.connect(context.destination);  
 		sound.start(0); 
+        if(checker) {
+            sound.onended = function() {
+                let next = parseInt(index) + 1;
+                playSound(next);
+            }
+        }
     }
 
-    // function stopSound(index) {
-	// 	sound.stop(0); 
-    // }
+    function stopSound() {
+		sound.stop(0); 
+    }
 
 document.addEventListener('click', function(event) {
     let playButton = document.getElementById(event.target.id);
@@ -157,30 +184,28 @@ document.addEventListener('click', function(event) {
             playButton.textContent = 'Play';
 
             if(playChecker) {
-                playButton.parentNode.style.border = 'solid limegreen';
-                // sampleFile(getSample, playButton, playButton.parentNode);
-                // samples[playButton.getAttribute("data-playbuttonid")].play();
-                playSound(playButton.getAttribute("data-playbuttonid"));
+                // playSound(playButton.getAttribute("data-playbuttonid"), false);
+                playSound(0);
                 playButton.textContent = 'Stop';
                 playChecker = false;
             } else {
                 playButton.textContent = 'Play';
                 playButton.parentNode.style.border = 'solid black';
-                playSound(playButton.getAttribute("data-playbuttonid"));
+                stopSound();
                 playChecker = true;
             }
         } else if (playButton.tagName === 'BUTTON' && playButton.id === 'play-all-button') {
             if(playChecker) {
-                source.stop();
-                for(let i = 0; i < activeSamples.length; i++) {
-                    activeSamples[i].play();
-                }
+                // for(let i = 0; i < samples.length; i++) {
+                //     playSound(i);
+                // }
+                playSound(0, true);
                 playButton.parentNode.style.border = 'solid limegreen';
                 playButton.textContent = 'Stop all samples';
                 playChecker = false;
             } else {
                 for(let i = 0; i < activeSamples.length; i++) {
-                    activeSamples[i].stop();
+                    sound.stop(0); 
                 }
                 playButton.parentNode.style.border = 'solid black';
                 playButton.textContent = 'Play all samples';
@@ -189,4 +214,8 @@ document.addEventListener('click', function(event) {
         }    
 });
 
-module.exports = samplebox;
+// module.exports = samplebox;
+module.exports = {
+    makeDroppable: makeDroppable,
+    samplebox: samplebox
+}
