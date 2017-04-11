@@ -26,7 +26,7 @@ body {
 
 .main-timeline { display: inline-block; margin-bottom: 75px; }
 
-#snaptarget { height: 90px; width:800px; }
+#snaptarget { height: 90px; width:800px; margin-bottom: 120px; }
 #snaptarget1 { height: 90px; width:800px; }
 
 .sample-slot {
@@ -57,7 +57,7 @@ body {
 #sample-list {
   float: right;
   padding: 40px;
-  margin-right: 500px;
+  margin-right: 100px;
   border-radius: 5px;
   border: solid #008395;
 }
