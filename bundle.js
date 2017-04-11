@@ -69,18 +69,16 @@ let context = new AudioContext();
             }
         });
 
-
-
-
 //             out: function(event, ui) {  
 //                 // ui.draggable.find("button").attr("data-playbuttonid");
 //                 // // let index = activeSamples.indexOf(audiosample);           
 //                 // // activeSamples.splice(index, 1);                 //Remove the sample 
-//                 // console.log('active samples: ' + activeSamples);
-//                 // console.log('all samples: ' + samples);
 //                 // ui.draggable.remove();
 //             }
 //         });
+
+
+
 
 //         let sampleSlotId = 3;
 //         let channelDiv = document.querySelector('#snaptarget');
@@ -179,27 +177,41 @@ function samplebox(id, sample) {
         }
         request.send();
     }
-
     let sound;
     function playSound(index, checker) {
         console.log(channel1);
-        
-        if(checker) {
-            sound = context.createBufferSource(); 
+        let playingSlot = document.querySelector('#slot' + index);
+        playingSlot.style.border = 'solid limegreen';
+        // playingSlot.style.boxShadow = '0 0 3px 3px rgba(14, 205, 30, 1)';
+        sound = context.createBufferSource(); 
             sound.buffer = channel1[index]; 
             sound.connect(context.destination);  
             sound.start(); 
 
             sound.onended = function() {
-                let next = parseInt(index) + 1;
+                playingSlot.style.border = 'solid black';
+                playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
+                let next = (parseInt(index) + 1);
+                console.log(next);
                 playSound(next);
             }
-        } else {
-            sound = context.createBufferSource(); 
-            sound.buffer = samples[index]; 
-            sound.connect(context.destination);  
-            sound.start(); 
-        }
+        // if(checker) {
+        //     sound = context.createBufferSource(); 
+        //     sound.buffer = channel1[index]; 
+        //     sound.connect(context.destination);  
+        //     sound.start(); 
+
+        //     sound.onended = function() {
+        //         next += (parseInt(index) + 1);
+        //         console.log(next);
+        //         playSound(next);
+        //     }
+        // } else {
+        //     sound = context.createBufferSource(); 
+        //     sound.buffer = samples[index]; 
+        //     sound.connect(context.destination);  
+        //     sound.start(); 
+        // }
     }
 
     function stopSound() {
