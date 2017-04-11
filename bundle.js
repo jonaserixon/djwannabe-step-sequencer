@@ -49,47 +49,29 @@ module.exports = Desktop;
 let playChecker = true;
 let wrapper = document.querySelector('#wrapper');
 let inactiveSamples = document.querySelector('#inactive-samples');
-let samples = [];       //Array with all current samples
+let samples = [];       //Array with all unused loaded samples
 let activeSamples = []; //Array with the channels current samples
 
 let channel1 = [];      //Channel 1's list of samples
-let channel2 = [];      //Channel 1's list of samples
+let channel2 = [];      //Channel 2's list of samples
 
 let context = new AudioContext();
 
-
-// function makeDroppable(element, index) {
     $('.sample-slot').droppable({
             drop: function (event, ui) {
                 
                 let draggableId = ui.draggable.find("button").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
                 let droppableId = $(this).attr("helper");    //lägg den i index (droppableId) i playlsit arrayen
-                console.log(draggableId);   //X   x=number
-                console.log(droppableId);   //X 
-
-                channel1.splice(droppableId, 0, samples[draggableId]);
-                // console.log(channel1);
-                //arr.splice(index, 0, item);
+                console.log('draggable sample '  + draggableId + ' dropped on slot' + droppableId);  
+                
+                channel1.splice(droppableId, 0, samples[draggableId]);  //put the dropped sample at the <id>-slotX index in the channel1 array
+                $('#slot' + droppableId).droppable( "disable" );
             }
         });
-// }
 
 
-// $(".sample-slot").droppable({
-//             drop: function (event, ui) {
-//                 //pop()-ish från samples[] och dra in i activeSamples[]
-                
-//                 let draggableId = ui.draggable.find("button").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
-//                 let droppableId = $(this).attr("id");    //lägg den i index (droppableId) i playlsit arrayen
 
-//                 activeSamples.push(samples[draggableId]);
-//                 console.log(activeSamples);
-//                 console.log(draggableId);
-//                 console.log(droppableId);
-//                 // ui.draggable.data('droppedin',$(this));
-//                 // $(this).droppable('disable');
-//                 ui.draggable('disable');
-//             },
+
 //             out: function(event, ui) {  
 //                 // ui.draggable.find("button").attr("data-playbuttonid");
 //                 // // let index = activeSamples.indexOf(audiosample);           
@@ -182,8 +164,6 @@ function samplebox(id, sample) {
     sampleBox.appendChild(playButton);
 }
 
-    
-
     //https://dl.dropboxusercontent.com/s/6s6rn6rcdlggdzj/Weird%20Synth.wav?dl=0
 
     function loadSound(audiosample) {
@@ -228,9 +208,6 @@ function samplebox(id, sample) {
 
 document.addEventListener('click', function(event) {
     let playButton = document.getElementById(event.target.id);
-    // console.log('samples[]       = ' + samples);
-    // console.log('activeSamples[] = ' + activeSamples);
-    // console.log($(event.target).text());
 
     /**
      * Play sample
@@ -251,18 +228,11 @@ document.addEventListener('click', function(event) {
             }
         } else if (playButton.tagName === 'BUTTON' && playButton.id === 'play-all-button') {
             if(playChecker) {
-                // for(let i = 0; i < samples.length; i++) {
-                //     playSound(i);
-                // }
                 playSound(0, true);
-                playButton.parentNode.style.border = 'solid limegreen';
                 playButton.textContent = 'Stop all samples';
                 playChecker = false;
             } else {
-                for(let i = 0; i < activeSamples.length; i++) {
-                    sound.stop(0); 
-                }
-                playButton.parentNode.style.border = 'solid black';
+                stopSound();
                 playButton.textContent = 'Play all samples';
                 playChecker = true;
             }

@@ -5,7 +5,7 @@ body {
 
 #wrapper {
   margin: 0 auto;
-  height: 1000px;
+  min-height: 1000px;
   width: 1500px;
   padding: 10px;
   background-color: #9DCDF2;
@@ -19,20 +19,11 @@ body {
   text-align: center;
 }
 
-.main-timeline {
-  /*margin-top: 30px;
-  
-  /*background-image: url("../images/playlist_bg.jpg");*/
-  /*border: solid black;
-  border-radius: 10px 10px 10px;
-  opacity: 0.9;
-  box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.5);*/
-  display: inline-block;
-  margin-bottom: 75px;
-}
+.main-timeline { display: inline-block; margin-bottom: 75px; }
 
-#snaptarget { height: 90px;   width:800px; }
-#snaptarget1 { height: 90px;   width:800px; }
+#snaptarget { height: 90px; width:800px; }
+#snaptarget1 { height: 90px; width:800px; }
+
 .sample-slot {
   float: left;
   margin-left: 10px;
@@ -56,10 +47,7 @@ body {
    border-radius: 10px 10px 10px;
 }
 
-.draggable-content:hover {
-  opacity: 0.9;
-  cursor: pointer;
-}
+.draggable-content:hover { opacity: 0.9; cursor: pointer; }
 
 #sample-list {
   float: right;
@@ -69,10 +57,7 @@ body {
   border: solid #008395;
 }
 
-#sample-list li:hover {
-  background-color: #008395;
-  cursor: pointer;
-}
+#sample-list li:hover { background-color: #008395; cursor: pointer; }
 
 #play-all-button {
   position: absolute;
