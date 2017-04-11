@@ -19,9 +19,9 @@ function Desktop() {
         idCounter += 1;
     });
 
-    removeButton.addEventListener('click', function(event) {
+    // removeButton.addEventListener('click', function(event) {
         
-    });
+    // });
 }
 
 module.exports = Desktop;

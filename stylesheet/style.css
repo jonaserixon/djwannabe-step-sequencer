@@ -1,5 +1,5 @@
 body {
-  background-color: #dce4e8;
+  background-color: #8FB3CD;
   font-family: 'Lato', sans-serif;
 }
 
@@ -8,9 +8,9 @@ body {
   min-height: 1000px;
   width: 1500px;
   padding: 10px;
-  background-color: #36b6af;
+  background-color: #132f44;
   border-radius: 5px;
-  border: 5px solid black;
+  border: 2px solid black;
   /*box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.5);*/
 }
 
@@ -27,18 +27,26 @@ body {
 
 .main-timeline { display: inline-block; margin-bottom: 75px; }
 
-#snaptarget { height: 90px; width:800px; margin-bottom: 120px; }
-#snaptarget1 { height: 90px; width:800px; }
+#snaptarget { height: 90px; width:800px; margin-bottom: 50px; margin-left: 50px; }
+#snaptarget1 { height: 90px; width:800px; margin-left: 50px }
 
 .sample-slot {
   float: left;
   margin-left: 10px;
+  margin-top: 50px;
   height: 82px;
   width: 82px;
   background-image: url("../images/playlist_bg.jpg");
   border: solid black;
   border-radius: 10px 10px 10px;
   box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.5);
+}
+
+#playlist-container {
+  margin-top: 100px;
+  background-color: #1e4059;
+  width: 900px;
+  border-radius: 10px 10px 10px;
 }
 
 .draggable-content {
@@ -57,13 +65,19 @@ body {
 .draggable-content:hover { opacity: 1; cursor: pointer; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.5); }
 
 #sample-list {
-  background-color: ghostwhite;
+  background-color: #86abc4;
   float: right;
   padding: 40px;
   margin-right: 0px;
-  margin-top: -210px;
+  margin-top: -415px;
   border-radius: 5px;
-  border: solid black;
+  border: 1px solid black;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+#sample-list:hover {
+  opacity: 1;
 }
 
 #sample-list li:hover { background-color: #008395; cursor: pointer; }
@@ -79,7 +93,7 @@ body {
   text-align: center;
   margin-top: 100px;
   max-width: 400px;
-  background-color: ghostwhite;
+  background-color: #8FB3CD;
 }
 
 .add-remove {

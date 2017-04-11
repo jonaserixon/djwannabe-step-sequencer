@@ -28,9 +28,9 @@ function Desktop() {
         idCounter += 1;
     });
 
-    removeButton.addEventListener('click', function(event) {
+    // removeButton.addEventListener('click', function(event) {
         
-    });
+    // });
 }
 
 module.exports = Desktop;
@@ -51,8 +51,8 @@ let samples1 = [];
 
 let activeSamples = []; //Array with the channels current samples
 
-let channel1 = [undefined, undefined, undefined, undefined];      //Channel 1's list of samples
-let channel2 = [undefined, undefined, undefined, undefined];      //Channel 2's list of samples
+let channel1 = [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined];      //Channel 1's list of samples
+let channel2 = [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined];      //Channel 2's list of samples
 
 let context = new AudioContext();
 
