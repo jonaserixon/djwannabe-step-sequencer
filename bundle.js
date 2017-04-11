@@ -32,8 +32,6 @@ function Desktop() {
     removeButton.addEventListener('click', function(event) {
         
     });
-
-
 }
 
 module.exports = Desktop;
@@ -52,10 +50,11 @@ let inactiveSamples = document.querySelector('#inactive-samples');
 let samples = [];       //Array with all unused loaded samples
 let activeSamples = []; //Array with the channels current samples
 
-let channel1 = [];      //Channel 1's list of samples
+let channel1 = [undefined, undefined, undefined, undefined];      //Channel 1's list of samples
 let channel2 = [];      //Channel 2's list of samples
 
 let context = new AudioContext();
+
 
     $('.sample-slot').droppable({
             drop: function (event, ui) {
@@ -64,8 +63,8 @@ let context = new AudioContext();
                 let droppableId = $(this).attr("helper");    //lägg den i index (droppableId) i playlsit arrayen
                 console.log('draggable sample '  + draggableId + ' dropped on slot' + droppableId);  
                 
-                channel1.splice(droppableId, 0, samples[draggableId]);  //put the dropped sample at the <id>-slotX index in the channel1 array
-                $('#slot' + droppableId).droppable( "disable" );
+                channel1.splice(droppableId, 1, samples[draggableId]);  //put the dropped sample at the <id>-slotX index in the channel1 array
+                $('#slot' + droppableId).droppable('disable');
             }
         });
 
@@ -156,27 +155,48 @@ function samplebox(id, sample) {
 
     //Create new audio sample
     let audiosample = './audio/' + sample;
-    loadSound(audiosample);
+    
     
     inactiveSamples.appendChild(sampleBox);
     sampleBox.appendChild(playButton);
+
+    loadSound('./audio/silence.mp3', true); 
+    loadSound(audiosample, false);
+    // for(let i = 0; i < channel1.length; i++) {
+    //     if(channel1[i] === undefined) {
+    //         channel1.splice(i, 1, silentSound);
+    //     }
+    // }
 }
 
     //https://dl.dropboxusercontent.com/s/6s6rn6rcdlggdzj/Weird%20Synth.wav?dl=0
 
-    function loadSound(audiosample) {
+    function loadSound(audiosample, silence) {
         let request = new XMLHttpRequest();
         request.open('GET', audiosample, true);
         request.responseType = 'arraybuffer';
         request.onload = function() {
             context.decodeAudioData(request.response, function(buffer) {
-                samples.push(buffer); 
+                
+                if(silence) {
+                    for(let i = 0; i < channel1.length; i++) {
+                        if(channel1[i] === undefined) {
+                            channel1.splice(i, 1, buffer);
+                        }
+                    }
+                } else {
+                    samples.push(buffer); 
+                }
+                
             }, function() {
                 console.error('Could not load a sample');
             });
         }
         request.send();
     }
+
+    
+
     let sound;
     function playSound(index, checker) {
         console.log(channel1);
@@ -184,17 +204,17 @@ function samplebox(id, sample) {
         playingSlot.style.border = 'solid limegreen';
         // playingSlot.style.boxShadow = '0 0 3px 3px rgba(14, 205, 30, 1)';
         sound = context.createBufferSource(); 
-            sound.buffer = channel1[index]; 
-            sound.connect(context.destination);  
-            sound.start(); 
+        sound.buffer = channel1[index]; 
+        sound.connect(context.destination);  
+        sound.start(); 
 
-            sound.onended = function() {
-                playingSlot.style.border = 'solid black';
-                playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
-                let next = (parseInt(index) + 1);
-                console.log(next);
-                playSound(next);
-            }
+        sound.onended = function() {
+            playingSlot.style.border = 'solid black';
+            playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
+            let next = (parseInt(index) + 1);
+            console.log(next);
+            playSound(next);
+        }
         // if(checker) {
         //     sound = context.createBufferSource(); 
         //     sound.buffer = channel1[index]; 

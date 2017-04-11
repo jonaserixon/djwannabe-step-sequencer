@@ -23,8 +23,6 @@ function Desktop() {
     removeButton.addEventListener('click', function(event) {
         
     });
-
-
 }
 
 module.exports = Desktop;
