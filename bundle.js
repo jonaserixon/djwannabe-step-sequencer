@@ -173,7 +173,7 @@ function samplebox(id, sample) {
     function playChannel1(index) {
         console.log('Channel 1: ' + channel1);
         let playingSlot = document.querySelector('#channel1Slot' + index);
-        playingSlot.style.boxShadow = '0 0 3px 3px rgba(14, 205, 30, 1)';
+        playingSlot.style.boxShadow = '0 0 10px 3px rgba(169, 255, 250, 1)';
         sound = context.createBufferSource(); 
         sound.buffer = channel1[index]; 
         sound.connect(context.destination);  
@@ -185,30 +185,12 @@ function samplebox(id, sample) {
             console.log(next);
             playChannel1(next);
         }
-
-        // if(checker) {
-        //     sound = context.createBufferSource(); 
-        //     sound.buffer = channel1[index]; 
-        //     sound.connect(context.destination);  
-        //     sound.start(); 
-
-        //     sound.onended = function() {
-        //         next += (parseInt(index) + 1);
-        //         console.log(next);
-        //         playSound(next);
-        //     }
-        // } else {
-        //     sound = context.createBufferSource(); 
-        //     sound.buffer = samples[index]; 
-        //     sound.connect(context.destination);  
-        //     sound.start(); 
-        // }
     }
 
     function playChannel2(index) {
         console.log('Channel 2: ' + channel2);
         let playingSlot = document.querySelector('#channel2Slot' + index);
-        playingSlot.style.boxShadow = '0 0 3px 3px rgba(14, 205, 30, 1)';
+        playingSlot.style.boxShadow = '0 0 10px 3px rgba(169, 255, 250, 1)';
         sound1 = context.createBufferSource(); 
         sound1.buffer = channel2[index]; 
         sound1.connect(context.destination);  
@@ -261,7 +243,6 @@ document.addEventListener('click', function(event) {
         }    
 });
 
-// module.exports = samplebox;
 module.exports = {
     samplebox: samplebox
 }

@@ -1,5 +1,5 @@
 body {
-  background-color: #bae1ff;
+  background-color: #dce4e8;
   font-family: 'Lato', sans-serif;
 }
 
@@ -8,9 +8,10 @@ body {
   min-height: 1000px;
   width: 1500px;
   padding: 10px;
-  background-color: #9DCDF2;
+  background-color: #36b6af;
   border-radius: 5px;
-  border: solid darkslategray;
+  border: 5px solid black;
+  /*box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.5);*/
 }
 
 
@@ -37,7 +38,6 @@ body {
   background-image: url("../images/playlist_bg.jpg");
   border: solid black;
   border-radius: 10px 10px 10px;
-  opacity: 0.9;
   box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.5);
 }
 
@@ -50,16 +50,20 @@ body {
    font-size: .9em;
    border: solid black;
    border-radius: 10px 10px 10px;
+   opacity: 0.9;
+   transition: opacity 0.1s, box-shadow 0.1s;
 }
 
-.draggable-content:hover { opacity: 0.9; cursor: pointer; }
+.draggable-content:hover { opacity: 1; cursor: pointer; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.5); }
 
 #sample-list {
+  background-color: ghostwhite;
   float: right;
   padding: 40px;
-  margin-right: 100px;
+  margin-right: 0px;
+  margin-top: -210px;
   border-radius: 5px;
-  border: solid #008395;
+  border: solid black;
 }
 
 #sample-list li:hover { background-color: #008395; cursor: pointer; }
@@ -71,16 +75,21 @@ body {
 }
 
 #inactive-samples {
-  float: left;
-  position: absolute;
-  top: 550px;
-  width: 500px;
   border-radius: 5px;
-  border: solid #008395;
+  text-align: center;
+  margin-top: 100px;
+  max-width: 400px;
+  background-color: ghostwhite;
 }
 
 .add-remove {
   display: block;
   float: right;
   margin-left: 10px;
+}
+
+.sampleButton {
+  background-color: ghostwhite;
+  border: 0.5px solid black;
+  border-radius: 5px;
 }
