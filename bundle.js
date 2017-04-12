@@ -177,13 +177,16 @@ function samplebox(id, sample) {
         sound = context.createBufferSource(); 
         sound.buffer = channel1[index]; 
         sound.connect(context.destination);  
-        sound.start(); 
+        sound.start(0); 
 
         sound.onended = function() {
             playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
             let next = (parseInt(index) + 1);
-            console.log(next);
-            playChannel1(next);
+            if(next === channel1.length) {
+                playChannel1(0);
+            } else {
+                playChannel1(next);
+            }
         }
     }
 
@@ -194,18 +197,24 @@ function samplebox(id, sample) {
         sound1 = context.createBufferSource(); 
         sound1.buffer = channel2[index]; 
         sound1.connect(context.destination);  
-        sound1.start(); 
+        sound1.start(0); 
 
         sound1.onended = function() {
             playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
             let next = (parseInt(index) + 1);
-            console.log(next);
-            playChannel2(next);
+            if(next === channel2.length) {
+                playChannel2(0);
+            } else {
+                playChannel2(next);
+            }
+            
         }
     }
 
+   
     function stopSound() {
 		sound.stop(0); 
+        sound1.stop(0); 
     }
 
 
@@ -231,14 +240,17 @@ document.addEventListener('click', function(event) {
             }
         } else if (playButton.tagName === 'BUTTON' && playButton.id === 'play-all-button') {
             if(playChecker) {
+                playChecker = false;
                 playChannel1(0);
                 playChannel2(0);
                 playButton.textContent = 'Stop all samples';
-                playChecker = false;
+                
             } else {
-                stopSound();
-                playButton.textContent = 'Play all samples';
                 playChecker = true;
+                stopSound();
+                
+                playButton.textContent = 'Play all samples';
+                
             }
         }    
 });
