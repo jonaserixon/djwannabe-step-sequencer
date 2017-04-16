@@ -4,50 +4,45 @@ let playChecker = true;
 let wrapper = document.querySelector('#wrapper');
 let inactiveSamples = document.querySelector('#inactive-samples');
 let samples = [];       //Array with all unused loaded samples
-let silentSample = [];
-
-let activeSamples = []; //Array with the channels current samples
 
 let channel1 = [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined];      //Channel 1's list of samples
 let channel2 = [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined];      //Channel 2's list of samples
 
 let context = new AudioContext();
 
-    $('.sample-slot').droppable({
-            drop: function (event, ui) {
-                
-                let draggableId = ui.draggable.find("i").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
-                let droppableHelper = $(this).attr("helper");                               //lägg den i index (droppableId) i playlsit arrayen
-                let droppableId = $(this).attr("id");
-                console.log('draggable sample '  + draggableId + ' dropped on ' + droppableId);
+$('.sample-slot').droppable({
+        drop: function (event, ui) {
+            
+            let draggableId = ui.draggable.find("i").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
+            let droppableHelper = $(this).attr("helper");                               //lägg den i index (droppableId) i playlsit arrayen
+            let droppableId = $(this).attr("id");
+            console.log('draggable sample '  + draggableId + ' dropped on ' + droppableId);
 
-                //check which channel to add the sample to
-                if(droppableId.includes('channel1Slot')) {
-                    channel1.splice(droppableHelper, 1, samples[draggableId]);  //put the dropped sample at the <id>-slotX index in the channel1 array
-                    $('#' + droppableId).droppable('disable');
-                }
-
-                //check which channel to add the sample to
-                if(droppableId.includes('channel2Slot')) { 
-                    channel2.splice(droppableHelper, 1, samples[draggableId]);  //put the dropped sample at the <id>-slotX index in the channel1 array
-
-                    // $('#' + droppableId).droppable('disable');  //disabla droppable om jag stoppar in ett sample i sloten
-
-                    // göra sloten droppable igen om jag tar bort/flyttar ett sample
-                }
-
-                console.log('channel1: ' + channel1);
-                console.log('channel2: ' + channel2);
-                
-            },
-            out: function(event, ui) {  
-                let droppableId = $(this).attr("id");
-                console.log(droppableId);
-                // let index = activeSamples.indexOf(audiosample);           
-                // activeSamples.splice(index, 1);                 //Remove the sample 
-                // $('#' + droppableId).droppable('enable');
+            //check which channel to add the sample to
+            if(droppableId.includes('channel1Slot')) {
+                channel1.splice(droppableHelper, 1, samples[draggableId]);  //put the dropped sample at the <id>-slotX index in the channel1 array
+                $('#' + droppableId).droppable('disable');
             }
-        });
+
+            //check which channel to add the sample to
+            if(droppableId.includes('channel2Slot')) { 
+                channel2.splice(droppableHelper, 1, samples[draggableId]);  //put the dropped sample at the <id>-slotX index in the channel1 array
+                // $('#' + droppableId).droppable('disable');  //disabla droppable om jag stoppar in ett sample i sloten
+                // göra sloten droppable igen om jag tar bort/flyttar ett sample
+            }
+
+            console.log('channel1: ' + channel1);
+            console.log('channel2: ' + channel2);
+            
+        },
+        out: function(event, ui) {  
+            let droppableId = $(this).attr("id");
+            console.log(droppableId);
+            // let index = activeSamples.indexOf(audiosample);           
+            // activeSamples.splice(index, 1);                 //Remove the sample 
+            // $('#' + droppableId).droppable('enable');
+        }
+    });
 
 /**
  * Skapar en samplebox div som är draggable + innehåller ett sample + en play knapp
@@ -117,7 +112,6 @@ function loadSound(audiosample, silence) {
     request.onload = function() {
         context.decodeAudioData(request.response, function(buffer) {
             if(silence) {
-                silentSample.push(buffer);
                 for(let i = 0; i < channel1.length; i++) {
                     if(channel1[i] === undefined) {
                         channel1.splice(i, 1, buffer);
@@ -130,7 +124,6 @@ function loadSound(audiosample, silence) {
                 }
             } else {
                 samples.push(buffer); 
-                // samples1.push(buffer);
             }
         }, function() {
             console.error('Could not load a sample');
@@ -140,8 +133,8 @@ function loadSound(audiosample, silence) {
 }
 
 let preview;    //preview samplebox
-let audio;      //channel 1 sound handler
-let audio1;     //channel 2 sound handler
+let audio;      //channel 1 audio 
+let audio1;     //channel 2 audio 
 
 function playChannel1() {
     let audioStart = context.currentTime;  //start the sound at this time and then schedule next
@@ -217,29 +210,35 @@ document.addEventListener('click', function(event) {
         return;
     } else {
         let playButton = document.getElementById(event.target.id);
-    
+        
+        //'play-specific-sample-button'
         if(playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle') {
             if(playChecker) {
                 previewSample(playButton.getAttribute("data-playbuttonid"));
+
                 playButton.removeAttribute('class');
                 playButton.setAttribute('class', 'fa fa-stop-circle');
                 playChecker = false;
             } else {
                 preview.stop();
+
                 playButton.removeAttribute('class');
                 playButton.setAttribute('class', 'fa fa-play-circle');
                 playChecker = true;
             }
+        //'play-all-channels-button'
         } else if (playButton.tagName === 'I' && playButton.id === 'play-all-button') {
             if(playChecker) {
                 playChannel1();
                 playChannel2();
+
                 playButton.removeAttribute('class');
                 playButton.setAttribute('class', 'fa fa-stop');
                 playChecker = false;                
             } else {
                 playButton.removeAttribute('class');
                 playButton.setAttribute('class', 'fa fa-play');
+
                 audio.stop();
                 audio1.stop();
                 playChecker = true;
