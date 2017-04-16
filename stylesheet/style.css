@@ -50,7 +50,7 @@ body {
 }
 
 .draggable-content {
-   /*background-color: black;*/
+   background-color: ghostwhite;
    width: 80px;
    height: 80px;
    float: left;
@@ -83,9 +83,16 @@ body {
 #sample-list li:hover { background-color: #008395; cursor: pointer; }
 
 #play-all-button {
-  position: absolute;
-  top: 180px;
-  left: 880px;
+  color: #8FB3CD;
+  float:right;
+  margin-right: 400px;
+  margin-top: -200px;
+  font-size: 80px;
+  transition: color 0.1s;
+}
+
+#play-all-button:hover {
+  color: #bed8ea;
 }
 
 #inactive-samples {
@@ -107,3 +114,4 @@ body {
   border: 0.5px solid black;
   border-radius: 5px;
 }
+
