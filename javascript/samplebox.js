@@ -183,60 +183,7 @@ function samplebox(id, sample) {
         audio1.connect(context.destination);  
         let soundDuration = audio1.buffer.duration;
         audio1.start(audioStart + (soundDuration * index));
-
-    function playChannel1(index) {
-        console.log('Channel 1: ' + channel1);
-        let playingSlot = document.querySelector('#channel1Slot' + index);
-        playingSlot.style.boxShadow = '0 0 10px 3px rgba(169, 255, 250, 1)';
-        sound = context.createBufferSource(); 
-        sound.buffer = channel1[index]; 
-        sound.connect(context.destination);  
-        sound.start(0); 
-
-        sound.onended = function() {
-            playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
-            let next = (parseInt(index) + 1);
-            if(next === channel1.length) {
-                playChannel1(0);
-            } else {
-                playChannel1(next);
-            }
-        }
     }
-
-    function playChannel2(index) {
-        console.log('Channel 2: ' + channel2);
-        let playingSlot = document.querySelector('#channel2Slot' + index);
-        playingSlot.style.boxShadow = '0 0 10px 3px rgba(169, 255, 250, 1)';
-        sound1 = context.createBufferSource(); 
-        sound1.buffer = channel2[index]; 
-        sound1.connect(context.destination);  
-        sound1.start(0); 
-
-        sound1.onended = function() {
-            playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
-            let next = (parseInt(index) + 1);
-            if(next === channel2.length) {
-                playChannel2(0);
-            } else {
-                playChannel2(next);
-            }
-            
-        }
->>>>>>> 83ef688662ebab3d6fa1fd96de9da155f531f3dd
-    }
-
-   
-    function stopSound() {
-<<<<<<< HEAD
-		audio.stop(0); 
-        audio1.stop(0);
-=======
-		sound.stop(0); 
-        sound1.stop(0); 
->>>>>>> 83ef688662ebab3d6fa1fd96de9da155f531f3dd
-    }
-
 
 document.addEventListener('click', function(event) {
     let playButton = document.getElementById(event.target.id);
