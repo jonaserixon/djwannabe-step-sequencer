@@ -27,8 +27,8 @@ body {
 
 .main-timeline { display: inline-block; margin-bottom: 75px; }
 
-#snaptarget { height: 90px; width:800px; margin-bottom: 50px; margin-left: 50px; }
-#snaptarget1 { height: 90px; width:800px; margin-left: 50px }
+#snaptarget { height: 90px; width:800px; margin-bottom: 40px; margin-left: 50px; }
+#snaptarget1 { height: 90px; width:800px; margin-left: 50px; margin-bottom: 90px;}
 
 .sample-slot {
   float: left;
