@@ -169,43 +169,70 @@ function samplebox(id, sample) {
 
     let sound;  //channel 1 sound handler
     let sound1; //channel 2 sound handler
+    let audio;
+    let audio1;
 
-    function playChannel1(index) {
-        console.log('Channel 1: ' + channel1);
-        let playingSlot = document.querySelector('#channel1Slot' + index);
-        playingSlot.style.boxShadow = '0 0 10px 3px rgba(169, 255, 250, 1)';
-        sound = context.createBufferSource(); 
-        sound.buffer = channel1[index]; 
-        sound.connect(context.destination);  
-        sound.start(); 
+    
 
-        sound.onended = function() {
-            playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
-            let next = (parseInt(index) + 1);
-            console.log(next);
-            playChannel1(next);
-        }
+    function playChannel1() {
+        let audioStart = context.currentTime;  //start the sound at this time and then schedule next
+        let next = 0;
+        bufferBuilder1(audioStart, next);
+        next++;
+        bufferBuilder1(audioStart, next);
+        next++;
+        bufferBuilder1(audioStart, next);
+        next++;
+        bufferBuilder1(audioStart, next);
+        next++;
+        bufferBuilder1(audioStart, next);
+        next++;
+        bufferBuilder1(audioStart, next);
+        next++;
+        bufferBuilder1(audioStart, next);
+        next++;
+        bufferBuilder1(audioStart, next);
     }
 
-    function playChannel2(index) {
-        console.log('Channel 2: ' + channel2);
-        let playingSlot = document.querySelector('#channel2Slot' + index);
-        playingSlot.style.boxShadow = '0 0 10px 3px rgba(169, 255, 250, 1)';
-        sound1 = context.createBufferSource(); 
-        sound1.buffer = channel2[index]; 
-        sound1.connect(context.destination);  
-        sound1.start(); 
+    function playChannel2() {
+        let audioStart = context.currentTime;  //start the sound at this time and then schedule next
+        let next = 0;
+        bufferBuilder2(audioStart, next);
+        next++;
+        bufferBuilder2(audioStart, next);
+        next++;
+        bufferBuilder2(audioStart, next);
+        next++;
+        bufferBuilder2(audioStart, next);
+        next++;
+        bufferBuilder2(audioStart, next);
+        next++;
+        bufferBuilder2(audioStart, next);
+        next++;
+        bufferBuilder2(audioStart, next);
+        next++;
+        bufferBuilder2(audioStart, next);
+    }
 
-        sound1.onended = function() {
-            playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
-            let next = (parseInt(index) + 1);
-            console.log(next);
-            playChannel2(next);
-        }
+    function bufferBuilder1(audioStart, index) {
+        audio = context.createBufferSource(); 
+        audio.buffer = channel1[index]; 
+        audio.connect(context.destination);  
+        let soundDuration = audio.buffer.duration;
+        audio.start(audioStart + (soundDuration * index));
+    }
+
+    function bufferBuilder2(audioStart, index) {
+        audio1 = context.createBufferSource(); 
+        audio1.buffer = channel2[index]; 
+        audio1.connect(context.destination);  
+        let soundDuration = audio1.buffer.duration;
+        audio1.start(audioStart + (soundDuration * index));
     }
 
     function stopSound() {
-		sound.stop(0); 
+		audio.stop(0); 
+        audio1.stop(0);
     }
 
 

@@ -11,7 +11,7 @@ body {
   background-color: #132f44;
   border-radius: 5px;
   border: 2px solid black;
-  /*box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.5);*/
+  box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.3);
 }
 
 
@@ -73,7 +73,7 @@ body {
   border-radius: 5px;
   border: 1px solid black;
   opacity: 0.6;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, box-shadow 0.2s;
 }
 
 #sample-list:hover {
