@@ -129,6 +129,61 @@ function samplebox(id, sample) {
     let audio;
     let audio1;
 
+    function playChannel1() {
+        let audioStart = context.currentTime;  //start the sound at this time and then schedule next
+        let next = 0;
+        bufferBuilder1(audioStart, next);
+        next++;
+        bufferBuilder1(audioStart, next);
+        next++;
+        bufferBuilder1(audioStart, next);
+        next++;
+        bufferBuilder1(audioStart, next);
+        next++;
+        bufferBuilder1(audioStart, next);
+        next++;
+        bufferBuilder1(audioStart, next);
+        next++;
+        bufferBuilder1(audioStart, next);
+        next++;
+        bufferBuilder1(audioStart, next);
+    }
+
+    function playChannel2() {
+        let audioStart = context.currentTime;  //start the sound at this time and then schedule next
+        let next = 0;
+        bufferBuilder2(audioStart, next);
+        next++;
+        bufferBuilder2(audioStart, next);
+        next++;
+        bufferBuilder2(audioStart, next);
+        next++;
+        bufferBuilder2(audioStart, next);
+        next++;
+        bufferBuilder2(audioStart, next);
+        next++;
+        bufferBuilder2(audioStart, next);
+        next++;
+        bufferBuilder2(audioStart, next);
+        next++;
+        bufferBuilder2(audioStart, next);
+    }
+
+    function bufferBuilder1(audioStart, index) {
+        audio = context.createBufferSource(); 
+        audio.buffer = channel1[index]; 
+        audio.connect(context.destination);  
+        let soundDuration = audio.buffer.duration;
+        audio.start(audioStart + (soundDuration * index));
+    }
+
+    function bufferBuilder2(audioStart, index) {
+        audio1 = context.createBufferSource(); 
+        audio1.buffer = channel2[index]; 
+        audio1.connect(context.destination);  
+        let soundDuration = audio1.buffer.duration;
+        audio1.start(audioStart + (soundDuration * index));
+
     function playChannel1(index) {
         console.log('Channel 1: ' + channel1);
         let playingSlot = document.querySelector('#channel1Slot' + index);
