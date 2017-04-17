@@ -28,7 +28,13 @@ body {
 .main-timeline { display: inline-block; margin-bottom: 75px; }
 
 #snaptarget { height: 90px; width:800px; margin-bottom: 40px; margin-left: 50px; }
-#snaptarget1 { height: 90px; width:800px; margin-left: 50px; margin-bottom: 90px;}
+#snaptarget h3 { float: left; color: #86abc4; margin-left: -20px; margin-top: 85px; margin-right: 20px; }
+
+#snaptarget1 { height: 90px; width:800px; margin-left: 50px; margin-bottom: 40px;}
+#snaptarget1 h3 { float: left; color: #86abc4; margin-left: -20px; margin-top: 85px; margin-right: 20px; }
+
+#snaptarget2 { height: 90px; width:800px; margin-left: 50px; margin-bottom: 90px;}
+#snaptarget2 h3 { float: left; color: #86abc4; margin-left: -20px; margin-top: 85px; margin-right: 20px; }
 
 .sample-slot {
   float: left;
@@ -58,7 +64,7 @@ body {
    font-size: .9em;
    border: solid black;
    border-radius: 10px 10px 10px;
-   opacity: 0.9;
+   opacity: 0.8;
    transition: opacity 0.1s, box-shadow 0.1s;
 }
 
@@ -85,8 +91,8 @@ body {
 #play-all-button {
   color: #8FB3CD;
   float:right;
-  margin-right: 400px;
-  margin-top: -200px;
+  margin-right: 450px;
+  margin-top: -250px;
   font-size: 80px;
   transition: color 0.1s;
 }
@@ -114,4 +120,6 @@ body {
   border: 0.5px solid black;
   border-radius: 5px;
 }
+
+
 
