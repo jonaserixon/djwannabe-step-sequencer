@@ -5,11 +5,13 @@ let wrapper = document.querySelector('#wrapper');
 let inactiveSamples = document.querySelector('#inactive-samples');
 let samples = [];       //Array with all unused loaded samples
 
+let testArray = [];
+
 let channel1 = [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined];      //Channel 1's list of samples
 let channel2 = [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined];      //Channel 2's list of samples
 
 let context = new AudioContext();
-
+let audioTime = context.currentTime;
 $('.sample-slot').droppable({
         drop: function (event, ui) {
             
@@ -135,31 +137,34 @@ function loadSound(audiosample, silence) {
 let preview;    //preview samplebox
 let audio;      //channel 1 audio 
 let audio1;     //channel 2 audio 
+let sources = [];
+let sources1 = [];
 
 function playChannel1() {
-    let audioStart = context.currentTime;  //start the sound at this time and then schedule next
+    let audioStart = context.currentTime;  //start the sound at this time
     let next = 0;
     
     for(let i = 0; i < 8; i++) {
-        bufferBuilder1(audioStart, next);
+        scheduler1(audioStart, next);
         next++;
     }
 }
 
 function playChannel2() {
-    let audioStart = context.currentTime;  //start the sound at this time and then schedule next
+    let audioStart = context.currentTime;  //start the sound at this time 
     let next = 0;
 
     for(let i = 0; i < 8; i++) {
-        bufferBuilder2(audioStart, next);
+        scheduler2(audioStart, next);
         next++;
     }
 }
 
-function bufferBuilder1(audioStart, index) {
+function scheduler1(audioStart, index) {
     let playingSlot = document.querySelector('#channel1Slot' + index);
     playingSlot.style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
     audio = context.createBufferSource(); 
+    sources1[index] = audio;
     audio.buffer = channel1[index]; 
     audio.connect(context.destination);  
     audio.start(audioStart + (audio.buffer.duration * index));
@@ -177,14 +182,17 @@ function bufferBuilder1(audioStart, index) {
     }
 }
 
-function bufferBuilder2(audioStart, index) {
+
+function scheduler2(audioStart, index) {
+
     let playingSlot = document.querySelector('#channel2Slot' + index);
     playingSlot.style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
-    audio1 = context.createBufferSource(); 
-    audio1.buffer = channel2[index]; 
+    audio1 = context.createBufferSource();
+    sources[index] = audio1; 
+    audio1.buffer = channel2[index];  //array with all the loaded audio
     audio1.connect(context.destination);  
     audio1.start(audioStart + (audio1.buffer.duration * index));
-
+        
     audio1.onended = function() {
         playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
         playingSlot.style.opacity = '0.5';
@@ -196,6 +204,7 @@ function bufferBuilder2(audioStart, index) {
             }
         }
     }
+
 }
 
 function previewSample(index) {
@@ -205,7 +214,21 @@ function previewSample(index) {
     preview.start(0);
 }
 
+function stopAll() {
+    for(let i = 0; i < 8; i++) {
+        if (sources[i]) {
+            sources[i].stop(0);
+        }
+        if(sources1[i]) {
+            sources1[i].stop(0);
+        }
+    }
+}
+/**
+ * Play buttons handler
+ */
 document.addEventListener('click', function(event) {
+    console.log(context.currentTime);
     if(event.target.id === '') {
         return;
     } else {
@@ -236,11 +259,12 @@ document.addEventListener('click', function(event) {
                 playButton.setAttribute('class', 'fa fa-stop');
                 playChecker = false;                
             } else {
+                stopAll();
+                // audio.stop(audioTime);
+                // audio1.stop(audioTime);
+                console.log('stop');
                 playButton.removeAttribute('class');
                 playButton.setAttribute('class', 'fa fa-play');
-
-                audio.stop();
-                audio1.stop();
                 playChecker = true;
             }
         }      
