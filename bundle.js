@@ -46,7 +46,8 @@ module.exports = Desktop;
 let playChecker = true;
 let wrapper = document.querySelector('#wrapper');
 let inactiveSamples = document.querySelector('#inactive-samples');
-let volumeButton = document.querySelector('#volumeKnob');
+let volumeKnob = document.querySelector('#volumeKnob');
+let delayKnob = document.querySelector('#delayKnob');
 
 let samples = [];       //Array with all unused loaded samples
 
@@ -58,10 +59,16 @@ let channel3 = [undefined, undefined, undefined, undefined, undefined, undefined
 
 let context = new AudioContext();
 let gainNode = context.createGain();
+let delayNode = context.createDelay(10);
+
 gainNode.connect(context.destination);
+delayNode.connect(context.destination);
 
 let audioTime = context.currentTime;
 
+/**
+ * Droppable slots
+ */
 $('.sample-slot').droppable({
         drop: function (event, ui) {
             
@@ -101,6 +108,7 @@ $('.sample-slot').droppable({
             // $('#' + droppableId).droppable('enable');
         }
     });
+
 
 /**
  * Skapar en samplebox div som är draggable + innehåller ett sample + en play knapp
@@ -282,6 +290,7 @@ function scheduler3(audioStart, index) {
     sources3.splice(index, 0, audio3);
     audio3.buffer = channel3[index];  //array with all the loaded audio
     audio3.connect(gainNode);
+    audio3.connect(delayNode);
     audio3.start(audioStart + (audio3.buffer.duration * index));
         
     audio3.onended = function() {
@@ -316,10 +325,16 @@ function stopAll() {
 }
 
 
-volumeButton.addEventListener('click', function() {
-    let volumeMeter = volumeButton.value / 100;
+volumeKnob.addEventListener('click', function() {
+    let volumeMeter = volumeKnob.value / 100;
     gainNode.gain.value = volumeMeter;
     console.log('Volume: ' + gainNode.gain.value);
+})
+
+delayKnob.addEventListener('click', function() {
+    let delayMeter = (delayKnob.value / 10) / 2;
+    delayNode.delayTime.value = delayMeter;
+    console.log(delayNode.delayTime.value);
 })
 
 /**
