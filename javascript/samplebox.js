@@ -3,6 +3,8 @@
 let playChecker = true;
 let wrapper = document.querySelector('#wrapper');
 let inactiveSamples = document.querySelector('#inactive-samples');
+let volumeButton = document.querySelector('#volumeKnob');
+
 let samples = [];       //Array with all unused loaded samples
 
 let testArray = [];
@@ -12,7 +14,15 @@ let channel2 = [undefined, undefined, undefined, undefined, undefined, undefined
 let channel3 = [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined];      //Channel 3's list of samples
 
 let context = new AudioContext();
+let gainNode = context.createGain();
+gainNode.connect(context.destination);
+
+let convolver = context.createConvolver();
 let audioTime = context.currentTime;
+
+/**
+ * Droppable slots
+ */
 $('.sample-slot').droppable({
         drop: function (event, ui) {
             
@@ -34,7 +44,15 @@ $('.sample-slot').droppable({
             if(droppableId.includes('channel3Slot')) {
                 channel3.splice(droppableHelper, 1, samples[draggableId]);  //put the dropped sample at the <id>-slotX index in the channel1 array
                 $('#' + droppableId).droppable('disable');
-            }    
+            }   
+            ui.draggable.position({
+                my: 'center',
+                at: 'center',
+                of: $(this),
+                using: function(pos) {
+                $(this).animate(pos, 'center', 'linear');
+            } 
+            });
         },
         out: function(event, ui) {  
             let droppableId = $(this).attr("id");
@@ -44,6 +62,7 @@ $('.sample-slot').droppable({
             // $('#' + droppableId).droppable('enable');
         }
     });
+    
 
 /**
  * Skapar en samplebox div som är draggable + innehåller ett sample + en play knapp
@@ -56,9 +75,9 @@ function samplebox(id, sample) {
         $('#samplebox' + id).draggable({
             revert: 'invalid',
             zIndex: 10,
+            opacity: 0.5,
             snap: '.sample-slot',
-            snapMode: 'inner',
-            snapTolerance: 50
+            snapMode: 'inner'
         });   
     });
 
@@ -131,6 +150,7 @@ function loadSound(audiosample, silence) {
 }
 
 let preview;        //preview samplebox
+// let audios = [audio1, audio2, audio3];
 let audio1;         //channel 1 audio 
 let audio2;         //channel 2 audio 
 let audio3;         //channel 3 audio
@@ -138,9 +158,11 @@ let sources1 = [];  //audio1 buffersource nodes
 let sources2 = [];  //audio2 buffersource nodes
 let sources3 = [];  //audio3 buffersource nodes
 
-function playChannel1() {
+function playChannel1(index) {
     let audioStart = context.currentTime;  //start the sound at this time
     let next = 0;
+
+    // scheduler(audioStart, next, index);
     
     for(let i = 0; i < 8; i++) {
         scheduler1(audioStart, next);
@@ -171,12 +193,13 @@ function playChannel3() {
 function scheduler1(audioStart, index) {
     let playingSlot = document.querySelector('#channel1Slot' + index);
     playingSlot.style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
+    // audios[index] = context.createBufferSource(); 
     audio1 = context.createBufferSource(); 
     sources1.splice(index, 0, audio1);
     audio1.buffer = channel1[index]; 
-    audio1.connect(context.destination);  
+    audio1.connect(gainNode);
+    // audio1.connect(context.destination);  
     audio1.start(audioStart + (audio1.buffer.duration * index));
-
     audio1.onended = function() {
         playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
         playingSlot.style.opacity = '0.5';
@@ -197,7 +220,7 @@ function scheduler2(audioStart, index) {
     audio2 = context.createBufferSource();
     sources2.splice(index, 0, audio2);
     audio2.buffer = channel2[index];  //array with all the loaded audio
-    audio2.connect(context.destination);  
+    audio2.connect(gainNode);
     audio2.start(audioStart + (audio2.buffer.duration * index));
         
     audio2.onended = function() {
@@ -220,7 +243,7 @@ function scheduler3(audioStart, index) {
     audio3 = context.createBufferSource();
     sources3.splice(index, 0, audio3);
     audio3.buffer = channel3[index];  //array with all the loaded audio
-    audio3.connect(context.destination);  
+    audio3.connect(gainNode);
     audio3.start(audioStart + (audio3.buffer.duration * index));
         
     audio3.onended = function() {
@@ -246,6 +269,7 @@ function previewSample(index) {
 function stopAll() {
     for(let i = 0; i < 8; i++) {
         if (sources1[i]) {
+            //resetta opacityn etc. här istället för onended
             sources1[i].stop(0);
             sources2[i].stop(0);
             sources3[i].stop(0);
@@ -254,6 +278,11 @@ function stopAll() {
 }
 
 
+volumeButton.addEventListener('click', function() {
+    let volumeMeter = volumeButton.value / 100;
+    gainNode.gain.value = volumeMeter;
+    console.log('Volume: ' + gainNode.gain.value);
+})
 
 /**
  * Play buttons handler
@@ -269,13 +298,11 @@ document.addEventListener('click', function(event) {
         if(playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle') {
             if(playChecker) {
                 previewSample(playButton.getAttribute("data-playbuttonid"));
-
                 playButton.removeAttribute('class');
                 playButton.setAttribute('class', 'fa fa-stop-circle');
                 playChecker = false;
             } else {
                 preview.stop();
-
                 playButton.removeAttribute('class');
                 playButton.setAttribute('class', 'fa fa-play-circle');
                 playChecker = true;
@@ -283,22 +310,14 @@ document.addEventListener('click', function(event) {
         //'play-all-channels-button'
         } else if (playButton.tagName === 'I' && playButton.id === 'play-all-button') {
             if(playChecker) {
-                // if(audio1 === undefined || audio1.buffer === null) {
-                //     return;
-                // } else {
-                    playChannel1();
-                    playChannel2();
-                    playChannel3();
-
-                    playButton.removeAttribute('class');
-                    playButton.setAttribute('class', 'fa fa-stop');
-                    playChecker = false;   
-                          
+                playChannel1();
+                playChannel2();
+                playChannel3();
+                playButton.removeAttribute('class');
+                playButton.setAttribute('class', 'fa fa-stop');
+                playChecker = false;       
             } else {
                 stopAll();
-                // audio.stop(audioTime);
-                // audio1.stop(audioTime);
-                console.log('stop');
                 playButton.removeAttribute('class');
                 playButton.setAttribute('class', 'fa fa-play');
                 playChecker = true;
