@@ -7,7 +7,7 @@ let volumeKnob = document.querySelector('#volumeKnob');
 let delayKnob = document.querySelector('#delayKnob');
 
 let samples = [];       //Array with all unused loaded samples
-
+let silentAudio = [];
 let testArray = [];
 
 let channel1 = [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined];      //Channel 1's list of samples
@@ -23,29 +23,62 @@ delayNode.connect(context.destination);
 
 let audioTime = context.currentTime;
 
+
+$('#garbageCan').droppable({
+        drop: function (event, ui) {
+            let previousSlot = ui.draggable.attr("previous-slot");
+            let droppableHelper = ui.draggable.attr("helper");  
+
+            let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");
+            let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
+
+
+            if(previousSlot.includes('channel1Slot')) {
+                channel1.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
+                $('#' + previousSlot).droppable('enable');
+                draggableId.style.visibility = 'hidden';
+            }
+            if(previousSlot.includes('channel2Slot')) {
+                channel2.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
+                $('#' + previousSlot).droppable('enable');
+                draggableId.style.visibility = 'hidden';
+            }
+            if(previousSlot.includes('channel3Slot')) {
+                channel3.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
+                $('#' + previousSlot).droppable('enable');
+                draggableId.style.visibility = 'hidden';
+            }
+            console.log('hehehe ' + previousSlot);
+        }    
+});
+
 /**
  * Droppable slots
  */
 $('.sample-slot').droppable({
         drop: function (event, ui) {
             
-            let draggableId = ui.draggable.find("i").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
+            let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
             let droppableHelper = $(this).attr("helper");                               //lägg den i index (droppableId) i playlsit arrayen
             let droppableId = $(this).attr("id");
+            let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
+            draggableId.setAttribute('previous-slot', droppableId);
+            draggableId.setAttribute('helper', droppableHelper);
+
             console.log('draggable sample '  + draggableId + ' dropped on ' + droppableId);
 
             //check which channel to add the sample to
             if(droppableId.includes('channel1Slot')) {
-                channel1.splice(droppableHelper, 1, samples[draggableId]);  //put the dropped sample at the <id>-slotX index in the channel1 array
+                channel1.splice(droppableHelper, 1, samples[draggableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
                 $('#' + droppableId).droppable('disable');
             }
             if(droppableId.includes('channel2Slot')) { 
-                channel2.splice(droppableHelper, 1, samples[draggableId]);  //put the dropped sample at the <id>-slotX index in the channel1 array
+                channel2.splice(droppableHelper, 1, samples[draggableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
                 $('#' + droppableId).droppable('disable');  //disabla droppable om jag stoppar in ett sample i sloten
                 // göra sloten droppable igen om jag tar bort/flyttar ett sample
             }
             if(droppableId.includes('channel3Slot')) {
-                channel3.splice(droppableHelper, 1, samples[draggableId]);  //put the dropped sample at the <id>-slotX index in the channel1 array
+                channel3.splice(droppableHelper, 1, samples[draggableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
                 $('#' + droppableId).droppable('disable');
             }   
             ui.draggable.position({
@@ -57,14 +90,21 @@ $('.sample-slot').droppable({
             } 
             });
         },
-        out: function(event, ui) {  
-            let droppableId = $(this).attr("id");
-            console.log(droppableId);
-            // let index = activeSamples.indexOf(audiosample);           
-            // activeSamples.splice(index, 1);                 //Remove the sample 
-            // $('#' + droppableId).droppable('enable');
-        }
+        // tolerance: "touch",
+
+        // out: function(event, ui) {  
+        //     let droppableId = $(this).attr("id");
+        //     let droppableHelper = $(this).attr("helper");    
+        //     console.log(channel1); 
+        //     if(droppableId.includes('channel1Slot')) {
+        //         channel1.splice(droppableHelper, 1, silentAudio[0]);  //put the dropped sample at the <id>-slotX index in the channel1 array
+        //         $('#' + droppableId).droppable('enable');
+        //         console.log(channel1);
+        //     }   
+            
+        // }
     });
+
 
 
 /**
@@ -135,11 +175,13 @@ function loadSound(audiosample, silence) {
     request.onload = function() {
         context.decodeAudioData(request.response, function(buffer) {
             if(silence) {
+                
                 for(let i = 0; i < channel1.length; i++) {
                     if(channel1[i] === undefined) {
                         channel1.splice(i, 1, buffer);
                         channel2.splice(i, 1, buffer);
                         channel3.splice(i, 1, buffer);
+                        silentAudio.push(buffer);
                     }
                 }
             } else {
@@ -280,7 +322,6 @@ function stopAll() {
         }
     }
 }
-
 
 volumeKnob.addEventListener('click', function() {
     let volumeMeter = volumeKnob.value / 100;

@@ -121,5 +121,13 @@ body {
   border-radius: 5px;
 }
 
+#garbageCan {
+  color: #8FB3CD;
+  font-size: 70px;
+  float: right;
+  margin-right: 460px;
+  margin-top: -100px;
+}
+
 
 
