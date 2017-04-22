@@ -14,10 +14,10 @@ function Desktop() {
     /**
      * Sends audiosample path to the samplebox function
      */
-    sampleList.addEventListener('click', function(event) {
-        Samplebox.samplebox(idCounter, $(event.target).text());
+    sampleList.addEventListener('mousedown', function(event) {
+        Samplebox.samplebox(idCounter, $(event.target).text(), event);
         idCounter += 1;
-    });
+    }, false);
 
     // removeButton.addEventListener('click', function(event) {
         

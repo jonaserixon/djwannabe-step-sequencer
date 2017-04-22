@@ -23,10 +23,10 @@ function Desktop() {
     /**
      * Sends audiosample path to the samplebox function
      */
-    sampleList.addEventListener('click', function(event) {
-        Samplebox.samplebox(idCounter, $(event.target).text());
+    sampleList.addEventListener('mousedown', function(event) {
+        Samplebox.samplebox(idCounter, $(event.target).text(), event);
         idCounter += 1;
-    });
+    }, false);
 
     // removeButton.addEventListener('click', function(event) {
         
@@ -155,11 +155,11 @@ $('.sample-slot').droppable({
  * @param id = idCounter
  * @param sample = path to sample
  */
-function samplebox(id, sample) {
+function samplebox(id, sample, e) {
 
     $(function () {
         $('#samplebox' + id).draggable({
-            revert: 'invalid',
+            // revert: 'invalid',
             zIndex: 10,
             opacity: 0.5,
             snap: '.sample-slot',
@@ -204,8 +204,20 @@ function samplebox(id, sample) {
     inactiveSamples.appendChild(sampleBox);
     sampleBox.appendChild(playButton);
 
+    // console.log('xD');
+    // var x = e.pageX + 'px';
+    // var y = e.pageY + 'px';
+    // var divBox = $(sampleBox).css({
+    //     "position": "absolute",                    
+    //     "left": x,
+    //     "top": y
+    // });
+
+    // document.body.appendChild(sampleBox);   
+
     loadSound('./audio/Silence.ogg', true); 
     loadSound(audiosample, false);
+
 }
 
 //https://dl.dropboxusercontent.com/s/6s6rn6rcdlggdzj/Weird%20Synth.wav?dl=0
@@ -332,7 +344,7 @@ function scheduler3(audioStart, index) {
     sources3.splice(index, 0, audio3);
     audio3.buffer = channel3[index];  //array with all the loaded audio
     audio3.connect(gainNode);
-    audio3.connect(delayNode);
+    // audio3.connect(delayNode);
     audio3.start(audioStart + (audio3.buffer.duration * index));
         
     audio3.onended = function() {
@@ -372,11 +384,11 @@ volumeKnob.addEventListener('click', function() {
     console.log('Volume: ' + gainNode.gain.value);
 })
 
-delayKnob.addEventListener('click', function() {
-    let delayMeter = (delayKnob.value / 10) / 2;
-    delayNode.delayTime.value = delayMeter;
-    console.log(delayNode.delayTime.value);
-})
+// delayKnob.addEventListener('click', function() {
+//     let delayMeter = (delayKnob.value / 10) / 2;
+//     delayNode.delayTime.value = delayMeter;
+//     console.log(delayNode.delayTime.value);
+// })
 
 /**
  * Play buttons handler
