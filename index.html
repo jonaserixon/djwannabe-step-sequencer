@@ -35,7 +35,7 @@
                     <!--<button id="remove-sample" class="add-remove">Remove last sample!</button>
                     <button id="add-sample" class="add-remove">Add new sample slot!</button>-->
                     <div class="channel-knobs">
-                        <input type="checkbox" value="0">
+                        <input id="channel-checkbox1" name="1" type="checkbox">
                     </div>
                 </div>
 
@@ -50,7 +50,7 @@
                     <div id="channel2Slot6" class="sample-slot" helper="6"></div>
                     <div id="channel2Slot7" class="sample-slot" helper="7"></div>
                     <div class="channel-knobs">
-                        <input type="checkbox" value="0">
+                        <input id="channel-checkbox2" name="2" type="checkbox">
                     </div>
                 </div>
 
@@ -65,7 +65,7 @@
                     <div id="channel3Slot6" class="sample-slot" helper="6"></div>
                     <div id="channel3Slot7" class="sample-slot" helper="7"></div>
                     <div class="channel-knobs">
-                        <input type="checkbox" value="0">
+                        <input id="channel-checkbox3" name="3" type="checkbox">
                     </div>
                 </div>
             </div>
@@ -84,7 +84,10 @@
         <div id="inactive-samples">
             <h3>Your dragged out samples</h3>
         </div>
+
+        <div class="push"></div>
     </div>
+    <div class="footer">Credits</div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>

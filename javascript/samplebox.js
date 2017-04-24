@@ -16,7 +16,9 @@ let channel3 = [undefined, undefined, undefined, undefined, undefined, undefined
 
 let context = new AudioContext();
 let gainNode = context.createGain();
-
+let filter = context.createBiquadFilter();
+filter.type = 'lowpass'; 
+filter.frequency.value = 800;
 // let channel1 = new Channel(context);
 
 gainNode.connect(context.destination);
@@ -110,7 +112,6 @@ $('.sample-slot').droppable({
 
 //https://dl.dropboxusercontent.com/s/6s6rn6rcdlggdzj/Weird%20Synth.wav?dl=0
 
-
 // Store audio sample buffer in an array
 function loadSound(audiosample, silence) {
 
@@ -143,9 +144,11 @@ let preview;        //preview samplebox
 let audio1;         //channel 1 audio 
 let audio2;         //channel 2 audio 
 let audio3;         //channel 3 audio
+let audio4;
 let sources1 = [];  //audio1 buffersource nodes
 let sources2 = [];  //audio2 buffersource nodes
 let sources3 = [];  //audio3 buffersource nodes
+let sources4 = [];  //audio4 buffersource nodes
 
 function playChannel1(index) {
     let audioStart = context.currentTime;  //start the sound at this time
@@ -155,29 +158,31 @@ function playChannel1(index) {
     
     for(let i = 0; i < 8; i++) {
         scheduler1(audioStart, next);
-        next++;
-    }
-}
-
-function playChannel2() {
-    let audioStart = context.currentTime;  //start the sound at this time 
-    let next = 0;
-
-    for(let i = 0; i < 8; i++) {
         scheduler2(audioStart, next);
-        next++;
-    }
-}
-
-function playChannel3() {
-    let audioStart = context.currentTime;  //start the sound at this time 
-    let next = 0;
-
-    for(let i = 0; i < 8; i++) {
         scheduler3(audioStart, next);
         next++;
     }
 }
+
+// function playChannel2() {
+//     let audioStart = context.currentTime;  //start the sound at this time 
+//     let next = 0;
+
+//     for(let i = 0; i < 8; i++) {
+//         scheduler2(audioStart, next);
+//         next++;
+//     }
+// }
+
+// function playChannel3() {
+//     let audioStart = context.currentTime;  //start the sound at this time 
+//     let next = 0;
+
+//     for(let i = 0; i < 8; i++) {
+//         scheduler3(audioStart, next);
+//         next++;
+//     }
+// }
 
 function scheduler1(audioStart, index) {
     let playingSlot = document.querySelector('#channel1Slot' + index);
@@ -232,11 +237,15 @@ function scheduler3(audioStart, index) {
     }
 }
 
-function previewSample(index) {
-    preview = context.createBufferSource(); 
-    preview.buffer = samples[index]; 
-    preview.connect(context.destination);  
-    preview.start(0);
+function previewSample(index, stopper) {
+    if(stopper) {
+        preview.stop(0);
+    } else {
+        preview = context.createBufferSource(); 
+        preview.buffer = samples[index]; 
+        preview.connect(context.destination);  
+        preview.start(0);
+    }
 }
 
 function stopAll() {
@@ -247,6 +256,17 @@ function stopAll() {
             sources3[i].stop(0);
         }
     }
+}
+
+function filterAdder() {
+    for(let i = 0; i < 8; i++) {
+        if (sources1[i]) {
+            sources1[i].connect(filter);
+            sources2[i].connect(filter);
+            sources3[i].connect(filter);
+        }
+    }
+    // filter.connect(gainNode);
 }
 
 volumeKnob.addEventListener('click', function() {
@@ -268,8 +288,9 @@ volumeKnob.addEventListener('click', function() {
 module.exports = {
     loadSound: loadSound,
     playChannel1: playChannel1,
-    playChannel2: playChannel2,
-    playChannel3: playChannel3,
-    previewSample: previewSample,
-    stopAll: stopAll
+    // playChannel2: playChannel2,
+    // playChannel3: playChannel3,
+    previewSample: previewSample, 
+    stopAll: stopAll,
+    filterAdder: filterAdder
 };

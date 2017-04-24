@@ -16,10 +16,15 @@ function Desktop() {
     /**
      * Sends audiosample path to the samplebox function
      */
-    sampleList.addEventListener('mousedown', function(event) {
-        samplebox(idCounter, $(event.target).text(), event);
-        idCounter += 1;
-    }, false);
+    sampleList.addEventListener('click', function(event) {
+        console.log(event.target.id);
+        if(event.target.id === 'sample-list') {
+            return;
+        } else {
+            samplebox(idCounter, $(event.target).text(), event);
+            idCounter += 1;
+        }
+    });
 
     /**
      * Skapar en samplebox div som är draggable + innehåller ett sample + en play knapp
@@ -34,7 +39,18 @@ function Desktop() {
                 zIndex: 10,
                 opacity: 0.5,
                 snap: '.sample-slot',
-                snapMode: 'inner'
+                snapMode: 'inner',
+                drag: function( event, ui ) {
+                    document.querySelector('#garbageCan').style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
+                    document.querySelector('#garbageCan').style.borderRadius = '5px';
+                    document.querySelector('#garbageCan').style.backgroundColor = '#1e4059';
+                    document.querySelector('#garbageCan').style.opacity = '0.8';
+                },
+                stop: function( event, ui ) {
+                    document.querySelector('#garbageCan').style.boxShadow = '';
+                    document.querySelector('#garbageCan').style.backgroundColor = '';
+                    document.querySelector('#garbageCan').style.opacity = '';
+                }
             });   
         });
 
@@ -42,22 +58,37 @@ function Desktop() {
         sampleBox.setAttribute('class', 'draggable-content');
         sampleBox.setAttribute('id', 'samplebox' + id);
         sampleBox.setAttribute('sample', sample);
+        let img = document.createElement('img');
         
-        //Color-picker for the samples
-        // switch(sample) {
-        //     case 'Lead Melody.ogg':
-        //         sampleBox.style.backgroundColor = 'ghostwhite';
-        //         break;
-        //     case 'Piano Chords.ogg':
-        //         sampleBox.style.backgroundColor = 'black';
-        //         break;
-        //     case 'Synth Chords.ogg':
-        //         sampleBox.style.backgroundColor = '#008395';
-        //         break;
-        //     case 'Weird Synth.wav':
-        //         sampleBox.style.backgroundColor = 'pink';
-        //         break;
-        // }
+        switch(sample) {
+            case 'HIMITSU Big Synth Chord.ogg':
+                img.src = "./images/synth_icon.png";
+                sampleBox.style.backgroundColor = '#27a0c4';
+                break;
+            case 'HIMITSU Soft Piano.ogg':
+                img.src = "./images/piano_icon.png";
+                sampleBox.style.backgroundColor = '#bdff92';
+                break;
+            case 'HIMITSU Piano Low.ogg':
+                img.src = "./images/piano_icon.png";
+                sampleBox.style.backgroundColor = '#82cd52';
+                break;
+            case 'HIMITSU Drum Beat.ogg':
+                img.src = "./images/drums_icon.png";
+                break;
+            case 'HIMITSU Main Melody.ogg':
+                img.src = "./images/synth_icon.png";
+                sampleBox.style.backgroundColor = '#64d5f7';
+                break;
+            case 'HIMITSU Cute Vocals.ogg':
+                img.src = "./images/vocals_icon.png";
+                sampleBox.style.backgroundColor = '#e998ff';
+                break;
+            case 'HIMITSU Soft Synth.ogg':
+                img.src = "./images/synth_icon.png";
+                sampleBox.style.backgroundColor = '#93e6ff';
+                break;
+        }
 
         /**
          * The 'play' button for specific samplebox
@@ -71,16 +102,17 @@ function Desktop() {
 
         //Create new audio sample
         let audiosample = './audio/' + sample;
-        
-        inactiveSamples.appendChild(sampleBox);
-        sampleBox.appendChild(playButton);
         SampleHandler.loadSound('./audio/Silence.ogg', true); 
         SampleHandler.loadSound(audiosample, false);
+
+        inactiveSamples.appendChild(sampleBox);
+        sampleBox.appendChild(playButton);
+        sampleBox.appendChild(img);
     }
     
 
     /**
-     * Play buttons handler
+     * Button handler
      */
     document.addEventListener('click', function(event) {
         if(event.target.id === '') {
@@ -91,12 +123,12 @@ function Desktop() {
             //'play-specific-sample-button'
             if(playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle') {
                 if(playChecker) {
-                    SampleHandler.previewSample(playButton.getAttribute("data-playbuttonid"));
+                    SampleHandler.previewSample(playButton.getAttribute("data-playbuttonid"), false);
                     playButton.removeAttribute('class');
                     playButton.setAttribute('class', 'fa fa-stop-circle');
                     playChecker = false;
                 } else {
-                    preview.stop();
+                    SampleHandler.previewSample(null, true);
                     playButton.removeAttribute('class');
                     playButton.setAttribute('class', 'fa fa-play-circle');
                     playChecker = true;
@@ -105,16 +137,33 @@ function Desktop() {
             } else if (playButton.tagName === 'I' && playButton.id === 'play-all-button' || playButton.tagName === 'I' && playButton.id === 'stop-all-button') {
                 if(playButton.id === 'play-all-button') {
                     SampleHandler.playChannel1();
-                    SampleHandler.playChannel2();
-                    SampleHandler.playChannel3();
-                    playButton.style.opacity = '1';
+                    playButton.style.opacity = '';
+                    playButton.style.color = '#d3e2ed';
+                    playButton.style.pointerEvents = 'none';    //prevent spamming multiple layer of sounds by disabling button
                     document.querySelector('#stop-all-button').style.opacity = '0.6';
+                    document.querySelector('#stop-all-button').style.color = '';
+                    
                 } else {
                     SampleHandler.stopAll();
-                    playButton.style.opacity = '1';
+                    playButton.style.opacity = '';
+                    playButton.style.color = '#d3e2ed';
                     document.querySelector('#play-all-button').style.opacity = '0.6';
+                    document.querySelector('#play-all-button').style.color = '';
+                    document.querySelector('#play-all-button').style.pointerEvents = '';
                 }
-            }      
+            } else if(playButton.type === 'checkbox') {
+                if(document.getElementById('channel-checkbox1').checked) {
+                    alert('ch1 checked!');
+                }
+
+                if(document.getElementById('channel-checkbox2').checked) {
+                    alert('ch2 checked!');
+                }
+
+                if(document.getElementById('channel-checkbox3').checked) {
+                    SampleHandler.filterAdder();
+                }
+            }
         }
     });
 }

@@ -1,11 +1,20 @@
 body {
   background-color: #8FB3CD;
+  height: 100%;
+  height: auto !important;
   font-family: 'Lato', sans-serif;
+  margin: 0 auto -50px;
+}
+
+.footer, .push {
+    height: 50px; 
+    text-align: center;
 }
 
 #wrapper {
+  
   margin: 0 auto;
-  min-height: 1000px;
+  min-height: 1000px;  
   width: 1500px;
   padding: 10px;
   background-color: #132f44;
@@ -63,12 +72,20 @@ body {
 
 .draggable-content:hover { opacity: 1; cursor: pointer; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.5); }
 
+.draggable-content > img {
+  height: 50px;
+  width: 60px;
+}
+
+.draggable-content > i {
+}
+
 #sample-list {
   background-color: #86abc4;
   float: right;
   padding: 40px;
   margin-right: 0px;
-  margin-top: -550px;
+  margin-top: -540px;
   border-radius: 5px;
   border: 1px solid black;
   opacity: 0.6;
@@ -79,22 +96,20 @@ body {
 #sample-list li:hover { background-color: #008395; cursor: pointer; }
 
 #play-all-button {
-  color: #8FB3CD;
+  color: #abc4d6;
   float: left;
   margin-top:10px;
   margin-left: 20px;
   font-size: 40px;
-  opacity: 0.6;
   transition: color 0.1s;
 }
 
 #stop-all-button {
-  color: #8FB3CD;
+  color: #abc4d6;
   float: left;
   margin-top:10px;
   margin-left: 20px;
   font-size: 40px;
-  opacity: 0.6;
   transition: color 0.1s;
 }
 
@@ -106,7 +121,8 @@ body {
   text-align: center;
   margin-top: 100px;
   max-width: 900px;
-  background-color: #8FB3CD;
+  max-height: 900px;
+  background-color: #1e4059;
 }
 
 .add-remove {
@@ -127,11 +143,11 @@ body {
   /*margin-left: 50px;*/
   padding: 20px;
   float: right;
-  transition: color 0.2s;
+  transition: color 0.2s, background-color 0.2s, box-shadow 0.2s, border-radius 0.2s, opacity 0.2s;
 }
 
 #volume-icon-up {
-  color: #8FB3CD;
+  color: ghostwhite;
   transition: color 0.3s;
 }
 
@@ -143,9 +159,10 @@ body {
 #project-controller {
   float: left;
   text-align: center;
-  background-color: #1e4059;
+  background-color: #4a657a;
   width: 400px;
   height: 60px;
+  margin-top: 15px;
   border-radius: 5px;
 }
 
@@ -161,4 +178,7 @@ body {
 .dial {
 }
 
-
+.disabledbutton {
+    pointer-events: none;
+    opacity: 0.4;
+}
