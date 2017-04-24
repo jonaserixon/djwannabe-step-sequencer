@@ -15,15 +15,8 @@ body {
 }
 
 
-#header {
-  font-size: 70px;
-  text-align: center;
-}
-
-#header img {
-  width: 80px;
-  height: 58px;
-}
+#header { font-size: 70px; text-align: center; }
+#header img { width: 80px; height: 58px; }
 
 .main-timeline { display: inline-block; margin-bottom: 75px; }
 
@@ -51,7 +44,7 @@ body {
 #playlist-container {
   margin-top: 100px;
   background-color: #1e4059;
-  width: 900px;
+  width: 950px;
   border-radius: 10px 10px 10px;
 }
 
@@ -75,31 +68,38 @@ body {
   float: right;
   padding: 40px;
   margin-right: 0px;
-  margin-top: -415px;
+  margin-top: -550px;
   border-radius: 5px;
   border: 1px solid black;
   opacity: 0.6;
   transition: opacity 0.2s, box-shadow 0.2s;
 }
 
-#sample-list:hover {
-  opacity: 1;
-}
-
+#sample-list:hover { opacity: 1; }
 #sample-list li:hover { background-color: #008395; cursor: pointer; }
 
 #play-all-button {
   color: #8FB3CD;
-  float:right;
-  margin-right: 450px;
-  margin-top: -250px;
-  font-size: 80px;
+  float: left;
+  margin-top:10px;
+  margin-left: 20px;
+  font-size: 40px;
+  opacity: 0.6;
   transition: color 0.1s;
 }
 
-#play-all-button:hover {
-  color: #bed8ea;
+#stop-all-button {
+  color: #8FB3CD;
+  float: left;
+  margin-top:10px;
+  margin-left: 20px;
+  font-size: 40px;
+  opacity: 0.6;
+  transition: color 0.1s;
 }
+
+#play-all-button:hover { color: #bed8ea; }
+#stop-all-button:hover { color: #bed8ea; }
 
 #inactive-samples {
   border-radius: 5px;
@@ -123,11 +123,42 @@ body {
 
 #garbageCan {
   color: #8FB3CD;
-  font-size: 70px;
+  font-size: 50px;
+  /*margin-left: 50px;*/
+  padding: 20px;
   float: right;
-  margin-right: 460px;
-  margin-top: -100px;
+  transition: color 0.2s;
 }
 
+#volume-icon-up {
+  color: #8FB3CD;
+  transition: color 0.3s;
+}
+
+#volume-icon-down {
+  color: #8FB3CD;
+  transition: color 0.3s;
+}
+
+#project-controller {
+  float: left;
+  text-align: center;
+  background-color: #1e4059;
+  width: 400px;
+  height: 60px;
+  border-radius: 5px;
+}
+
+#volumeKnob {
+  margin-top: 15px;
+}
+
+.channel-knobs {
+  margin-left: 820px;
+  margin-top: 65px;
+}
+
+.dial {
+}
 
 

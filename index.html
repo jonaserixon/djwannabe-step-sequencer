@@ -13,8 +13,13 @@
 <h1 id="header"><img src="images/turntable_icon.png">DJ Wannabe</h1>
 
     <div id="wrapper">
-        <input id="volumeKnob" type="range" value="100">
-        <!--<input id="delayKnob" type="range" value="100">-->
+        <div id="project-controller">
+            <i id="play-all-button" class="fa fa-play" aria-hidden="true"></i>
+            <i id="stop-all-button" class="fa fa-stop" aria-hidden="true"></i>
+            <i id="volume-icon-down" class="fa fa-volume-down" aria-hidden="true"></i>
+            <input id="volumeKnob" type="range" value="100">
+            <i id="volume-icon-up" class="fa fa-volume-up" aria-hidden="true"></i>
+        </div>
             <div id="playlist-container">
                 <div id="snaptarget" class="main-timeline">
                     <h3>1</h3>
@@ -29,6 +34,9 @@
                     
                     <!--<button id="remove-sample" class="add-remove">Remove last sample!</button>
                     <button id="add-sample" class="add-remove">Add new sample slot!</button>-->
+                    <div class="channel-knobs">
+                        <input type="checkbox" value="0">
+                    </div>
                 </div>
 
                 <div id="snaptarget1" class="main-timeline">
@@ -41,6 +49,9 @@
                     <div id="channel2Slot5" class="sample-slot" helper="5"></div>
                     <div id="channel2Slot6" class="sample-slot" helper="6"></div>
                     <div id="channel2Slot7" class="sample-slot" helper="7"></div>
+                    <div class="channel-knobs">
+                        <input type="checkbox" value="0">
+                    </div>
                 </div>
 
                 <div id="snaptarget2" class="main-timeline">
@@ -53,6 +64,9 @@
                     <div id="channel3Slot5" class="sample-slot" helper="5"></div>
                     <div id="channel3Slot6" class="sample-slot" helper="6"></div>
                     <div id="channel3Slot7" class="sample-slot" helper="7"></div>
+                    <div class="channel-knobs">
+                        <input type="checkbox" value="0">
+                    </div>
                 </div>
             </div>
 
@@ -66,17 +80,15 @@
             <li class="audiosample" sampleFile="HIMITSU Cute Vocals.ogg">HIMITSU Cute Vocals.ogg</li>
             <li class="audiosample" sampleFile="HIMITSU Main Melody.ogg">HIMITSU Main Melody.ogg</li>
         </ul>
-
-        <i id="play-all-button" class="fa fa-play" aria-hidden="true"></i>
         <i id="garbageCan" class="fa fa-trash" aria-hidden="true"></i>
-
         <div id="inactive-samples">
-            <h3>Your dragged out samples:</h3>
+            <h3>Your dragged out samples</h3>
         </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.13/jquery.knob.min.js"></script>
     <script src="bundle.js"></script>
 
 </body>

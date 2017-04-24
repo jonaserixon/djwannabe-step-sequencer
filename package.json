@@ -7,15 +7,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "nodejs",
     "js",
     "audio"
   ],
   "author": "Jonas Erixon",
   "license": "ISC",
   "dependencies": {
-    "browserify": "^14.1.0",
-    "jquery": "^3.2.1"
+    "browserify": "^14.1.0"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"
