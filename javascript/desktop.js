@@ -136,7 +136,7 @@ function Desktop() {
             //'play-all-channels-button'
             } else if (playButton.tagName === 'I' && playButton.id === 'play-all-button' || playButton.tagName === 'I' && playButton.id === 'stop-all-button') {
                 if(playButton.id === 'play-all-button') {
-                    SampleHandler.playChannel1();
+                    SampleHandler.playChannels();
                     playButton.style.opacity = '';
                     playButton.style.color = '#d3e2ed';
                     playButton.style.pointerEvents = 'none';    //prevent spamming multiple layer of sounds by disabling button

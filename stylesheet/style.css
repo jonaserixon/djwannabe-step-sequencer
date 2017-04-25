@@ -14,8 +14,7 @@ body {
 #wrapper {
   
   margin: 0 auto;
-  min-height: 1000px;  
-  width: 1500px;
+  width: 1700px;
   padding: 10px;
   background-color: #132f44;
   border-radius: 5px;
@@ -24,8 +23,8 @@ body {
 }
 
 
-#header { font-size: 70px; text-align: center; }
-#header img { width: 80px; height: 58px; }
+#header { font-size: 70px; text-align: center; margin: 0; }
+#header img { width: 80px; height: 52px; }
 
 .main-timeline { display: inline-block; margin-bottom: 75px; }
 
@@ -35,8 +34,11 @@ body {
 #snaptarget1 { height: 90px; width:800px; margin-left: 50px; margin-bottom: 40px;}
 #snaptarget1 h3 { float: left; color: #86abc4; margin-left: -20px; margin-top: 85px; margin-right: 20px; }
 
-#snaptarget2 { height: 90px; width:800px; margin-left: 50px; margin-bottom: 90px;}
+#snaptarget2 { height: 90px; width:800px; margin-left: 50px; margin-bottom: 40px;}
 #snaptarget2 h3 { float: left; color: #86abc4; margin-left: -20px; margin-top: 85px; margin-right: 20px; }
+
+#snaptarget3 { height: 90px; width:800px; margin-left: 50px; margin-bottom: 90px;}
+#snaptarget3 h3 { float: left; color: #86abc4; margin-left: -20px; margin-top: 85px; margin-right: 20px; }
 
 .sample-slot {
   float: left;
@@ -61,13 +63,14 @@ body {
    background-color: ghostwhite;
    width: 80px;
    height: 80px;
-   float: left;
+   /*float: left;*/
    margin: 0 10px 10px 0;
    font-size: .9em;
    border: solid black;
    border-radius: 10px 10px 10px;
    opacity: 0.8;
    transition: opacity 0.1s, box-shadow 0.1s;
+   display: inline-table;
 }
 
 .draggable-content:hover { opacity: 1; cursor: pointer; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.5); }
@@ -77,15 +80,14 @@ body {
   width: 60px;
 }
 
-.draggable-content > i {
-}
+
 
 #sample-list {
   background-color: #86abc4;
   float: right;
   padding: 40px;
   margin-right: 0px;
-  margin-top: -540px;
+  margin-top: -670px;
   border-radius: 5px;
   border: 1px solid black;
   opacity: 0.6;
@@ -118,12 +120,16 @@ body {
 
 #inactive-samples {
   border-radius: 5px;
-  text-align: center;
   margin-top: 100px;
-  max-width: 900px;
-  max-height: 900px;
-  background-color: #1e4059;
+  width: 587px;
+  min-height: 100px;
+  background-color: #30546f;
+  padding-top: 12px;
+  padding-left: 15px;
 }
+
+#inactive-samples i { margin-left: 30px; }
+#inactive-samples img { margin-left: 10px; }
 
 .add-remove {
   display: block;
@@ -172,10 +178,7 @@ body {
 
 .channel-knobs {
   margin-left: 820px;
-  margin-top: 65px;
-}
-
-.dial {
+  margin-top: 85px;
 }
 
 .disabledbutton {
