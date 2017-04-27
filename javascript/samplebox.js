@@ -1,4 +1,4 @@
-'use strict';
+// 'use strict';
 
 let wrapper = document.querySelector('#wrapper');
 let inactiveSamples = document.querySelector('#inactive-samples');
@@ -25,99 +25,122 @@ gainNode.connect(context.destination);
 
 let audioTime = context.currentTime;
 
-$('#garbageCan').droppable({
-        drop: function (event, ui) {
-            let previousSlot = ui.draggable.attr("previous-slot");
-            let droppableHelper = ui.draggable.attr("helper");  
 
-            let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");
-            let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
+    $('#garbageCan').droppable({
+            drop: function (event, ui) {
+                    
+                let previousSlot = ui.draggable.attr("previous-slot");
+                let droppableHelper = ui.draggable.attr("helper");  
 
-            if(previousSlot !== undefined) {
-                if(previousSlot.includes('channel1Slot')) {
-                    channel1.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
-                    $('#' + previousSlot).droppable('enable');
+                let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");
+                let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
+
+                if(previousSlot !== undefined) {
+                    if(previousSlot.includes('channel1Slot')) {
+                        channel1.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
+                        $('#' + previousSlot).droppable('enable');
+                        draggableId.style.visibility = 'hidden';
+                    }
+                    if(previousSlot.includes('channel2Slot')) {
+                        channel2.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel2 array
+                        $('#' + previousSlot).droppable('enable');
+                        draggableId.style.visibility = 'hidden';
+                    }
+                    if(previousSlot.includes('channel3Slot')) {
+                        channel3.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
+                        $('#' + previousSlot).droppable('enable');
+                        draggableId.style.visibility = 'hidden';
+                    }
+                    if(previousSlot.includes('channel4Slot')) {
+                        channel4.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
+                        $('#' + previousSlot).droppable('enable');
+                        draggableId.style.visibility = 'hidden';
+                    }
+                } else {
                     draggableId.style.visibility = 'hidden';
-                }
-                if(previousSlot.includes('channel2Slot')) {
-                    channel2.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel2 array
-                    $('#' + previousSlot).droppable('enable');
-                    draggableId.style.visibility = 'hidden';
-                }
-                if(previousSlot.includes('channel3Slot')) {
-                    channel3.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
-                    $('#' + previousSlot).droppable('enable');
-                    draggableId.style.visibility = 'hidden';
-                }
-                if(previousSlot.includes('channel4Slot')) {
-                    channel4.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
-                    $('#' + previousSlot).droppable('enable');
-                    draggableId.style.visibility = 'hidden';
-                }
-            } else {
-                draggableId.style.display = 'none';
-            }
-                
-            console.log('hehehe ' + previousSlot);
-        }    
-});
-
-/**
- * Droppable slots
- */
-$('.sample-slot').droppable({
-        drop: function (event, ui) {
-            
-            let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
-            let droppableHelper = $(this).attr("helper");                               //lägg den i index (droppableId) i playlsit arrayen
-            let droppableId = $(this).attr("id");
-            let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
-            draggableId.setAttribute('previous-slot', droppableId);
-            draggableId.setAttribute('helper', droppableHelper);
-
-            console.log('draggable sample '  + draggableId + ' dropped on ' + droppableId);
-
-            //check which channel to add the sample to
-            if(droppableId.includes('channel1Slot')) {
-                channel1.splice(droppableHelper, 1, samples[draggableHelper]);  //put the dropped sample at the <id>-slotX index in the channel array
-                $('#' + droppableId).droppable('disable');
-            }
-            if(droppableId.includes('channel2Slot')) { 
-                channel2.splice(droppableHelper, 1, samples[draggableHelper]);  
-                $('#' + droppableId).droppable('disable');  //disabla droppable om jag stoppar in ett sample i sloten
-                // göra sloten droppable igen om jag tar bort/flyttar ett sample
-            }
-            if(droppableId.includes('channel3Slot')) {
-                channel3.splice(droppableHelper, 1, samples[draggableHelper]);  
-                $('#' + droppableId).droppable('disable');
-            }   
-            if(droppableId.includes('channel4Slot')) {
-                channel4.splice(droppableHelper, 1, samples[draggableHelper]);  
-                $('#' + droppableId).droppable('disable');
-            }   
-            ui.draggable.position({
-                my: 'center',
-                at: 'center',
-                of: $(this),
-                using: function(pos) {
-                    $(this).animate(pos, 'center', 'linear');
                 } 
-            });
-        },
-        // tolerance: "touch",
-
-        // out: function(event, ui) {  
-        //     let droppableId = $(this).attr("id");
-        //     let droppableHelper = $(this).attr("helper");    
-        //     console.log(channel1); 
-        //     if(droppableId.includes('channel1Slot')) {
-        //         channel1.splice(droppableHelper, 1, silentAudio[0]);  //put the dropped sample at the <id>-slotX index in the channel1 array
-        //         $('#' + droppableId).droppable('enable');
-        //         console.log(channel1);
-        //     }   
-            
-        // }
+                           
+            }    
     });
+
+
+                $('.sample-slot').droppable({
+                    drop: function (event, ui) {
+                        
+                        let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
+                        let droppableHelper = $(this).attr("helper");                               //lägg den i index (droppableId) i playlsit arrayen
+                        let droppableId = $(this).attr("id");
+                        let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
+
+                        draggableId.setAttribute('previous-slot', droppableId);
+                        draggableId.setAttribute('helper', droppableHelper);
+
+                        console.log('draggable sample '  + draggableId + ' dropped on ' + droppableId);
+
+                        if(droppableId.includes('channel1Slot')) {
+                            channel1.splice(droppableHelper, 1, samples[draggableHelper]);  //put the dropped sample at the <id>-slotX index in the channel array
+                            // $('#' + droppableId).droppable('disable');
+                        }
+                        if(droppableId.includes('channel2Slot')) { 
+                            channel2.splice(droppableHelper, 1, samples[draggableHelper]);  
+                            // $('#' + droppableId).droppable('disable');  // disabla droppable om jag stoppar in ett sample i sloten
+                                                                        // göra sloten droppable igen om jag tar bort/flyttar ett sample
+                        }
+                        if(droppableId.includes('channel3Slot')) {
+                            channel3.splice(droppableHelper, 1, samples[draggableHelper]);  
+                            // $('#' + droppableId).droppable('disable');
+                        }   
+                        if(droppableId.includes('channel4Slot')) {
+                            channel4.splice(droppableHelper, 1, samples[draggableHelper]);  
+                            // $('#' + droppableId).droppable('disable');
+                        }   
+                        ui.draggable.position({
+                            my: 'center',
+                            at: 'center',
+                            of: $(this),
+                            using: function(pos) {
+                                $(this).animate(pos, 'center', 'linear');
+                            } 
+                        });
+                    },
+                    // tolerance: "touch",
+
+                    out: function(event, ui) { 
+                        let previousSlot = ui.draggable.attr("previous-slot"); 
+                        let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
+                        let droppableId = $(this).attr("id");
+                        let droppableHelper = $(this).attr("helper");    
+                        
+                        if(previousSlot.includes('channel1Slot')) {
+                            channel1.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
+                            $('#' + previousSlot).droppable('enable');
+                            draggableId.style.visibility = 'hidden';
+                        }
+                        if(previousSlot.includes('channel2Slot')) {
+                            channel2.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel2 array
+                            $('#' + previousSlot).droppable('enable');
+                            draggableId.style.visibility = 'hidden';
+                        }
+                        if(previousSlot.includes('channel3Slot')) {
+                            channel3.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
+                            $('#' + previousSlot).droppable('enable');
+                            draggableId.style.visibility = 'hidden';
+                        }
+                        if(previousSlot.includes('channel4Slot')) {
+                            channel4.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
+                            $('#' + previousSlot).droppable('enable');
+                                
+                        }
+                    }
+                });
+            
+        
+    
+
+    /**
+     * Droppable slots
+     */
+    
 
 //https://dl.dropboxusercontent.com/s/6s6rn6rcdlggdzj/Weird%20Synth.wav?dl=0
 

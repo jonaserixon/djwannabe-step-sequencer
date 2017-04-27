@@ -13,6 +13,7 @@ function Desktop() {
     let sampleboxes = document.querySelector('.draggable-content ui-draggable ui-draggable-handle');
     let inactiveSamples = document.querySelector('#inactive-samples');
 
+
     /**
      * Sends audiosample path to the samplebox function
      */
@@ -25,6 +26,8 @@ function Desktop() {
             idCounter += 1;
         }
     });
+
+    
 
     /**
      * Skapar en samplebox div som är draggable + innehåller ett sample + en play knapp
@@ -39,6 +42,7 @@ function Desktop() {
                 zIndex: 10,
                 opacity: 0.5,
                 snap: '.sample-slot',
+                scroll: false,
                 snapMode: 'inner',
                 drag: function( event, ui ) {
                     document.querySelector('#garbageCan').style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
@@ -166,6 +170,9 @@ function Desktop() {
             }
         }
     });
+
+    
+
 }
 
 module.exports = Desktop;
