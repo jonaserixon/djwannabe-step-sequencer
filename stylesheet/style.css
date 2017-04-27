@@ -130,7 +130,9 @@ body {
 
 #inactive-samples i { margin-left: 30px; }
 #inactive-samples img { margin-left: 10px; }
-
+#inactive-samples i:hover {
+  opacity: 0.7;
+}
 .add-remove {
   display: block;
   float: right;

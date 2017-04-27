@@ -16,132 +16,128 @@ let channel4 = [undefined, undefined, undefined, undefined, undefined, undefined
 
 let context = new AudioContext();
 let gainNode = context.createGain();
+
+let channel1Gain = context.createGain();
+let channel2Gain = context.createGain();
+let channel3Gain = context.createGain();
+let channel4Gain = context.createGain();
+
+
 let filter = context.createBiquadFilter();
 filter.type = 'lowpass'; 
 filter.frequency.value = 800;
 // let channel1 = new Channel(context);
 
 gainNode.connect(context.destination);
+channel1Gain.connect(gainNode);
+channel2Gain.connect(gainNode);
+channel3Gain.connect(gainNode);
+channel4Gain.connect(gainNode);
 
 let audioTime = context.currentTime;
 
 
-    $('#garbageCan').droppable({
-            drop: function (event, ui) {
-                    
-                let previousSlot = ui.draggable.attr("previous-slot");
-                let droppableHelper = ui.draggable.attr("helper");  
+$('#garbageCan').droppable({
+        drop: function (event, ui) {
+                
+            let previousSlot = ui.draggable.attr("previous-slot");
+            let droppableHelper = ui.draggable.attr("helper");  
 
-                let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");
-                let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
+            let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");
+            let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
 
-                if(previousSlot !== undefined) {
-                    if(previousSlot.includes('channel1Slot')) {
-                        channel1.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
-                        $('#' + previousSlot).droppable('enable');
-                        draggableId.style.visibility = 'hidden';
-                    }
-                    if(previousSlot.includes('channel2Slot')) {
-                        channel2.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel2 array
-                        $('#' + previousSlot).droppable('enable');
-                        draggableId.style.visibility = 'hidden';
-                    }
-                    if(previousSlot.includes('channel3Slot')) {
-                        channel3.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
-                        $('#' + previousSlot).droppable('enable');
-                        draggableId.style.visibility = 'hidden';
-                    }
-                    if(previousSlot.includes('channel4Slot')) {
-                        channel4.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
-                        $('#' + previousSlot).droppable('enable');
-                        draggableId.style.visibility = 'hidden';
-                    }
-                } else {
+            if(previousSlot !== undefined) {
+                if(previousSlot.includes('channel1Slot')) {
+                    channel1.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
+                    $('#' + previousSlot).droppable('enable');
                     draggableId.style.visibility = 'hidden';
-                } 
-                           
-            }    
-    });
-
-
-                $('.sample-slot').droppable({
-                    drop: function (event, ui) {
+                }
+                if(previousSlot.includes('channel2Slot')) {
+                    channel2.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel2 array
+                    $('#' + previousSlot).droppable('enable');
+                    draggableId.style.visibility = 'hidden';
+                }
+                if(previousSlot.includes('channel3Slot')) {
+                    channel3.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
+                    $('#' + previousSlot).droppable('enable');
+                    draggableId.style.visibility = 'hidden';
+                }
+                if(previousSlot.includes('channel4Slot')) {
+                    channel4.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
+                    $('#' + previousSlot).droppable('enable');
+                    draggableId.style.visibility = 'hidden';
+                }
+            } else {
+                draggableId.style.visibility = 'hidden';
+            } 
                         
-                        let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
-                        let droppableHelper = $(this).attr("helper");                               //lägg den i index (droppableId) i playlsit arrayen
-                        let droppableId = $(this).attr("id");
-                        let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
+        }    
+});
 
-                        draggableId.setAttribute('previous-slot', droppableId);
-                        draggableId.setAttribute('helper', droppableHelper);
 
-                        console.log('draggable sample '  + draggableId + ' dropped on ' + droppableId);
-
-                        if(droppableId.includes('channel1Slot')) {
-                            channel1.splice(droppableHelper, 1, samples[draggableHelper]);  //put the dropped sample at the <id>-slotX index in the channel array
-                            // $('#' + droppableId).droppable('disable');
-                        }
-                        if(droppableId.includes('channel2Slot')) { 
-                            channel2.splice(droppableHelper, 1, samples[draggableHelper]);  
-                            // $('#' + droppableId).droppable('disable');  // disabla droppable om jag stoppar in ett sample i sloten
-                                                                        // göra sloten droppable igen om jag tar bort/flyttar ett sample
-                        }
-                        if(droppableId.includes('channel3Slot')) {
-                            channel3.splice(droppableHelper, 1, samples[draggableHelper]);  
-                            // $('#' + droppableId).droppable('disable');
-                        }   
-                        if(droppableId.includes('channel4Slot')) {
-                            channel4.splice(droppableHelper, 1, samples[draggableHelper]);  
-                            // $('#' + droppableId).droppable('disable');
-                        }   
-                        ui.draggable.position({
-                            my: 'center',
-                            at: 'center',
-                            of: $(this),
-                            using: function(pos) {
-                                $(this).animate(pos, 'center', 'linear');
-                            } 
-                        });
-                    },
-                    // tolerance: "touch",
-
-                    out: function(event, ui) { 
-                        let previousSlot = ui.draggable.attr("previous-slot"); 
-                        let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
-                        let droppableId = $(this).attr("id");
-                        let droppableHelper = $(this).attr("helper");    
-                        
-                        if(previousSlot.includes('channel1Slot')) {
-                            channel1.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
-                            $('#' + previousSlot).droppable('enable');
-                            draggableId.style.visibility = 'hidden';
-                        }
-                        if(previousSlot.includes('channel2Slot')) {
-                            channel2.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel2 array
-                            $('#' + previousSlot).droppable('enable');
-                            draggableId.style.visibility = 'hidden';
-                        }
-                        if(previousSlot.includes('channel3Slot')) {
-                            channel3.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
-                            $('#' + previousSlot).droppable('enable');
-                            draggableId.style.visibility = 'hidden';
-                        }
-                        if(previousSlot.includes('channel4Slot')) {
-                            channel4.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
-                            $('#' + previousSlot).droppable('enable');
-                                
-                        }
-                    }
-                });
-            
+$('.sample-slot').droppable({
+    drop: function (event, ui) {
         
-    
+        let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
+        let droppableHelper = $(this).attr("helper");                               //lägg den i index (droppableId) i playlsit arrayen
+        let droppableId = $(this).attr("id");
+        let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
 
-    /**
-     * Droppable slots
-     */
-    
+        draggableId.setAttribute('previous-slot', droppableId);
+        draggableId.setAttribute('helper', droppableHelper);
 
+        console.log('draggable sample '  + draggableId + ' dropped on ' + droppableId);
+
+        if(droppableId.includes('channel1Slot')) {
+            channel1.splice(droppableHelper, 1, samples[draggableHelper]);  //put the dropped sample at the <id>-slotX index in the channel array
+            // $('#' + droppableId).droppable('disable');
+        }
+        if(droppableId.includes('channel2Slot')) { 
+            channel2.splice(droppableHelper, 1, samples[draggableHelper]);  
+            // $('#' + droppableId).droppable('disable');  // disabla droppable om jag stoppar in ett sample i sloten
+                                                        // göra sloten droppable igen om jag tar bort/flyttar ett sample
+        }
+        if(droppableId.includes('channel3Slot')) {
+            channel3.splice(droppableHelper, 1, samples[draggableHelper]);  
+            // $('#' + droppableId).droppable('disable');
+        }   
+        if(droppableId.includes('channel4Slot')) {
+            channel4.splice(droppableHelper, 1, samples[draggableHelper]);  
+            // $('#' + droppableId).droppable('disable');
+        }   
+        ui.draggable.position({
+            my: 'center',
+            at: 'center',
+            of: $(this),
+            using: function(pos) {
+                $(this).animate(pos, 'center', 'linear');
+            } 
+        });
+    },
+    // tolerance: "touch",
+
+    out: function(event, ui) { 
+        let previousSlot = ui.draggable.attr("previous-slot"); 
+        let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
+        let droppableId = $(this).attr("id");
+        let droppableHelper = $(this).attr("helper");    
+        
+        if(previousSlot.includes('channel1Slot')) {
+            channel1.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
+        }
+        if(previousSlot.includes('channel2Slot')) {
+            channel2.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel2 array
+        }
+        if(previousSlot.includes('channel3Slot')) {
+            channel3.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
+        }
+        if(previousSlot.includes('channel4Slot')) {
+            channel4.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
+                
+        }
+    }
+});
+            
 //https://dl.dropboxusercontent.com/s/6s6rn6rcdlggdzj/Weird%20Synth.wav?dl=0
 
 // Store audio sample buffer in an array
@@ -203,7 +199,7 @@ function scheduler1(audioStart, index) {
     audio1 = context.createBufferSource(); 
     sources1.splice(index, 0, audio1);
     audio1.buffer = channel1[index]; 
-    audio1.connect(gainNode);
+    audio1.connect(channel1Gain);
     audio1.start(audioStart + (audio1.buffer.duration * index));
     audio1.onended = function() {
         playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
@@ -217,7 +213,7 @@ function scheduler2(audioStart, index) {
     audio2 = context.createBufferSource();
     sources2.splice(index, 0, audio2);
     audio2.buffer = channel2[index];  //array with all the loaded audio
-    audio2.connect(gainNode);
+    audio2.connect(channel2Gain);
     audio2.start(audioStart + (audio2.buffer.duration * index));
     audio2.onended = function() {
         playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
@@ -231,7 +227,7 @@ function scheduler3(audioStart, index) {
     audio3 = context.createBufferSource();
     sources3.splice(index, 0, audio3);
     audio3.buffer = channel3[index];  //array with all the loaded audio
-    audio3.connect(gainNode);
+    audio3.connect(channel3Gain);
     audio3.start(audioStart + (audio3.buffer.duration * index));  
     audio3.onended = function() {
         playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
@@ -245,7 +241,7 @@ function scheduler4(audioStart, index) {
     audio4 = context.createBufferSource();
     sources4.splice(index, 0, audio4);
     audio4.buffer = channel4[index];  //array with all the loaded audio
-    audio4.connect(gainNode);
+    audio4.connect(channel4Gain);
     audio4.start(audioStart + (audio4.buffer.duration * index));
     audio4.onended = function() {
         playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
@@ -282,15 +278,34 @@ function stopAll() {
     }
 }
 
-function filterAdder() {
-    for(let i = 0; i < 8; i++) {
-        if (sources1[i]) {
-            sources1[i].connect(filter);
-            sources2[i].connect(filter);
-            sources3[i].connect(filter);
-        }
+function muteChannel(id) {
+    if(id == 1) {
+        channel1Gain.gain.value = 0;
     }
-    // filter.connect(gainNode);
+    if(id == 2) {
+        channel2Gain.gain.value = 0;
+    }    
+    if(id == 3) {
+        channel3Gain.gain.value = 0;
+    }
+    if(id == 4) {
+        channel4Gain.gain.value = 0;
+    }
+}
+
+function unmuteChannel(id) {
+    if(id == 1) {
+        channel1Gain.gain.value = 1;
+    }
+    if(id == 2) {
+        channel2Gain.gain.value = 1;
+    }    
+    if(id == 3) {
+        channel3Gain.gain.value = 1;
+    }
+    if(id == 4) {
+        channel4Gain.gain.value = 1;
+    }
 }
 
 volumeKnob.addEventListener('click', function() {
@@ -314,5 +329,6 @@ module.exports = {
     playChannels: playChannels,
     previewSample: previewSample, 
     stopAll: stopAll,
-    filterAdder: filterAdder
+    muteChannel: muteChannel,
+    unmuteChannel: unmuteChannel
 };

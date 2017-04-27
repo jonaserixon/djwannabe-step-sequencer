@@ -4,6 +4,7 @@ const SampleHandler = require('./samplebox');
 
 let idCounter = 0;
 let playChecker = true;
+let muteChecker = true;
 
 function Desktop() {
     let wrapper = document.querySelector('#wrapper');
@@ -156,16 +157,15 @@ function Desktop() {
                     document.querySelector('#play-all-button').style.pointerEvents = '';
                 }
             } else if(playButton.type === 'checkbox') {
-                if(document.getElementById('channel-checkbox1').checked) {
-                    alert('ch1 checked!');
-                }
 
-                if(document.getElementById('channel-checkbox2').checked) {
-                    alert('ch2 checked!');
+                var idSelector = function() { return this.id; };
+                let checkedChannel = $(":checkbox:checked").map(idSelector).get();
+                let notChecked = $(":checkbox:not(:checked)").map(idSelector).get();
+                for(let i = 0; i < checkedChannel.length; i++) {
+                    SampleHandler.muteChannel(checkedChannel[i]);
                 }
-
-                if(document.getElementById('channel-checkbox3').checked) {
-                    SampleHandler.filterAdder();
+                for(let j = 0; j < notChecked.length; j++) {
+                    SampleHandler.unmuteChannel(notChecked[j]);
                 }
             }
         }
