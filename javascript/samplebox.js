@@ -69,24 +69,21 @@ $('#garbageCan').droppable({
                 }
             } else {
                 draggableId.style.visibility = 'hidden';
-            } 
-                        
+            }     
         }    
 });
 
-
 $('.sample-slot').droppable({
     drop: function (event, ui) {
-        
         let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
         let droppableHelper = $(this).attr("helper");                               //lägg den i index (droppableId) i playlsit arrayen
         let droppableId = $(this).attr("id");
         let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
-
+        console.log(droppableId);
         draggableId.setAttribute('previous-slot', droppableId);
         draggableId.setAttribute('helper', droppableHelper);
 
-        console.log('draggable sample '  + draggableId + ' dropped on ' + droppableId);
+        // console.log('draggable sample '  + draggableId + ' dropped on ' + droppableId);
 
         if(droppableId.includes('channel1Slot')) {
             channel1.splice(droppableHelper, 1, samples[draggableHelper]);  //put the dropped sample at the <id>-slotX index in the channel array
@@ -105,17 +102,28 @@ $('.sample-slot').droppable({
             channel4.splice(droppableHelper, 1, samples[draggableHelper]);  
             // $('#' + droppableId).droppable('disable');
         }   
-        ui.draggable.position({
-            my: 'center',
-            at: 'center',
-            of: $(this),
-            using: function(pos) {
-                $(this).animate(pos, 'center', 'linear');
-            } 
-        });
-    },
-    // tolerance: "touch",
 
+        $(this).append(ui.draggable);
+        ui.draggable.position({of: $(this), my: 'left top', at: 'left top'});
+
+        // document.querySelector('#' + droppableId).appendChild(draggableId);
+
+        // ui.draggable.position({
+        //     my: 'center',
+        //     at: 'center',
+        //     of: $(this),
+        //     using: function(pos) {
+        //         $(this).animate(pos, 'center', 'linear');
+        //     } 
+        // });
+
+        // ui.draggable.detach().appendTo(posElement);
+        
+        // let clonedElement = ui.helper.clone();
+        // clonedElement.appendTo('#' + droppableId);
+        // clonedElement.draggable
+    
+    },
     out: function(event, ui) { 
         let previousSlot = ui.draggable.attr("previous-slot"); 
         let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
@@ -133,7 +141,6 @@ $('.sample-slot').droppable({
         }
         if(previousSlot.includes('channel4Slot')) {
             channel4.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
-                
         }
     }
 });

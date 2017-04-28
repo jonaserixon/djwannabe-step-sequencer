@@ -39,23 +39,25 @@ function Desktop() {
         
         $(function () {
             $('#samplebox' + id).draggable({
-                revert: 'invalid',
+                revert: 'invalid', 
+                // helper: 'clone',
+                containment: 'document',
                 zIndex: 10,
                 opacity: 0.5,
                 snap: '.sample-slot',
                 scroll: false,
                 snapMode: 'inner',
-                drag: function( event, ui ) {
+                drag: function(event, ui) {
                     document.querySelector('#garbageCan').style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
                     document.querySelector('#garbageCan').style.borderRadius = '5px';
                     document.querySelector('#garbageCan').style.backgroundColor = '#1e4059';
                     document.querySelector('#garbageCan').style.opacity = '0.8';
                 },
-                stop: function( event, ui ) {
+                stop: function(event, ui) {
                     document.querySelector('#garbageCan').style.boxShadow = '';
                     document.querySelector('#garbageCan').style.backgroundColor = '';
                     document.querySelector('#garbageCan').style.opacity = '';
-                }
+                },
             });   
         });
 
@@ -158,9 +160,11 @@ function Desktop() {
                 }
             } else if(playButton.type === 'checkbox') {
 
+                //Check if checkbox is checked or not
                 var idSelector = function() { return this.id; };
                 let checkedChannel = $(":checkbox:checked").map(idSelector).get();
                 let notChecked = $(":checkbox:not(:checked)").map(idSelector).get();
+
                 for(let i = 0; i < checkedChannel.length; i++) {
                     SampleHandler.muteChannel(checkedChannel[i]);
                 }
@@ -170,9 +174,6 @@ function Desktop() {
             }
         }
     });
-
-    
-
 }
 
 module.exports = Desktop;
