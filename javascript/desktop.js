@@ -116,7 +116,6 @@ function Desktop() {
         sampleBox.appendChild(playButton);
         sampleBox.appendChild(img);
     }
-    
 
     /**
      * Button handler
@@ -149,7 +148,6 @@ function Desktop() {
                     playButton.style.pointerEvents = 'none';    //prevent spamming multiple layer of sounds by disabling button
                     document.querySelector('#stop-all-button').style.opacity = '0.6';
                     document.querySelector('#stop-all-button').style.color = '';
-                    
                 } else {
                     SampleHandler.stopAll();
                     playButton.style.opacity = '';
@@ -170,6 +168,22 @@ function Desktop() {
                 }
                 for(let j = 0; j < notChecked.length; j++) {
                     SampleHandler.unmuteChannel(notChecked[j]);
+                }
+            } else if(playButton.tagName === 'BUTTON') {
+                console.log(playButton.value);
+                switch(playButton.value) {
+                    case '2': SampleHandler.playChannels(2); 
+                        break;
+                    case '3': SampleHandler.playChannels(3);
+                        break;
+                    case '4': SampleHandler.playChannels(4);
+                        break;
+                    case '5': SampleHandler.playChannels(5);
+                        break;
+                    case '6': SampleHandler.playChannels(6);
+                        break;
+                    case '7': SampleHandler.playChannels(7);
+                        break;                    
                 }
             }
         }
