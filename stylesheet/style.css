@@ -75,11 +75,12 @@ body {
 
 .draggable-content:hover { opacity: 1; cursor: pointer; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.5); }
 
-.draggable-content > img {
-  height: 50px;
-  width: 60px;
-}
+.draggable-content > img { height: 50px; width: 60px; margin-left: 10px; }
 
+.draggable-content > i { margin-left: 10px; }
+ .draggable-content i:hover {
+   opacity: 0.7;
+ }
 
 
 #sample-list {
@@ -128,11 +129,6 @@ body {
   padding-left: 15px;
 }
 
-#inactive-samples i { margin-left: 30px; }
-#inactive-samples img { margin-left: 10px; }
-#inactive-samples i:hover {
-  opacity: 0.7;
-}
 .add-remove {
   display: block;
   float: right;

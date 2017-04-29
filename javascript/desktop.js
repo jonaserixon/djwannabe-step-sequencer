@@ -23,7 +23,7 @@ function Desktop() {
             return;
         } else {
             samplebox(idCounter, $(event.target).text(), event);
-            $(':button').prop('disabled', false); //enable all starting point buttons
+            $('#starting-point').prop('disabled', false); //enable all starting point buttons
             idCounter += 1;
         }
     });
@@ -154,37 +154,66 @@ function Desktop() {
                     document.querySelector('#play-all-button').style.pointerEvents = '';
                 }
             } else if(playButton.type === 'checkbox') {
-
                 //Check if checkbox is checked or not
-                var idSelector = function() { return this.id; };
+                let idSelector = function() { return this.id; };
                 let checkedChannel = $(":checkbox:checked").map(idSelector).get();
                 let notChecked = $(":checkbox:not(:checked)").map(idSelector).get();
-
                 for(let i = 0; i < checkedChannel.length; i++) {
                     SampleHandler.muteChannel(checkedChannel[i]);
                 }
                 for(let j = 0; j < notChecked.length; j++) {
                     SampleHandler.unmuteChannel(notChecked[j]);
                 }
-            } else if(playButton.type === 'submit') {
-                //Play sound at the specified starting point
-                switch(playButton.value) {
-                    case '1': SampleHandler.playChannels(1); 
-                        break;
-                    case '2': SampleHandler.playChannels(2); 
-                        break;
-                    case '3': SampleHandler.playChannels(3);
-                        break;
-                    case '4': SampleHandler.playChannels(4);
-                        break;
-                    case '5': SampleHandler.playChannels(5);
-                        break;
-                    case '6': SampleHandler.playChannels(6);
-                        break;
-                    case '7': SampleHandler.playChannels(7);
-                        break;                    
-                }
             }
+            // } else if(playButton.id === 'starting-point') {
+            //     console.log(playButton.value);
+            //     //Play sound at the specified starting point
+            //     playButton.addEventListener('click', function(event) {
+            //         switch(event.target.value) {
+            //             case '1': SampleHandler.playChannels(1); 
+            //             $('#starting-point').prop('selectedIndex', 0);
+            //                 break;
+            //             case '2': SampleHandler.playChannels(2); 
+            //             $('#starting-point').prop('selectedIndex', 0);
+            //                 break;
+            //             case '3': SampleHandler.playChannels(3);
+            //             $('#starting-point').prop('selectedIndex', 0);
+            //                 break;
+            //             case '4': SampleHandler.playChannels(4);
+            //             $('#starting-point').prop('selectedIndex', 0);
+            //                 break;
+            //             case '5': SampleHandler.playChannels(5);
+            //             $('#starting-point').prop('selectedIndex', 0);
+            //                 break;
+            //             case '6': SampleHandler.playChannels(6);
+            //             $('#starting-point').prop('selectedIndex', 0);
+            //                 break;
+            //             case '7': SampleHandler.playChannels(7);
+            //             $('#starting-point').prop('selectedIndex', 0);
+            //                 break;                    
+            //         }
+                    
+            //     })
+            // }
+        }
+    });
+
+    document.querySelector('#starting-point').addEventListener('change', function(event) {
+        switch(this.options[this.selectedIndex].value) {
+            case '1': SampleHandler.playChannels(1); 
+                break;
+            case '2': SampleHandler.playChannels(2); 
+                break;
+            case '3': SampleHandler.playChannels(3);
+                break;
+            case '4': SampleHandler.playChannels(4);
+                break;
+            case '5': SampleHandler.playChannels(5);
+                break;
+            case '6': SampleHandler.playChannels(6);
+                break;
+            case '7': SampleHandler.playChannels(7);
+                break;                    
         }
     });
 }
