@@ -14,7 +14,6 @@ function Desktop() {
     let sampleboxes = document.querySelector('.draggable-content ui-draggable ui-draggable-handle');
     let inactiveSamples = document.querySelector('#inactive-samples');
 
-
     /**
      * Sends audiosample path to the samplebox function
      */
@@ -24,11 +23,10 @@ function Desktop() {
             return;
         } else {
             samplebox(idCounter, $(event.target).text(), event);
+            $(':button').prop('disabled', false); //enable all starting point buttons
             idCounter += 1;
         }
     });
-
-    
 
     /**
      * Skapar en samplebox div som är draggable + innehåller ett sample + en play knapp
@@ -125,7 +123,6 @@ function Desktop() {
             return;
         } else {
             let playButton = document.getElementById(event.target.id);
-            
             //'play-specific-sample-button'
             if(playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle') {
                 if(playChecker) {
@@ -169,9 +166,11 @@ function Desktop() {
                 for(let j = 0; j < notChecked.length; j++) {
                     SampleHandler.unmuteChannel(notChecked[j]);
                 }
-            } else if(playButton.tagName === 'BUTTON') {
-                console.log(playButton.value);
+            } else if(playButton.type === 'submit') {
+                //Play sound at the specified starting point
                 switch(playButton.value) {
+                    case '1': SampleHandler.playChannels(1); 
+                        break;
                     case '2': SampleHandler.playChannels(2); 
                         break;
                     case '3': SampleHandler.playChannels(3);

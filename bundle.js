@@ -23,7 +23,6 @@ function Desktop() {
     let sampleboxes = document.querySelector('.draggable-content ui-draggable ui-draggable-handle');
     let inactiveSamples = document.querySelector('#inactive-samples');
 
-
     /**
      * Sends audiosample path to the samplebox function
      */
@@ -33,11 +32,10 @@ function Desktop() {
             return;
         } else {
             samplebox(idCounter, $(event.target).text(), event);
+            $(':button').prop('disabled', false); //enable all starting point buttons
             idCounter += 1;
         }
     });
-
-    
 
     /**
      * Skapar en samplebox div som är draggable + innehåller ett sample + en play knapp
@@ -134,7 +132,6 @@ function Desktop() {
             return;
         } else {
             let playButton = document.getElementById(event.target.id);
-            
             //'play-specific-sample-button'
             if(playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle') {
                 if(playChecker) {
@@ -178,9 +175,11 @@ function Desktop() {
                 for(let j = 0; j < notChecked.length; j++) {
                     SampleHandler.unmuteChannel(notChecked[j]);
                 }
-            } else if(playButton.tagName === 'BUTTON') {
-                console.log(playButton.value);
+            } else if(playButton.type === 'submit') {
+                //Play sound at the specified starting point
                 switch(playButton.value) {
+                    case '1': SampleHandler.playChannels(1); 
+                        break;
                     case '2': SampleHandler.playChannels(2); 
                         break;
                     case '3': SampleHandler.playChannels(3);
@@ -223,15 +222,15 @@ let channel3 = [undefined, undefined, undefined, undefined, undefined, undefined
 let channel4 = [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined];      //Channel 4's list of samples
 
 let context = new AudioContext();
-let gainNode = context.createGain();
-let audioTime = context.currentTime;
+let gainNode = context.createGain(); //Create a gain node
+let audioTime = context.currentTime; //Current time since audioContext declared
 
 let channel1Gain = context.createGain();
 let channel2Gain = context.createGain();
 let channel3Gain = context.createGain();
 let channel4Gain = context.createGain();
 
-gainNode.    connect(context.destination);
+gainNode.connect(context.destination);
 channel1Gain.connect(gainNode);
 channel2Gain.connect(gainNode);
 channel3Gain.connect(gainNode);
@@ -346,6 +345,17 @@ $('.sample-slot').droppable({
 });
             
 //https://dl.dropboxusercontent.com/s/6s6rn6rcdlggdzj/Weird%20Synth.wav?dl=0
+// let audios = [audio1, audio2, audio3];
+
+let preview;        //preview a samplebox
+let audio1;         //channel 1 audio 
+let audio2;         //channel 2 audio 
+let audio3;         //channel 3 audio
+let audio4;         //channel 4 audio
+let sources1 = [];  //audio1 buffersource nodes
+let sources2 = [];  //audio2 buffersource nodes
+let sources3 = [];  //audio3 buffersource nodes
+let sources4 = [];  //audio4 buffersource nodes
 
 // Store audio sample buffer in an array
 function loadSound(audiosample, silence) {
@@ -375,73 +385,50 @@ function loadSound(audiosample, silence) {
     request.send();
 }
 
-// let audios = [audio1, audio2, audio3];
-let preview;        //preview samplebox
-let audio1;         //channel 1 audio 
-let audio2;         //channel 2 audio 
-let audio3;         //channel 3 audio
-let audio4;
-let sources1 = [];  //audio1 buffersource nodes
-let sources2 = [];  //audio2 buffersource nodes
-let sources3 = [];  //audio3 buffersource nodes
-let sources4 = [];  //audio4 buffersource nodes
-
 function playChannels(startPoint) {
+    $(':button').prop('disabled', true); //disable all starting point buttons
     let counterPoint = startPoint;
     let audioStart = context.currentTime;  //start the sound at this time
     let next = 0;
     // scheduler(audioStart, next, index)
-
     if(startPoint) {
-        if(startPoint === 1) {
-            for(let i = 0; i < 8; i++) {
-                startPointHandler(audioStart, counterPoint, next);
-                counterPoint++;
-                next++;
-            }
+        switch(startPoint) {
+            case 1: for(let i = 0; i < 8; i++) {
+                        startPointHandler(audioStart, counterPoint, next);
+                        counterPoint++;
+                        next++;
+                    } break;     
+            case 2: for(let i = 1; i < 8; i++) {
+                        startPointHandler(audioStart, counterPoint, next);
+                        counterPoint++;
+                        next++;
+                    } break;
+            case 3: for(let i = 2; i < 8; i++) {
+                        startPointHandler(audioStart, counterPoint, next);
+                        counterPoint++;
+                        next++;
+                    } break;    
+            case 4: for(let i = 3; i < 8; i++) {
+                        startPointHandler(audioStart, counterPoint, next);
+                        counterPoint++;
+                        next++;
+                    } break;    
+            case 5: for(let i = 4; i < 8; i++) {
+                        startPointHandler(audioStart, counterPoint, next);
+                        counterPoint++;
+                        next++;
+                    } break;    
+            case 6: for(let i = 5; i < 8; i++) {
+                        startPointHandler(audioStart, counterPoint, next);
+                        counterPoint++;
+                        next++;
+                    } break;    
+            case 7: for(let i = 6; i < 8; i++) {
+                        startPointHandler(audioStart, counterPoint, next);
+                        counterPoint++;
+                        next++;
+                    } break;        
         }
-        if(startPoint === 2) {
-            for(let i = 1; i < 8; i++) {
-                startPointHandler(audioStart, counterPoint, next);
-                counterPoint++;
-                next++;
-            }
-        }
-        if(startPoint === 3) {
-            for(let i = 2; i < 8; i++) {
-                startPointHandler(audioStart, counterPoint, next);
-                counterPoint++;
-                next++;
-            }
-        }
-        if(startPoint === 4) {
-            for(let i = 3; i < 8; i++) {
-                startPointHandler(audioStart, counterPoint, next);
-                counterPoint++;
-                next++; 
-            }
-        }
-        if(startPoint === 5) {
-            for(let i = 4; i < 8; i++) {
-                startPointHandler(audioStart, counterPoint, next);
-                counterPoint++;
-                next++;
-            }
-        }
-        if(startPoint === 6) {
-            for(let i = 5; i < 8; i++) {
-                startPointHandler(audioStart, counterPoint, next);
-                counterPoint++;
-                next++;
-            }
-        }
-        if(startPoint === 7) {
-            for(let i = 6; i < 8; i++) {
-                startPointHandler(audioStart, counterPoint, next);
-                counterPoint++;
-                next++;
-            }
-        }       
     } else {
         for(let i = 0; i < 8; i++) {
             startPointHandler(audioStart, next, next);
@@ -450,6 +437,11 @@ function playChannels(startPoint) {
     }
 }
 
+/**
+ * @param audioStart = context.startTime
+ * @param next = sample to schedule 
+ * @param startingPoint = starting point for playlist
+ */
 function startPointHandler(audioStart, next, startingPoint) {
     scheduler1(audioStart, next, startingPoint);
     scheduler2(audioStart, next, startingPoint);
@@ -515,6 +507,7 @@ function scheduler4(audioStart, index, starthere) {
             for(let i = 0; i < 8; i++) {
                 for(let j = 1; j < 5; j++) {
                     document.querySelector('#channel' + j + 'Slot' + i).style.opacity = '1';
+                    $(':button').prop('disabled', false); //enable all starting point buttons
                 }
             }
         }
@@ -541,6 +534,7 @@ function stopAll() {
             sources4[i].stop(0);
         }
     }
+    $(':button').prop('disabled', false); //enable all starting point buttons
 }
 
 function muteChannel(id) {
