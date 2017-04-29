@@ -184,42 +184,10 @@ function playChannels(startPoint) {
     let next = 0;
     // scheduler(audioStart, next, index)
     if(startPoint) {
-        switch(startPoint) {
-            case 1: for(let i = 0; i < 8; i++) {
-                        startPointHandler(audioStart, counterPoint, next);
-                        counterPoint++;
-                        next++;
-                    } break;     
-            case 2: for(let i = 1; i < 8; i++) {
-                        startPointHandler(audioStart, counterPoint, next);
-                        counterPoint++;
-                        next++;
-                    } break;
-            case 3: for(let i = 2; i < 8; i++) {
-                        startPointHandler(audioStart, counterPoint, next);
-                        counterPoint++;
-                        next++;
-                    } break;    
-            case 4: for(let i = 3; i < 8; i++) {
-                        startPointHandler(audioStart, counterPoint, next);
-                        counterPoint++;
-                        next++;
-                    } break;    
-            case 5: for(let i = 4; i < 8; i++) {
-                        startPointHandler(audioStart, counterPoint, next);
-                        counterPoint++;
-                        next++;
-                    } break;    
-            case 6: for(let i = 5; i < 8; i++) {
-                        startPointHandler(audioStart, counterPoint, next);
-                        counterPoint++;
-                        next++;
-                    } break;    
-            case 7: for(let i = 6; i < 8; i++) {
-                        startPointHandler(audioStart, counterPoint, next);
-                        counterPoint++;
-                        next++;
-                    } break;        
+        for(let i = 0; i < 8; i++) {
+            startPointHandler(audioStart, counterPoint, next);
+            counterPoint++;
+            next++;
         }
     } else {
         for(let i = 0; i < 8; i++) {
