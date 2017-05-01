@@ -40,25 +40,29 @@ $('#garbageCan').droppable({
                 if(previousSlot.includes('channel1Slot')) {
                     channel1.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
                     $('#' + previousSlot).droppable('enable');
-                    draggableId.style.visibility = 'hidden';
+                    // draggableId.style.visibility = 'hidden';
+                    document.querySelector('#' + previousSlot).removeChild(draggableId);
                 }
                 if(previousSlot.includes('channel2Slot')) {
                     channel2.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel2 array
                     $('#' + previousSlot).droppable('enable');
-                    draggableId.style.visibility = 'hidden';
+                    // draggableId.style.visibility = 'hidden';
+                    document.querySelector('#' + previousSlot).removeChild(draggableId);
                 }
                 if(previousSlot.includes('channel3Slot')) {
                     channel3.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
                     $('#' + previousSlot).droppable('enable');
-                    draggableId.style.visibility = 'hidden';
+                    // draggableId.style.visibility = 'hidden';
+                    document.querySelector('#' + previousSlot).removeChild(draggableId);
                 }
                 if(previousSlot.includes('channel4Slot')) {
                     channel4.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
                     $('#' + previousSlot).droppable('enable');
-                    draggableId.style.visibility = 'hidden';
+                    // draggableId.style.visibility = 'hidden';
+                    document.querySelector('#' + previousSlot).removeChild(draggableId);
                 }
             } else {
-                draggableId.style.visibility = 'hidden';
+                document.querySelector('#inactive-samples').removeChild(draggableId);
             }     
         }    
 });
@@ -76,22 +80,29 @@ $('.sample-slot').droppable({
         if(droppableId.includes('channel1Slot')) {
             channel1.splice(droppableHelper, 1, samples[draggableHelper]);  //put the dropped sample at the <id>-slotX index in the channel array
             $('#' + droppableId).droppable('enable');
-            $('#' + droppableId).find('div').first().remove();
+            // $('#' + droppableId).find('div').first().remove(); //prevent stacking sample-boxes on same slot
         }
         if(droppableId.includes('channel2Slot')) { 
             channel2.splice(droppableHelper, 1, samples[draggableHelper]);  
             $('#' + droppableId).droppable('enable');
-            $('#' + droppableId).find('div').first().remove();
+            // $('#' + droppableId).find('div').first().remove();
         }
         if(droppableId.includes('channel3Slot')) {
             channel3.splice(droppableHelper, 1, samples[draggableHelper]);  
             $('#' + droppableId).droppable('enable');
-            $('#' + droppableId).find('div').first().remove();
+            // $('#' + droppableId).find('div').first().remove();
         }   
         if(droppableId.includes('channel4Slot')) {
             channel4.splice(droppableHelper, 1, samples[draggableHelper]);  
             $('#' + droppableId).droppable('enable');
-            $('#' + droppableId).find('div').first().remove();
+            
+            
+            // let firstElement = $('#' + droppableId).find('div').first();
+            // firstElement.remove();
+            // let newFirstElement = $('#' + droppableId).find('div').first();
+            // $('#' + newFirstElement.attr("id")).draggable('enable');
+            // console.log(newFirstElement.attr("id"));
+
         }   
         $(this).append(ui.draggable);
         ui.draggable.position({of: $(this), my: 'left top', at: 'left top'});
@@ -103,9 +114,7 @@ $('.sample-slot').droppable({
         let droppableId = $(this).attr("id");
         let droppableHelper = $(this).attr("helper");    
         
-        if(previousSlot) {
-
-        }
+        if(previousSlot !== undefined) {
             if(previousSlot.includes('channel1Slot')) {
                 channel1.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
             }
@@ -118,6 +127,10 @@ $('.sample-slot').droppable({
             if(previousSlot.includes('channel4Slot')) {
                 channel4.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
             }
+        } else {
+            return;
+        }
+            
     }
 });
             

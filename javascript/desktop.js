@@ -18,8 +18,7 @@ function Desktop() {
      * Sends audiosample path to the samplebox function
      */
     sampleList.addEventListener('click', function(event) {
-        console.log(event.target.id);
-        if(event.target.id === 'sample-list') {
+        if(event.target.id === 'sample-list' || event.target.id === 'library-h3') {
             return;
         } else {
             samplebox(idCounter, $(event.target).text(), event);
@@ -38,7 +37,7 @@ function Desktop() {
         $(function () {
             $('#samplebox' + id).draggable({
                 revert: 'invalid', 
-                // helper: 'clone',
+                disabled: false,
                 containment: 'document',
                 zIndex: 10,
                 opacity: 0.5,
@@ -165,36 +164,6 @@ function Desktop() {
                     SampleHandler.unmuteChannel(notChecked[j]);
                 }
             }
-            // } else if(playButton.id === 'starting-point') {
-            //     console.log(playButton.value);
-            //     //Play sound at the specified starting point
-            //     playButton.addEventListener('click', function(event) {
-            //         switch(event.target.value) {
-            //             case '1': SampleHandler.playChannels(1); 
-            //             $('#starting-point').prop('selectedIndex', 0);
-            //                 break;
-            //             case '2': SampleHandler.playChannels(2); 
-            //             $('#starting-point').prop('selectedIndex', 0);
-            //                 break;
-            //             case '3': SampleHandler.playChannels(3);
-            //             $('#starting-point').prop('selectedIndex', 0);
-            //                 break;
-            //             case '4': SampleHandler.playChannels(4);
-            //             $('#starting-point').prop('selectedIndex', 0);
-            //                 break;
-            //             case '5': SampleHandler.playChannels(5);
-            //             $('#starting-point').prop('selectedIndex', 0);
-            //                 break;
-            //             case '6': SampleHandler.playChannels(6);
-            //             $('#starting-point').prop('selectedIndex', 0);
-            //                 break;
-            //             case '7': SampleHandler.playChannels(7);
-            //             $('#starting-point').prop('selectedIndex', 0);
-            //                 break;                    
-            //         }
-                    
-            //     })
-            // }
         }
     });
 

@@ -27,8 +27,7 @@ function Desktop() {
      * Sends audiosample path to the samplebox function
      */
     sampleList.addEventListener('click', function(event) {
-        console.log(event.target.id);
-        if(event.target.id === 'sample-list') {
+        if(event.target.id === 'sample-list' || event.target.id === 'library-h3') {
             return;
         } else {
             samplebox(idCounter, $(event.target).text(), event);
@@ -47,7 +46,7 @@ function Desktop() {
         $(function () {
             $('#samplebox' + id).draggable({
                 revert: 'invalid', 
-                // helper: 'clone',
+                disabled: false,
                 containment: 'document',
                 zIndex: 10,
                 opacity: 0.5,
@@ -174,36 +173,6 @@ function Desktop() {
                     SampleHandler.unmuteChannel(notChecked[j]);
                 }
             }
-            // } else if(playButton.id === 'starting-point') {
-            //     console.log(playButton.value);
-            //     //Play sound at the specified starting point
-            //     playButton.addEventListener('click', function(event) {
-            //         switch(event.target.value) {
-            //             case '1': SampleHandler.playChannels(1); 
-            //             $('#starting-point').prop('selectedIndex', 0);
-            //                 break;
-            //             case '2': SampleHandler.playChannels(2); 
-            //             $('#starting-point').prop('selectedIndex', 0);
-            //                 break;
-            //             case '3': SampleHandler.playChannels(3);
-            //             $('#starting-point').prop('selectedIndex', 0);
-            //                 break;
-            //             case '4': SampleHandler.playChannels(4);
-            //             $('#starting-point').prop('selectedIndex', 0);
-            //                 break;
-            //             case '5': SampleHandler.playChannels(5);
-            //             $('#starting-point').prop('selectedIndex', 0);
-            //                 break;
-            //             case '6': SampleHandler.playChannels(6);
-            //             $('#starting-point').prop('selectedIndex', 0);
-            //                 break;
-            //             case '7': SampleHandler.playChannels(7);
-            //             $('#starting-point').prop('selectedIndex', 0);
-            //                 break;                    
-            //         }
-                    
-            //     })
-            // }
         }
     });
 
@@ -277,25 +246,29 @@ $('#garbageCan').droppable({
                 if(previousSlot.includes('channel1Slot')) {
                     channel1.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
                     $('#' + previousSlot).droppable('enable');
-                    draggableId.style.visibility = 'hidden';
+                    // draggableId.style.visibility = 'hidden';
+                    document.querySelector('#' + previousSlot).removeChild(draggableId);
                 }
                 if(previousSlot.includes('channel2Slot')) {
                     channel2.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel2 array
                     $('#' + previousSlot).droppable('enable');
-                    draggableId.style.visibility = 'hidden';
+                    // draggableId.style.visibility = 'hidden';
+                    document.querySelector('#' + previousSlot).removeChild(draggableId);
                 }
                 if(previousSlot.includes('channel3Slot')) {
                     channel3.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
                     $('#' + previousSlot).droppable('enable');
-                    draggableId.style.visibility = 'hidden';
+                    // draggableId.style.visibility = 'hidden';
+                    document.querySelector('#' + previousSlot).removeChild(draggableId);
                 }
                 if(previousSlot.includes('channel4Slot')) {
                     channel4.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
                     $('#' + previousSlot).droppable('enable');
-                    draggableId.style.visibility = 'hidden';
+                    // draggableId.style.visibility = 'hidden';
+                    document.querySelector('#' + previousSlot).removeChild(draggableId);
                 }
             } else {
-                draggableId.style.visibility = 'hidden';
+                document.querySelector('#inactive-samples').removeChild(draggableId);
             }     
         }    
 });
@@ -313,22 +286,29 @@ $('.sample-slot').droppable({
         if(droppableId.includes('channel1Slot')) {
             channel1.splice(droppableHelper, 1, samples[draggableHelper]);  //put the dropped sample at the <id>-slotX index in the channel array
             $('#' + droppableId).droppable('enable');
-            $('#' + droppableId).find('div').first().remove();
+            // $('#' + droppableId).find('div').first().remove(); //prevent stacking sample-boxes on same slot
         }
         if(droppableId.includes('channel2Slot')) { 
             channel2.splice(droppableHelper, 1, samples[draggableHelper]);  
             $('#' + droppableId).droppable('enable');
-            $('#' + droppableId).find('div').first().remove();
+            // $('#' + droppableId).find('div').first().remove();
         }
         if(droppableId.includes('channel3Slot')) {
             channel3.splice(droppableHelper, 1, samples[draggableHelper]);  
             $('#' + droppableId).droppable('enable');
-            $('#' + droppableId).find('div').first().remove();
+            // $('#' + droppableId).find('div').first().remove();
         }   
         if(droppableId.includes('channel4Slot')) {
             channel4.splice(droppableHelper, 1, samples[draggableHelper]);  
             $('#' + droppableId).droppable('enable');
-            $('#' + droppableId).find('div').first().remove();
+            
+            
+            // let firstElement = $('#' + droppableId).find('div').first();
+            // firstElement.remove();
+            // let newFirstElement = $('#' + droppableId).find('div').first();
+            // $('#' + newFirstElement.attr("id")).draggable('enable');
+            // console.log(newFirstElement.attr("id"));
+
         }   
         $(this).append(ui.draggable);
         ui.draggable.position({of: $(this), my: 'left top', at: 'left top'});
@@ -340,9 +320,7 @@ $('.sample-slot').droppable({
         let droppableId = $(this).attr("id");
         let droppableHelper = $(this).attr("helper");    
         
-        if(previousSlot) {
-
-        }
+        if(previousSlot !== undefined) {
             if(previousSlot.includes('channel1Slot')) {
                 channel1.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
             }
@@ -355,6 +333,10 @@ $('.sample-slot').droppable({
             if(previousSlot.includes('channel4Slot')) {
                 channel4.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
             }
+        } else {
+            return;
+        }
+            
     }
 });
             

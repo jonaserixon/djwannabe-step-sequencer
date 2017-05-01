@@ -6,13 +6,9 @@ body {
   margin: 0 auto -50px;
 }
 
-.footer, .push {
-    height: 50px; 
-    text-align: center;
-}
+.footer, .push { height: 50px;  text-align: center; }
 
 #wrapper {
-  
   margin: 0 auto;
   width: 1700px;
   padding: 10px;
@@ -23,8 +19,8 @@ body {
 }
 
 
-#header { font-size: 70px; text-align: center; margin: 0; }
-#header img { width: 80px; height: 52px; }
+#header { font-size: 50px; text-align: center; margin: 0; }
+#header img { width: 60px; height: 36px; }
 
 .main-timeline { display: inline-block; margin-bottom: 75px; }
 
@@ -78,9 +74,7 @@ body {
 .draggable-content > img { height: 50px; width: 60px; margin-left: 10px; }
 
 .draggable-content > i { margin-left: 10px; }
- .draggable-content i:hover {
-   opacity: 0.7;
- }
+.draggable-content i:hover { opacity: 0.7; }
 
 
 #sample-list {
@@ -121,7 +115,7 @@ body {
 
 #inactive-samples {
   border-radius: 5px;
-  margin-top: 100px;
+  margin-top: 50px;
   width: 587px;
   min-height: 100px;
   background-color: #30546f;
@@ -144,21 +138,16 @@ body {
 #garbageCan {
   color: #8FB3CD;
   font-size: 50px;
-  /*margin-left: 50px;*/
+  margin-top: 60px;
+  margin-right: 1000px;
   padding: 20px;
   float: right;
   transition: color 0.2s, background-color 0.2s, box-shadow 0.2s, border-radius 0.2s, opacity 0.2s;
 }
 
-#volume-icon-up {
-  color: ghostwhite;
-  transition: color 0.3s;
-}
+#volume-icon-up { color: ghostwhite; transition: color 0.3s; }
 
-#volume-icon-down {
-  color: #8FB3CD;
-  transition: color 0.3s;
-}
+#volume-icon-down { color: #8FB3CD; transition: color 0.3s; }
 
 #project-controller {
   float: left;
@@ -170,9 +159,7 @@ body {
   border-radius: 5px;
 }
 
-#volumeKnob {
-  margin-top: 15px;
-}
+#volumeKnob { margin-top: 15px; }
 
 .channel-knobs {
   margin-left: 820px;
