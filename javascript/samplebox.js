@@ -176,27 +176,30 @@ function loadSound(audiosample, silence) {
 }
 
 function playChannels(startPoint) {
-    $('#starting-point').prop('selectedIndex', 0);
-    document.querySelector('#play-all-button').style.pointerEvents = 'none';
-    $('#starting-point').prop('disabled', true); //disable all starting point buttons
-    
-    let counterPoint = startPoint;
-    let audioStart = context.currentTime;  //start the sound at this time
-    let next = 0;
-    // scheduler(audioStart, next, index)
-    if(startPoint) {
-        for(let i = 0; i < 8; i++) {
-            startPointHandler(audioStart, counterPoint, next);  //the specified starting point of playback
-            counterPoint++;
-            next++;
-        }
+    if(channel1[0] === undefined) {
+        return;
     } else {
-        for(let i = 0; i < 8; i++) {
-            startPointHandler(audioStart, next, next);
-            next++;
+        $('#starting-point').prop('selectedIndex', 0);
+        document.querySelector('#play-all-button').style.pointerEvents = 'none';
+        $('#starting-point').prop('disabled', true); //disable all starting point buttons
+        
+        let counterPoint = startPoint;
+        let audioStart = context.currentTime;  //start the sound at this time
+        let next = 0;
+        // scheduler(audioStart, next, index)
+        if(startPoint) {
+            for(let i = 0; i < 8; i++) {
+                startPointHandler(audioStart, counterPoint, next);  //the specified starting point of playback
+                counterPoint++;
+                next++;
+            }
+        } else {
+            for(let i = 0; i < 8; i++) {
+                startPointHandler(audioStart, next, next);
+                next++;
+            }
         }
     }
-    
 }
 
 /**
@@ -313,7 +316,12 @@ function stopAll() {
             sources4[i].stop(0);
         }
     }
-    $('#starting-point').prop('disabled', false); //enable all starting point buttons
+    if(typeof sources !== 'undefined') {
+        $('#starting-point').prop('disabled', false); //enable all starting point buttons
+    } else {
+        return;
+    }
+    
 }
 
 function muteChannel(id) {
