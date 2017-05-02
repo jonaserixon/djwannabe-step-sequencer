@@ -8,10 +8,10 @@ let delayKnob = document.querySelector('#delayKnob');
 let samples = [];       //Array with all unused loaded samples
 let silentAudio = [];   //Silent audiobuffers
 
-let channel1 = [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined];      //Channel 1's list of samples
-let channel2 = [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined];      //Channel 2's list of samples
-let channel3 = [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined];      //Channel 3's list of samples
-let channel4 = [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined];      //Channel 4's list of samples
+let channel1 = [];      //Channel 1's list of samples
+let channel2 = [];      //Channel 2's list of samples
+let channel3 = [];      //Channel 3's list of samples
+let channel4 = [];      //Channel 4's list of samples
 
 let context = new AudioContext();
 let gainNode = context.createGain(); //Create a gain node
@@ -156,14 +156,12 @@ function loadSound(audiosample, silence) {
     request.onload = function() {
         context.decodeAudioData(request.response, function(buffer) {
             if(silence) {
-                for(let i = 0; i < channel1.length; i++) {
-                    if(channel1[i] === undefined) {
-                        channel1.splice(i, 1, buffer);
-                        channel2.splice(i, 1, buffer);
-                        channel3.splice(i, 1, buffer);
-                        channel4.splice(i, 1, buffer);
+                for(let i = 0; i < 8; i++) {
+                        channel1.push(buffer);
+                        channel2.push(buffer);
+                        channel3.push(buffer);
+                        channel4.push(buffer);
                         silentAudio.push(buffer);
-                    }
                 }
             } else {
                 samples.push(buffer);
