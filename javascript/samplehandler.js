@@ -14,8 +14,11 @@ let channel3 = [];      //Channel 3's list of samples
 let channel4 = [];      //Channel 4's list of samples
 
 let context = new AudioContext();
+let offline = new OfflineAudioContext(numChannels, sampleLength, sampleRate);
+
 let gainNode = context.createGain(); //Create a gain node
 let audioTime = context.currentTime; //Current time since audioContext declared
+let offlineAudioTime = offline.currentTime;
 
 let channel1Gain = context.createGain();
 let channel2Gain = context.createGain();
@@ -349,6 +352,16 @@ function unmuteChannel(id) {
     if(id == 2) { channel2Gain.gain.value = 1; }    
     if(id == 3) { channel3Gain.gain.value = 1; }
     if(id == 4) { channel4Gain.gain.value = 1; }
+}
+
+function offlineAudio(index) {
+    let offlineBuffer1 = offline.createBufferSource();
+    offlineBuffer1.buffer = channel1[index];
+    offlineBuffer1.connect(offline.destination);
+    offlineBuffer1.start(offlineAudioTime + 10);
+    offline.oncomplete = function(event) {
+        //gör nåt med event.renderBuffer
+    }
 }
 
 volumeKnob.addEventListener('click', function() {
