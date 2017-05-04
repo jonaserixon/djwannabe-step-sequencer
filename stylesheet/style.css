@@ -45,6 +45,7 @@ body {
   background-image: url("../images/playlist_bg.jpg");
   border: solid black;
   border-radius: 10px 10px 10px;
+  opacity: 1!important;
   box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.5);
 }
 

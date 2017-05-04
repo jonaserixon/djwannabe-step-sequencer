@@ -9,7 +9,7 @@ new Desktop();
 },{"./javascript/desktop":2}],2:[function(require,module,exports){
 'use strict';
 
-const SampleHandler = require('./samplebox');
+const SampleHandler = require('./samplehandler');
 
 let idCounter = 0;
 let playChecker = true;
@@ -203,7 +203,7 @@ module.exports = Desktop;
 
 
 
-},{"./samplebox":3}],3:[function(require,module,exports){
+},{"./samplehandler":3}],3:[function(require,module,exports){
 'use strict';
 
 let wrapper = document.querySelector('#wrapper');
@@ -264,6 +264,7 @@ $('#garbageCan').droppable({
                 if(previousSlot.includes('channel4Slot')) {
                     channel4.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
                     $('#' + previousSlot).droppable('enable');
+                    
                     // draggableId.style.visibility = 'hidden';
                     document.querySelector('#' + previousSlot).removeChild(draggableId);
                 }
@@ -318,20 +319,21 @@ $('.sample-slot').droppable({
         let previousSlot = ui.draggable.attr("previous-slot"); 
         let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
         let droppableId = $(this).attr("id");
-        let droppableHelper = $(this).attr("helper");    
         
         if(previousSlot !== undefined) {
+            let previousSlotNumber = previousSlot.substr(previousSlot.length - 1);
+
             if(previousSlot.includes('channel1Slot')) {
-                channel1.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
+                channel1.splice(previousSlotNumber, 1, silentAudio[previousSlotNumber]);  //put the dropped sample at the <id>-slotX index in the channel1 array
             }
             if(previousSlot.includes('channel2Slot')) {
-                channel2.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel2 array
+                channel2.splice(previousSlotNumber, 1, silentAudio[previousSlotNumber]);  //put the dropped sample at the <id>-slotX index in the channel2 array
             }
             if(previousSlot.includes('channel3Slot')) {
-                channel3.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
+                channel3.splice(previousSlotNumber, 1, silentAudio[previousSlotNumber]);  //put the dropped sample at the <id>-slotX index in the channel3 array
             }
             if(previousSlot.includes('channel4Slot')) {
-                channel4.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
+                channel4.splice(previousSlotNumber, 1, silentAudio[previousSlotNumber]);  //put the dropped sample at the <id>-slotX index in the channel3 array
             }
         } else {
             return;
@@ -363,11 +365,11 @@ function loadSound(audiosample, silence) {
         context.decodeAudioData(request.response, function(buffer) {
             if(silence) {
                 for(let i = 0; i < 8; i++) {
-                        channel1.push(buffer);
-                        channel2.push(buffer);
-                        channel3.push(buffer);
-                        channel4.push(buffer);
-                        silentAudio.push(buffer);
+                    channel1.push(buffer);
+                    channel2.push(buffer);
+                    channel3.push(buffer);
+                    channel4.push(buffer);
+                    silentAudio.push(buffer);
                 }
             } else {
                 samples.push(buffer);
@@ -424,6 +426,7 @@ function scheduler1(audioStart, index, starthere) {
         return;
     } else {
         playingSlot.style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
+        playingSlot.style.opacity = '';
         // audios[index] = context.createBufferSource(); 
         audio1 = context.createBufferSource(); 
         sources1.splice(index, 0, audio1);
@@ -431,7 +434,7 @@ function scheduler1(audioStart, index, starthere) {
         audio1.connect(channel1Gain);
         audio1.start(audioStart + (audio1.buffer.duration * starthere));
         audio1.onended = function() {
-            playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
+            playingSlot.style.boxShadow = '';
             playingSlot.style.opacity = '0.5';
         }
     }
@@ -449,7 +452,7 @@ function scheduler2(audioStart, index, starthere) {
         audio2.connect(channel2Gain);
         audio2.start(audioStart + (audio2.buffer.duration * starthere));
         audio2.onended = function() {
-            playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
+            playingSlot.style.boxShadow = '';
             playingSlot.style.opacity = '0.5';
         }
     }
@@ -467,7 +470,7 @@ function scheduler3(audioStart, index, starthere) {
         audio3.connect(channel3Gain);
         audio3.start(audioStart + (audio3.buffer.duration * starthere));  
         audio3.onended = function() {
-            playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
+            playingSlot.style.boxShadow = '';
             playingSlot.style.opacity = '0.5';
         }
     }
@@ -485,12 +488,12 @@ function scheduler4(audioStart, index, starthere) {
         audio4.connect(channel4Gain);
         audio4.start(audioStart + (audio4.buffer.duration * starthere));
         audio4.onended = function() {
-            playingSlot.style.boxShadow = '0 0 6px 3px rgba(0, 0, 0, 0.5)';
+            playingSlot.style.boxShadow = '';    
             playingSlot.style.opacity = '0.5';
             if(index === 7) {      //Reset the opacity when channel is finished playing or stopped
-                for(let i = 0; i < 8; i++) {
-                    for(let j = 1; j < 5; j++) {
-                        document.querySelector('#channel' + j + 'Slot' + i).style.opacity = '1';
+                for(let j = 1; j < 5; j++) {
+                    for(let i = 0; i < 8; i++) {
+                        document.querySelector('#channel' + j + 'Slot' + i).style.opacity = '';
                         $('#starting-point').prop('disabled', false); //enable all starting point buttons
                         document.querySelector('#play-all-button').style.pointerEvents = '';
                     }

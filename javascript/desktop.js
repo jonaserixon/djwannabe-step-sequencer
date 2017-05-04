@@ -1,6 +1,6 @@
 'use strict';
 
-const SampleHandler = require('./samplebox');
+const SampleHandler = require('./samplehandler');
 
 let idCounter = 0;
 let playChecker = true;
