@@ -287,22 +287,35 @@ $('.sample-slot').droppable({
         if(droppableId.includes('channel1Slot')) {
             channel1.splice(droppableHelper, 1, samples[draggableHelper]);  //put the dropped sample at the <id>-slotX index in the channel array
             $('#' + droppableId).droppable('enable');
-            // $('#' + droppableId).find('div').first().remove(); //prevent stacking sample-boxes on same slot
+            
+            if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
+                $('#' + droppableId).find('div').first().remove();
+            }
         }
         if(droppableId.includes('channel2Slot')) { 
             channel2.splice(droppableHelper, 1, samples[draggableHelper]);  
             $('#' + droppableId).droppable('enable');
-            // $('#' + droppableId).find('div').first().remove();
+            
+            if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
+                $('#' + droppableId).find('div').first().remove();
+            }
         }
         if(droppableId.includes('channel3Slot')) {
             channel3.splice(droppableHelper, 1, samples[draggableHelper]);  
             $('#' + droppableId).droppable('enable');
-            // $('#' + droppableId).find('div').first().remove();
+
+            if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
+                $('#' + droppableId).find('div').first().remove();
+            }
         }   
         if(droppableId.includes('channel4Slot')) {
             channel4.splice(droppableHelper, 1, samples[draggableHelper]);  
             $('#' + droppableId).droppable('enable');
-            
+
+            if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
+                $('#' + droppableId).find('div').first().remove();
+            }
+                console.log($('#' + droppableId).find('div').attr("id"));
             
             // let firstElement = $('#' + droppableId).find('div').first();
             // firstElement.remove();
@@ -338,7 +351,6 @@ $('.sample-slot').droppable({
         } else {
             return;
         }
-            
     }
 });
             
