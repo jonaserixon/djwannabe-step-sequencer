@@ -5,6 +5,7 @@ const SampleHandler = require('./samplehandler');
 let idCounter = 0;
 let playChecker = true;
 let muteChecker = true;
+let recordChecker = true;
 
 function Desktop() {
     let wrapper = document.querySelector('#wrapper');
@@ -145,25 +146,13 @@ function Desktop() {
                     playButton.setAttribute('class', 'fa fa-play-circle');
                     playChecker = true;
                 }
-            //'play-all-channels-button'
-            } else if (playButton.tagName === 'I' && playButton.id === 'play-all-button' || playButton.tagName === 'I' && playButton.id === 'stop-all-button') {
+            } else if (playButton.tagName === 'I' && playButton.id === 'play-all-button' || playButton.tagName === 'I' && playButton.id === 'stop-all-button') {    //'play-all-channels-button'
                 if(playButton.id === 'play-all-button') {
-                    SampleHandler.playChannels();
-                    playButton.style.opacity = '';
-                    playButton.style.color = '#d3e2ed';
-                    playButton.style.pointerEvents = 'none';    //prevent spamming multiple layer of sounds by disabling button
-                    document.querySelector('#stop-all-button').style.opacity = '0.6';
-                    document.querySelector('#stop-all-button').style.color = '';
+                    SampleHandler.playChannels(false, playButton);
                 } else {
-                    SampleHandler.stopAll();
-                    playButton.style.opacity = '';
-                    playButton.style.color = '#d3e2ed';
-                    document.querySelector('#play-all-button').style.opacity = '0.6';
-                    document.querySelector('#play-all-button').style.color = '';
-                    document.querySelector('#play-all-button').style.pointerEvents = '';
+                    SampleHandler.stopAll(playButton);
                 }
-            } else if(playButton.type === 'checkbox') {
-                //Check if checkbox is checked or not
+            } else if(playButton.type === 'checkbox') {     //Check if checkbox is checked or not
                 let idSelector = function() { return this.id; };
                 let checkedChannel = $(":checkbox:checked").map(idSelector).get();
                 let notChecked = $(":checkbox:not(:checked)").map(idSelector).get();
@@ -173,11 +162,21 @@ function Desktop() {
                 for(let j = 0; j < notChecked.length; j++) {
                     SampleHandler.unmuteChannel(notChecked[j]);
                 }
-            } else if(playButton.id === 'record') {
-                SampleHandler.audioRecorder(true);
-            } else if(playButton.id === 'stop') {
-                SampleHandler.audioRecorder(false);
-            }
+            } else if(playButton.id === 'record-button') {
+                if(recordChecker) {
+                    SampleHandler.playChannels(false);
+                    SampleHandler.audioRecorder(true);
+                    playButton.style.opacity = '1';
+                    recordChecker = false;
+                    console.log('Start recording!');
+                } else {
+                    SampleHandler.stopAll();
+                    SampleHandler.audioRecorder(false);
+                    playButton.style.opacity = '';
+                    recordChecker = true;
+                    console.log('Stop recording!');
+                }
+            } 
         }
     });
 

@@ -14,6 +14,7 @@ const SampleHandler = require('./samplehandler');
 let idCounter = 0;
 let playChecker = true;
 let muteChecker = true;
+let recordChecker = true;
 
 function Desktop() {
     let wrapper = document.querySelector('#wrapper');
@@ -154,25 +155,13 @@ function Desktop() {
                     playButton.setAttribute('class', 'fa fa-play-circle');
                     playChecker = true;
                 }
-            //'play-all-channels-button'
-            } else if (playButton.tagName === 'I' && playButton.id === 'play-all-button' || playButton.tagName === 'I' && playButton.id === 'stop-all-button') {
+            } else if (playButton.tagName === 'I' && playButton.id === 'play-all-button' || playButton.tagName === 'I' && playButton.id === 'stop-all-button') {    //'play-all-channels-button'
                 if(playButton.id === 'play-all-button') {
-                    SampleHandler.playChannels();
-                    playButton.style.opacity = '';
-                    playButton.style.color = '#d3e2ed';
-                    playButton.style.pointerEvents = 'none';    //prevent spamming multiple layer of sounds by disabling button
-                    document.querySelector('#stop-all-button').style.opacity = '0.6';
-                    document.querySelector('#stop-all-button').style.color = '';
+                    SampleHandler.playChannels(false, playButton);
                 } else {
-                    SampleHandler.stopAll();
-                    playButton.style.opacity = '';
-                    playButton.style.color = '#d3e2ed';
-                    document.querySelector('#play-all-button').style.opacity = '0.6';
-                    document.querySelector('#play-all-button').style.color = '';
-                    document.querySelector('#play-all-button').style.pointerEvents = '';
+                    SampleHandler.stopAll(playButton);
                 }
-            } else if(playButton.type === 'checkbox') {
-                //Check if checkbox is checked or not
+            } else if(playButton.type === 'checkbox') {     //Check if checkbox is checked or not
                 let idSelector = function() { return this.id; };
                 let checkedChannel = $(":checkbox:checked").map(idSelector).get();
                 let notChecked = $(":checkbox:not(:checked)").map(idSelector).get();
@@ -182,11 +171,21 @@ function Desktop() {
                 for(let j = 0; j < notChecked.length; j++) {
                     SampleHandler.unmuteChannel(notChecked[j]);
                 }
-            } else if(playButton.id === 'record') {
-                SampleHandler.audioRecorder(true);
-            } else if(playButton.id === 'stop') {
-                SampleHandler.audioRecorder(false);
-            }
+            } else if(playButton.id === 'record-button') {
+                if(recordChecker) {
+                    SampleHandler.playChannels(false);
+                    SampleHandler.audioRecorder(true);
+                    playButton.style.opacity = '1';
+                    recordChecker = false;
+                    console.log('Start recording!');
+                } else {
+                    SampleHandler.stopAll();
+                    SampleHandler.audioRecorder(false);
+                    playButton.style.opacity = '';
+                    recordChecker = true;
+                    console.log('Stop recording!');
+                }
+            } 
         }
     });
 
@@ -224,9 +223,11 @@ let wrapper = document.querySelector('#wrapper');
 let inactiveSamples = document.querySelector('#inactive-samples');
 let volumeKnob = document.querySelector('#volumeKnob');
 let delayKnob = document.querySelector('#delayKnob');
+let recordButton = document.querySelector('#record-button');
 
 let samples = [];       //Array with all unused loaded samples
 let silentAudio = [];   //Silent audiobuffers
+let blobCollecter = [];
 
 let channel1 = [];      //Channel 1's list of samples
 let channel2 = [];      //Channel 2's list of samples
@@ -252,11 +253,6 @@ channel1Gain.connect(gainNode);
 channel2Gain.connect(gainNode);
 channel3Gain.connect(gainNode);
 channel4Gain.connect(gainNode);
-
-let recordButton = document.getElementById('record');
-let stopButton = document.getElementById('stop');
-
-let blobCollecter = [];
 
 function audioRecorder(recording) {
     if(recording) {
@@ -438,7 +434,7 @@ function loadSound(audiosample, silence) {
     request.send();
 }
 
-function playChannels(startPoint) {
+function playChannels(startPoint, playButton) {
     if(channel1[0] === undefined) {
         return;
     } else {
@@ -446,6 +442,13 @@ function playChannels(startPoint) {
         document.querySelector('#play-all-button').style.pointerEvents = 'none';
         $('#starting-point').prop('disabled', true); //disable all starting point buttons
         
+        if(playButton) {
+            playButton.style.opacity = '';
+            playButton.style.color = '#d3e2ed';
+            playButton.style.pointerEvents = 'none';    //prevent spamming multiple layer of sounds by disabling button
+            document.querySelector('#stop-all-button').style.opacity = '0.6';
+            document.querySelector('#stop-all-button').style.color = '';
+        }
         let counterPoint = startPoint;
         let audioStart = context.currentTime;  //start the sound at this time
         let next = 0;
@@ -571,13 +574,20 @@ function previewSample(index, stopper) {
     }
 }
 
-function stopAll() {
+function stopAll(playButton) {
     for(let i = 0; i < 8; i++) {
         if (sources1[i]) {
             sources1[i].stop(0);
             sources2[i].stop(0);
             sources3[i].stop(0);
             sources4[i].stop(0);
+        }
+        if(playButton) {
+            playButton.style.opacity = '';
+            playButton.style.color = '#d3e2ed';
+            document.querySelector('#play-all-button').style.opacity = '0.6';
+            document.querySelector('#play-all-button').style.color = '';
+            document.querySelector('#play-all-button').style.pointerEvents = '';
         }
     }
     if(typeof sources !== 'undefined') {
@@ -601,8 +611,6 @@ function unmuteChannel(id) {
     if(id == 3) { channel3Gain.gain.value = 1; }
     if(id == 4) { channel4Gain.gain.value = 1; }
 }
-
-
 
 volumeKnob.addEventListener('click', function() {
     let volume = volumeKnob.value / 100;
