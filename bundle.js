@@ -37,6 +37,10 @@ function Desktop() {
         }
     });
 
+    
+    $('#mixer-board').draggable({containment: 'document'});
+    $('#project-controller').draggable({containment: 'document'});
+
     /**
      * Skapar en samplebox div som är draggable + innehåller ett sample + en play knapp
      * @param id = idCounter
@@ -160,6 +164,10 @@ function Desktop() {
                     SampleHandler.playChannels(false, playButton);
                 } else {
                     SampleHandler.stopAll(playButton);
+                    if(recordChecker === false) {
+                        SampleHandler.audioRecorder(false);
+                        recordChecker = true;
+                    }
                 }
             } else if(playButton.type === 'checkbox') {     //Check if checkbox is checked or not
                 let idSelector = function() { return this.id; };
@@ -175,15 +183,11 @@ function Desktop() {
                 if(recordChecker) {
                     SampleHandler.playChannels(false);
                     SampleHandler.audioRecorder(true);
-                    playButton.style.opacity = '1';
                     recordChecker = false;
-                    console.log('Start recording!');
                 } else {
                     SampleHandler.stopAll();
                     SampleHandler.audioRecorder(false);
-                    playButton.style.opacity = '';
                     recordChecker = true;
-                    console.log('Stop recording!');
                 }
             } 
         }
@@ -207,6 +211,17 @@ function Desktop() {
                 break;                    
         }
     });
+
+    $("#minimize-button").click(function(){
+        if($(this).html() == "-"){
+            $(this).html("+");
+        }
+        else{
+            $(this).html("-");
+        }
+        $("#box").slideToggle();
+    });
+
 }
 
 module.exports = Desktop;
@@ -257,8 +272,12 @@ channel4Gain.connect(gainNode);
 function audioRecorder(recording) {
     if(recording) {
         recorder.start();
+        recordButton.style.opacity = '1';
+        console.log('Start recording!');
     } else {
         recorder.stop();
+        recordButton.style.opacity = '';
+        console.log('Stop recording!');
     }
 }
 
@@ -317,6 +336,7 @@ $('#garbageCan').droppable({
 
 //Sample slot handler
 $('.sample-slot').droppable({
+    accept: '.draggable-content',
     drop: function (event, ui) {
         let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
         let droppableHelper = $(this).attr("helper");                               //lägg den i index (droppableId) i playlsit arrayen
@@ -556,6 +576,10 @@ function scheduler4(audioStart, index, starthere) {
                         document.querySelector('#channel' + j + 'Slot' + i).style.opacity = '';
                         $('#starting-point').prop('disabled', false); //enable all starting point buttons
                         document.querySelector('#play-all-button').style.pointerEvents = '';
+
+                        recorder.stop();
+                        recordButton.style.opacity = '';
+                        console.log('Stop recording!');
                     }
                 }
             }

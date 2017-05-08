@@ -38,8 +38,12 @@ channel4Gain.connect(gainNode);
 function audioRecorder(recording) {
     if(recording) {
         recorder.start();
+        recordButton.style.opacity = '1';
+        console.log('Start recording!');
     } else {
         recorder.stop();
+        recordButton.style.opacity = '';
+        console.log('Stop recording!');
     }
 }
 
@@ -98,6 +102,7 @@ $('#garbageCan').droppable({
 
 //Sample slot handler
 $('.sample-slot').droppable({
+    accept: '.draggable-content',
     drop: function (event, ui) {
         let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
         let droppableHelper = $(this).attr("helper");                               //lägg den i index (droppableId) i playlsit arrayen
@@ -337,6 +342,10 @@ function scheduler4(audioStart, index, starthere) {
                         document.querySelector('#channel' + j + 'Slot' + i).style.opacity = '';
                         $('#starting-point').prop('disabled', false); //enable all starting point buttons
                         document.querySelector('#play-all-button').style.pointerEvents = '';
+
+                        recorder.stop();
+                        recordButton.style.opacity = '';
+                        console.log('Stop recording!');
                     }
                 }
             }

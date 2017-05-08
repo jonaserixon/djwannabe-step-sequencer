@@ -34,6 +34,7 @@
             <i id="volume-icon-up" class="fa fa-volume-up" aria-hidden="true"></i>
         </div>
             <div id="playlist-container">
+                
                 <div id="snaptarget" class="main-timeline">
                     <h3>1</h3>
                     <div id="channel1Slot0" class="sample-slot" helper="0"></div>
@@ -100,25 +101,47 @@
                         <p>Mute</p>
                     </div>
                 </div>
+
+                <div id="snaptarget4" class="main-timeline">
+                    <h3>5</h3>
+                    <div id="channel5Slot0" class="sample-slot" helper="0"></div>
+                    <div id="channel5Slot1" class="sample-slot" helper="1"></div>
+                    <div id="channel5Slot2" class="sample-slot" helper="2"></div>
+                    <div id="channel5Slot3" class="sample-slot" helper="3"></div>
+                    <div id="channel5Slot4" class="sample-slot" helper="4"></div>
+                    <div id="channel5Slot5" class="sample-slot" helper="5"></div>
+                    <div id="channel5Slot6" class="sample-slot" helper="6"></div>
+                    <div id="channel5Slot7" class="sample-slot" helper="7"></div>
+                    <div class="channel-knobs">
+                        <input id="5" name="checkName" type="checkbox">
+                        <p>Mute</p>
+                    </div>
+                </div>
             </div>
-        <ul id="sample-list">
-            <h3 id="library-h3">Sample Library</h3>
-            <li class="audiosample" sampleFile="HIMITSU Big Synth Chord.ogg">HIMITSU Big Synth Chord.ogg</li>
-            <li class="audiosample" sampleFile="HIMITSU Soft Piano.ogg">HIMITSU Soft Piano.ogg</li>
-            <li class="audiosample" sampleFile="HIMITSU Soft Synth.ogg">HIMITSU Soft Synth.ogg</li>
-            <li class="audiosample" sampleFile="HIMITSU Piano Low.ogg">HIMITSU Piano Low.ogg</li>
-            <li class="audiosample" sampleFile="HIMITSU Drum Beat.ogg">HIMITSU Drum Beat.ogg</li>
-            <li class="audiosample" sampleFile="HIMITSU Cute Vocals.ogg">HIMITSU Cute Vocals.ogg</li>
-            <li class="audiosample" sampleFile="HIMITSU Main Melody.ogg">HIMITSU Main Melody.ogg</li>
-        </ul>
+        <div id="sample-library">
+            <div id="title-bar">
+                <div id="minimize-button">-</div>
+            </div>
+                <div id="box">
+                    <ul id="sample-list">
+                        <li class="audiosample" sampleFile="HIMITSU Big Synth Chord.ogg">HIMITSU Big Synth Chord.ogg</li>
+                        <li class="audiosample" sampleFile="HIMITSU Soft Piano.ogg">HIMITSU Soft Piano.ogg</li>
+                        <li class="audiosample" sampleFile="HIMITSU Soft Synth.ogg">HIMITSU Soft Synth.ogg</li>
+                        <li class="audiosample" sampleFile="HIMITSU Piano Low.ogg">HIMITSU Piano Low.ogg</li>
+                        <li class="audiosample" sampleFile="HIMITSU Drum Beat.ogg">HIMITSU Drum Beat.ogg</li>
+                        <li class="audiosample" sampleFile="HIMITSU Cute Vocals.ogg">HIMITSU Cute Vocals.ogg</li>
+                        <li class="audiosample" sampleFile="HIMITSU Main Melody.ogg">HIMITSU Main Melody.ogg</li>
+                    </ul>
+                </div>
+        </div>
         <i id="garbageCan" class="fa fa-trash" aria-hidden="true"></i>
         
         <div id="inactive-samples"></div>
 
-        <!--<p><button id="record">Record audio</button> <button id="stop" >Stop</button></p>-->
-        <!--<audio controls></audio>-->
-        <a id="audio-recorder"></a>
+        <div id="mixer-board">MIXER BOARD</div>
 
+        <a id="audio-recorder"></a>
+        <div id='fileNames'></div>
         <div class="push"></div>
     </div>
     <div class="footer">Credits</div>

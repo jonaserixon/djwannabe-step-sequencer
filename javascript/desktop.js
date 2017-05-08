@@ -28,6 +28,10 @@ function Desktop() {
         }
     });
 
+    
+    $('#mixer-board').draggable({containment: 'document'});
+    $('#project-controller').draggable({containment: 'document'});
+
     /**
      * Skapar en samplebox div som är draggable + innehåller ett sample + en play knapp
      * @param id = idCounter
@@ -151,6 +155,10 @@ function Desktop() {
                     SampleHandler.playChannels(false, playButton);
                 } else {
                     SampleHandler.stopAll(playButton);
+                    if(recordChecker === false) {
+                        SampleHandler.audioRecorder(false);
+                        recordChecker = true;
+                    }
                 }
             } else if(playButton.type === 'checkbox') {     //Check if checkbox is checked or not
                 let idSelector = function() { return this.id; };
@@ -166,15 +174,11 @@ function Desktop() {
                 if(recordChecker) {
                     SampleHandler.playChannels(false);
                     SampleHandler.audioRecorder(true);
-                    playButton.style.opacity = '1';
                     recordChecker = false;
-                    console.log('Start recording!');
                 } else {
                     SampleHandler.stopAll();
                     SampleHandler.audioRecorder(false);
-                    playButton.style.opacity = '';
                     recordChecker = true;
-                    console.log('Stop recording!');
                 }
             } 
         }
@@ -198,6 +202,17 @@ function Desktop() {
                 break;                    
         }
     });
+
+    $("#minimize-button").click(function(){
+        if($(this).html() == "-"){
+            $(this).html("+");
+        }
+        else{
+            $(this).html("-");
+        }
+        $("#box").slideToggle();
+    });
+
 }
 
 module.exports = Desktop;
