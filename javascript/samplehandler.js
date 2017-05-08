@@ -14,22 +14,50 @@ let channel3 = [];      //Channel 3's list of samples
 let channel4 = [];      //Channel 4's list of samples
 
 let context = new AudioContext();
-let offline = new OfflineAudioContext(numChannels, sampleLength, sampleRate);
 
 let gainNode = context.createGain(); //Create a gain node
 let audioTime = context.currentTime; //Current time since audioContext declared
-let offlineAudioTime = offline.currentTime;
 
 let channel1Gain = context.createGain();
 let channel2Gain = context.createGain();
 let channel3Gain = context.createGain();
 let channel4Gain = context.createGain();
 
+let dest = context.createMediaStreamDestination();
+let recorder = new MediaRecorder(dest.stream);
 gainNode.connect(context.destination);
+gainNode.connect(dest);
+
 channel1Gain.connect(gainNode);
 channel2Gain.connect(gainNode);
 channel3Gain.connect(gainNode);
 channel4Gain.connect(gainNode);
+
+let recordButton = document.getElementById('record');
+let stopButton = document.getElementById('stop');
+
+let blobCollecter = [];
+
+function audioRecorder(recording) {
+    if(recording) {
+        recorder.start();
+    } else {
+        recorder.stop();
+    }
+}
+
+recorder.ondataavailable = function(event) {
+    blobCollecter.push(event.data);
+};
+
+recorder.onstop = function(event) {
+    let blob = new Blob(blobCollecter, { 'type' : 'audio/ogg; codecs=opus' });
+    let downloadLink = document.querySelector("#audio-recorder");
+    downloadLink.href = window.URL.createObjectURL(blob);
+    downloadLink.download = 'DJ_Wannabe_Track.ogg';
+    downloadLink.textContent = 'Download your track!';
+    document.body.appendChild(downloadLink);
+};
 
 //Garbage can handler
 $('#garbageCan').droppable({
@@ -354,15 +382,7 @@ function unmuteChannel(id) {
     if(id == 4) { channel4Gain.gain.value = 1; }
 }
 
-function offlineAudio(index) {
-    let offlineBuffer1 = offline.createBufferSource();
-    offlineBuffer1.buffer = channel1[index];
-    offlineBuffer1.connect(offline.destination);
-    offlineBuffer1.start(offlineAudioTime + 10);
-    offline.oncomplete = function(event) {
-        //gör nåt med event.renderBuffer
-    }
-}
+
 
 volumeKnob.addEventListener('click', function() {
     let volume = volumeKnob.value / 100;
@@ -386,5 +406,6 @@ module.exports = {
     previewSample: previewSample, 
     stopAll: stopAll,
     muteChannel: muteChannel,
-    unmuteChannel: unmuteChannel
+    unmuteChannel: unmuteChannel,
+    audioRecorder: audioRecorder
 };

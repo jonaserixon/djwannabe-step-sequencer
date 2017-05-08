@@ -173,6 +173,10 @@ function Desktop() {
                 for(let j = 0; j < notChecked.length; j++) {
                     SampleHandler.unmuteChannel(notChecked[j]);
                 }
+            } else if(playButton.id === 'record') {
+                SampleHandler.audioRecorder(true);
+            } else if(playButton.id === 'stop') {
+                SampleHandler.audioRecorder(false);
             }
         }
     });
