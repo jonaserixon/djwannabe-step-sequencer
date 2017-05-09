@@ -3,6 +3,7 @@ let inactiveSamples = document.querySelector('#inactive-samples');
 let volumeKnob = document.querySelector('#volumeKnob');
 let delayKnob = document.querySelector('#delayKnob');
 let recordButton = document.querySelector('#record-button');
+let mixerBoard = document.querySelector('#mixer-board');
 
 let samples = [];       //Array with all unused loaded samples
 let silentAudio = [];   //Silent audiobuffers
@@ -44,8 +45,7 @@ channel4Gain.connect(gainNode);
 channel5Gain.connect(gainNode);
 
 function droppableHandler(droppableId, draggableUi) {
-    $('#' + droppableId).droppable('enable');
-                
+    $('#' + droppableId).droppable('enable');       
     if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != draggableUi.attr("id")) {
         $('#' + droppableId).find('div').first().remove();
     }
@@ -102,27 +102,13 @@ function droppableDivs() {
             let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
             draggableId.setAttribute('previous-slot', droppableId);
             draggableId.setAttribute('helper', droppableHelper);
-            // console.log('draggable sample '  + draggableId + ' dropped on ' + droppableId);
-            if(droppableId.includes('channel1Slot')) {
-                channel1.splice(droppableHelper, 1, samples[draggableHelper]);  //put the dropped sample at the <id>-slotX index in the channel array
-                droppableHandler(droppableId, draggableUi);
-            }
-            if(droppableId.includes('channel2Slot')) { 
-                channel2.splice(droppableHelper, 1, samples[draggableHelper]);  
-                droppableHandler(droppableId, draggableUi);
-            }
-            if(droppableId.includes('channel3Slot')) {
-                channel3.splice(droppableHelper, 1, samples[draggableHelper]);  
-                droppableHandler(droppableId, draggableUi);
-            }   
-            if(droppableId.includes('channel4Slot')) {
-                channel4.splice(droppableHelper, 1, samples[draggableHelper]);  
-                droppableHandler(droppableId, draggableUi);
-            }   
-            if(droppableId.includes('channel5Slot')) {
-                channel5.splice(droppableHelper, 1, samples[draggableHelper]);  
-                droppableHandler(droppableId, draggableUi);
-            }   
+                                                                                            // console.log('draggable sample '  + draggableId + ' dropped on ' + droppableId);
+            //put the dropped sample at the slot index in the channels array
+            if(droppableId.includes('channel1Slot')) { channel1.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }
+            if(droppableId.includes('channel2Slot')) { channel2.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }
+            if(droppableId.includes('channel3Slot')) { channel3.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }   
+            if(droppableId.includes('channel4Slot')) { channel4.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }   
+            if(droppableId.includes('channel5Slot')) { channel5.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }   
             $(this).append(ui.draggable);
             ui.draggable.position({of: $(this), my: 'left top', at: 'left top'});
         },
@@ -411,7 +397,6 @@ function audioRecorder(recording) {
     };
 }
 
-let mixerBoard = document.querySelector('#mixer-board');
 mixerBoard.addEventListener('input', function(event) {
     if(event.target.className === 'mixer-volume') {
         switch(event.target.id) {
@@ -457,7 +442,7 @@ function mixerVolume(volume, id) {
     // if(id === 'mixVolume5') { channel5Gain.gain.value = volume; }
 }
 
-// FilterSample.toggleFilter = function(element) {
+// function toggler(element) {
 //   this.source.disconnect(0);
 //   this.filter.disconnect(0);
 //   // Check if we want to enable the filter.

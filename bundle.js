@@ -342,27 +342,13 @@ function droppableDivs() {
             let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
             draggableId.setAttribute('previous-slot', droppableId);
             draggableId.setAttribute('helper', droppableHelper);
-            // console.log('draggable sample '  + draggableId + ' dropped on ' + droppableId);
-            if(droppableId.includes('channel1Slot')) {
-                channel1.splice(droppableHelper, 1, samples[draggableHelper]);  //put the dropped sample at the <id>-slotX index in the channel array
-                droppableHandler(droppableId, draggableUi);
-            }
-            if(droppableId.includes('channel2Slot')) { 
-                channel2.splice(droppableHelper, 1, samples[draggableHelper]);  
-                droppableHandler(droppableId, draggableUi);
-            }
-            if(droppableId.includes('channel3Slot')) {
-                channel3.splice(droppableHelper, 1, samples[draggableHelper]);  
-                droppableHandler(droppableId, draggableUi);
-            }   
-            if(droppableId.includes('channel4Slot')) {
-                channel4.splice(droppableHelper, 1, samples[draggableHelper]);  
-                droppableHandler(droppableId, draggableUi);
-            }   
-            if(droppableId.includes('channel5Slot')) {
-                channel5.splice(droppableHelper, 1, samples[draggableHelper]);  
-                droppableHandler(droppableId, draggableUi);
-            }   
+                                                                                            // console.log('draggable sample '  + draggableId + ' dropped on ' + droppableId);
+            //put the dropped sample at the slot index in the channels array
+            if(droppableId.includes('channel1Slot')) { channel1.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }
+            if(droppableId.includes('channel2Slot')) { channel2.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }
+            if(droppableId.includes('channel3Slot')) { channel3.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }   
+            if(droppableId.includes('channel4Slot')) { channel4.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }   
+            if(droppableId.includes('channel5Slot')) { channel5.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); console.log(droppableHelper); }   
             $(this).append(ui.draggable);
             ui.draggable.position({of: $(this), my: 'left top', at: 'left top'});
         },
@@ -697,7 +683,7 @@ function mixerVolume(volume, id) {
     // if(id === 'mixVolume5') { channel5Gain.gain.value = volume; }
 }
 
-// FilterSample.toggleFilter = function(element) {
+// function toggler(element) {
 //   this.source.disconnect(0);
 //   this.filter.disconnect(0);
 //   // Check if we want to enable the filter.
