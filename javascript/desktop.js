@@ -14,9 +14,31 @@ function Desktop() {
     let sampleList = document.querySelector('#sample-list'); //The list with the samples
     let sampleboxes = document.querySelector('.draggable-content ui-draggable ui-draggable-handle');
     let inactiveSamples = document.querySelector('#inactive-samples');
+    let playlistContainer = document.querySelector('#playlist-container');
+    
+    function createChannel() {
+        for(let i = 1; i < 6; i++) {
+            let snapDiv = document.createElement('div');
+            snapDiv.setAttribute('id', 'snaptarget' + i);
+            snapDiv.setAttribute('class', 'main-timeline');
+            let h3 = document.createElement('h3');
+            h3.textContent = i;
+            snapDiv.appendChild(h3);
+            for(let j = 0; j < 8; j++) {
+                let sampleSlot = document.createElement('div');
+                sampleSlot.classList.add('sample-slot');
+                sampleSlot.setAttribute('id', 'channel' + i + 'Slot' + j);
+                sampleSlot.setAttribute('helper', j);
+                playlistContainer.appendChild(snapDiv);
+                snapDiv.appendChild(sampleSlot);
+            }
+        }
+    }
+    createChannel();
+    SampleHandler.droppableDivs();
 
     /**
-     * Sends audiosample path to the samplebox function
+     * Sends audiosample path to the samplebox method
      */
     sampleList.addEventListener('click', function(event) {
         if(event.target.id === 'sample-list' || event.target.id === 'library-h3') {
@@ -28,9 +50,9 @@ function Desktop() {
         }
     });
 
-    
-    $('#mixer-board').draggable({containment: 'document'});
     $('#project-controller').draggable({containment: 'document'});
+    $('#mixer-board').draggable({containment: 'document'});
+    
 
     /**
      * Skapar en samplebox div som är draggable + innehåller ett sample + en play knapp

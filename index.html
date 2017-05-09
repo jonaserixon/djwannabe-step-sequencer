@@ -33,91 +33,7 @@
             <input id="volumeKnob" type="range" value="100">
             <i id="volume-icon-up" class="fa fa-volume-up" aria-hidden="true"></i>
         </div>
-            <div id="playlist-container">
-                
-                <div id="snaptarget" class="main-timeline">
-                    <h3>1</h3>
-                    <div id="channel1Slot0" class="sample-slot" helper="0"></div>
-                    <div id="channel1Slot1" class="sample-slot" helper="1"></div>
-                    <div id="channel1Slot2" class="sample-slot" helper="2"></div>
-                    <div id="channel1Slot3" class="sample-slot" helper="3"></div>
-                    <div id="channel1Slot4" class="sample-slot" helper="4"></div>
-                    <div id="channel1Slot5" class="sample-slot" helper="5"></div>
-                    <div id="channel1Slot6" class="sample-slot" helper="6"></div>
-                    <div id="channel1Slot7" class="sample-slot" helper="7"></div>
-                    
-                    <!--<button id="remove-sample" class="add-remove">Remove last sample!</button>
-                    <button id="add-sample" class="add-remove">Add new sample slot!</button>-->
-                    <div class="channel-knobs">
-                        <input id="1" name="checkName" type="checkbox">
-                        <p>Mute</p>
-                    </div>
-                </div>
-                <div id="snaptarget1" class="main-timeline">
-                    <h3>2</h3>
-                    
-                    <div id="channel2Slot0" class="sample-slot" helper="0"></div>
-                    <div id="channel2Slot1" class="sample-slot" helper="1"></div>
-                    <div id="channel2Slot2" class="sample-slot" helper="2"></div>
-                    <div id="channel2Slot3" class="sample-slot" helper="3"></div>
-                    <div id="channel2Slot4" class="sample-slot" helper="4"></div>
-                    <div id="channel2Slot5" class="sample-slot" helper="5"></div>
-                    <div id="channel2Slot6" class="sample-slot" helper="6"></div>
-                    <div id="channel2Slot7" class="sample-slot" helper="7"></div>
-                    <div class="channel-knobs">
-                        <input id="2" name="checkName" type="checkbox">
-                        <p>Mute</p>
-                    </div>
-                </div>
-
-                <div id="snaptarget2" class="main-timeline">
-                    <h3>3</h3>
-                    <div id="channel3Slot0" class="sample-slot" helper="0"></div>
-                    <div id="channel3Slot1" class="sample-slot" helper="1"></div>
-                    <div id="channel3Slot2" class="sample-slot" helper="2"></div>
-                    <div id="channel3Slot3" class="sample-slot" helper="3"></div>
-                    <div id="channel3Slot4" class="sample-slot" helper="4"></div>
-                    <div id="channel3Slot5" class="sample-slot" helper="5"></div>
-                    <div id="channel3Slot6" class="sample-slot" helper="6"></div>
-                    <div id="channel3Slot7" class="sample-slot" helper="7"></div>
-                    <div class="channel-knobs">
-                        <input id="3" name="checkName" type="checkbox">
-                        <p>Mute</p>
-                    </div>
-                </div>
-
-                <div id="snaptarget3" class="main-timeline">
-                    <h3>4</h3>
-                    <div id="channel4Slot0" class="sample-slot" helper="0"></div>
-                    <div id="channel4Slot1" class="sample-slot" helper="1"></div>
-                    <div id="channel4Slot2" class="sample-slot" helper="2"></div>
-                    <div id="channel4Slot3" class="sample-slot" helper="3"></div>
-                    <div id="channel4Slot4" class="sample-slot" helper="4"></div>
-                    <div id="channel4Slot5" class="sample-slot" helper="5"></div>
-                    <div id="channel4Slot6" class="sample-slot" helper="6"></div>
-                    <div id="channel4Slot7" class="sample-slot" helper="7"></div>
-                    <div class="channel-knobs">
-                        <input id="4" name="checkName" type="checkbox">
-                        <p>Mute</p>
-                    </div>
-                </div>
-
-                <div id="snaptarget4" class="main-timeline">
-                    <h3>5</h3>
-                    <div id="channel5Slot0" class="sample-slot" helper="0"></div>
-                    <div id="channel5Slot1" class="sample-slot" helper="1"></div>
-                    <div id="channel5Slot2" class="sample-slot" helper="2"></div>
-                    <div id="channel5Slot3" class="sample-slot" helper="3"></div>
-                    <div id="channel5Slot4" class="sample-slot" helper="4"></div>
-                    <div id="channel5Slot5" class="sample-slot" helper="5"></div>
-                    <div id="channel5Slot6" class="sample-slot" helper="6"></div>
-                    <div id="channel5Slot7" class="sample-slot" helper="7"></div>
-                    <div class="channel-knobs">
-                        <input id="5" name="checkName" type="checkbox">
-                        <p>Mute</p>
-                    </div>
-                </div>
-            </div>
+            <div id="playlist-container"></div>
         <div id="sample-library">
             <div id="title-bar">
                 <div id="minimize-button">-</div>
@@ -138,7 +54,28 @@
         
         <div id="inactive-samples"></div>
 
-        <div id="mixer-board">MIXER BOARD</div>
+        <div id="mixer-board">
+            <div id="route1" class="mixer-route">mix1
+                <input id="1" name="checkName" type="checkbox">
+                <input id="knobTest" type="range" value="100" orient="vertical">
+            </div>
+            <div id="route2" class="mixer-route">mix2
+                <input id="2" name="checkName" type="checkbox">
+                <input id="knobTest" type="range" value="100" orient="vertical">
+            </div>
+            <div id="route3" class="mixer-route">mix3
+                <input id="3" name="checkName" type="checkbox">
+                <input id="knobTest" type="range" value="100" orient="vertical">
+            </div>
+            <div id="route4" class="mixer-route">mix4
+                <input id="4" name="checkName" type="checkbox">
+                <input id="knobTest" type="range" value="100" orient="vertical">
+            </div>
+            <div id="route5" class="mixer-route">mix5
+                <input id="5" name="checkName" type="checkbox">
+                <input id="knobTest" type="range" value="100" orient="vertical">
+            </div>
+        </div>
 
         <a id="audio-recorder"></a>
         <div id='fileNames'></div>

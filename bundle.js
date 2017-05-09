@@ -23,9 +23,31 @@ function Desktop() {
     let sampleList = document.querySelector('#sample-list'); //The list with the samples
     let sampleboxes = document.querySelector('.draggable-content ui-draggable ui-draggable-handle');
     let inactiveSamples = document.querySelector('#inactive-samples');
+    let playlistContainer = document.querySelector('#playlist-container');
+    
+    function createChannel() {
+        for(let i = 1; i < 6; i++) {
+            let snapDiv = document.createElement('div');
+            snapDiv.setAttribute('id', 'snaptarget' + i);
+            snapDiv.setAttribute('class', 'main-timeline');
+            let h3 = document.createElement('h3');
+            h3.textContent = i;
+            snapDiv.appendChild(h3);
+            for(let j = 0; j < 8; j++) {
+                let sampleSlot = document.createElement('div');
+                sampleSlot.classList.add('sample-slot');
+                sampleSlot.setAttribute('id', 'channel' + i + 'Slot' + j);
+                sampleSlot.setAttribute('helper', j);
+                playlistContainer.appendChild(snapDiv);
+                snapDiv.appendChild(sampleSlot);
+            }
+        }
+    }
+    createChannel();
+    SampleHandler.droppableDivs();
 
     /**
-     * Sends audiosample path to the samplebox function
+     * Sends audiosample path to the samplebox method
      */
     sampleList.addEventListener('click', function(event) {
         if(event.target.id === 'sample-list' || event.target.id === 'library-h3') {
@@ -37,9 +59,9 @@ function Desktop() {
         }
     });
 
-    
-    $('#mixer-board').draggable({containment: 'document'});
     $('#project-controller').draggable({containment: 'document'});
+    $('#mixer-board').draggable({containment: 'document'});
+    
 
     /**
      * Skapar en samplebox div som är draggable + innehåller ett sample + en play knapp
@@ -287,6 +309,7 @@ recorder.ondataavailable = function(event) {
 
 recorder.onstop = function(event) {
     let blob = new Blob(blobCollecter, { 'type' : 'audio/ogg; codecs=opus' });
+
     let downloadLink = document.querySelector("#audio-recorder");
     downloadLink.href = window.URL.createObjectURL(blob);
     downloadLink.download = 'DJ_Wannabe_Track.ogg';
@@ -335,85 +358,87 @@ $('#garbageCan').droppable({
 });
 
 //Sample slot handler
-$('.sample-slot').droppable({
-    accept: '.draggable-content',
-    drop: function (event, ui) {
-        let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
-        let droppableHelper = $(this).attr("helper");                               //lägg den i index (droppableId) i playlsit arrayen
-        let droppableId = $(this).attr("id");
-        let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
-        draggableId.setAttribute('previous-slot', droppableId);
-        draggableId.setAttribute('helper', droppableHelper);
-        // console.log('draggable sample '  + draggableId + ' dropped on ' + droppableId);
-        if(droppableId.includes('channel1Slot')) {
-            channel1.splice(droppableHelper, 1, samples[draggableHelper]);  //put the dropped sample at the <id>-slotX index in the channel array
-            $('#' + droppableId).droppable('enable');
+function droppableDivs() {
+    $('.sample-slot').droppable({
+        accept: '.draggable-content',
+        drop: function (event, ui) {
+            let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
+            let droppableHelper = $(this).attr("helper");                               //lägg den i index (droppableId) i playlsit arrayen
+            let droppableId = $(this).attr("id");
+            let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
+            draggableId.setAttribute('previous-slot', droppableId);
+            draggableId.setAttribute('helper', droppableHelper);
+            // console.log('draggable sample '  + draggableId + ' dropped on ' + droppableId);
+            if(droppableId.includes('channel1Slot')) {
+                channel1.splice(droppableHelper, 1, samples[draggableHelper]);  //put the dropped sample at the <id>-slotX index in the channel array
+                $('#' + droppableId).droppable('enable');
+                
+                if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
+                    $('#' + droppableId).find('div').first().remove();
+                }
+            }
+            if(droppableId.includes('channel2Slot')) { 
+                channel2.splice(droppableHelper, 1, samples[draggableHelper]);  
+                $('#' + droppableId).droppable('enable');
+                
+                if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
+                    $('#' + droppableId).find('div').first().remove();
+                }
+            }
+            if(droppableId.includes('channel3Slot')) {
+                channel3.splice(droppableHelper, 1, samples[draggableHelper]);  
+                $('#' + droppableId).droppable('enable');
+
+                if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
+                    $('#' + droppableId).find('div').first().remove();
+                }
+            }   
+            if(droppableId.includes('channel4Slot')) {
+                channel4.splice(droppableHelper, 1, samples[draggableHelper]);  
+                $('#' + droppableId).droppable('enable');
+
+                if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
+                    $('#' + droppableId).find('div').first().remove();
+                }
+                    console.log($('#' + droppableId).find('div').attr("id"));
+                
+                // let firstElement = $('#' + droppableId).find('div').first();
+                // firstElement.remove();
+                // let newFirstElement = $('#' + droppableId).find('div').first();
+                // $('#' + newFirstElement.attr("id")).draggable('enable');
+                // console.log(newFirstElement.attr("id"));
+
+            }   
+            $(this).append(ui.draggable);
+            ui.draggable.position({of: $(this), my: 'left top', at: 'left top'});
+        },
+
+        out: function(event, ui) { 
+            let previousSlot = ui.draggable.attr("previous-slot"); 
+            let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
+            let droppableId = $(this).attr("id");
             
-            if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
-                $('#' + droppableId).find('div').first().remove();
+            if(previousSlot !== undefined) {
+                let previousSlotNumber = previousSlot.substr(previousSlot.length - 1);
+
+                if(previousSlot.includes('channel1Slot')) {
+                    channel1.splice(previousSlotNumber, 1, silentAudio[previousSlotNumber]);  //put the dropped sample at the <id>-slotX index in the channel1 array
+                }
+                if(previousSlot.includes('channel2Slot')) {
+                    channel2.splice(previousSlotNumber, 1, silentAudio[previousSlotNumber]);  //put the dropped sample at the <id>-slotX index in the channel2 array
+                }
+                if(previousSlot.includes('channel3Slot')) {
+                    channel3.splice(previousSlotNumber, 1, silentAudio[previousSlotNumber]);  //put the dropped sample at the <id>-slotX index in the channel3 array
+                }
+                if(previousSlot.includes('channel4Slot')) {
+                    channel4.splice(previousSlotNumber, 1, silentAudio[previousSlotNumber]);  //put the dropped sample at the <id>-slotX index in the channel3 array
+                }
+            } else {
+                return;
             }
         }
-        if(droppableId.includes('channel2Slot')) { 
-            channel2.splice(droppableHelper, 1, samples[draggableHelper]);  
-            $('#' + droppableId).droppable('enable');
-            
-            if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
-                $('#' + droppableId).find('div').first().remove();
-            }
-        }
-        if(droppableId.includes('channel3Slot')) {
-            channel3.splice(droppableHelper, 1, samples[draggableHelper]);  
-            $('#' + droppableId).droppable('enable');
-
-            if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
-                $('#' + droppableId).find('div').first().remove();
-            }
-        }   
-        if(droppableId.includes('channel4Slot')) {
-            channel4.splice(droppableHelper, 1, samples[draggableHelper]);  
-            $('#' + droppableId).droppable('enable');
-
-            if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
-                $('#' + droppableId).find('div').first().remove();
-            }
-                console.log($('#' + droppableId).find('div').attr("id"));
-            
-            // let firstElement = $('#' + droppableId).find('div').first();
-            // firstElement.remove();
-            // let newFirstElement = $('#' + droppableId).find('div').first();
-            // $('#' + newFirstElement.attr("id")).draggable('enable');
-            // console.log(newFirstElement.attr("id"));
-
-        }   
-        $(this).append(ui.draggable);
-        ui.draggable.position({of: $(this), my: 'left top', at: 'left top'});
-    },
-
-    out: function(event, ui) { 
-        let previousSlot = ui.draggable.attr("previous-slot"); 
-        let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
-        let droppableId = $(this).attr("id");
-        
-        if(previousSlot !== undefined) {
-            let previousSlotNumber = previousSlot.substr(previousSlot.length - 1);
-
-            if(previousSlot.includes('channel1Slot')) {
-                channel1.splice(previousSlotNumber, 1, silentAudio[previousSlotNumber]);  //put the dropped sample at the <id>-slotX index in the channel1 array
-            }
-            if(previousSlot.includes('channel2Slot')) {
-                channel2.splice(previousSlotNumber, 1, silentAudio[previousSlotNumber]);  //put the dropped sample at the <id>-slotX index in the channel2 array
-            }
-            if(previousSlot.includes('channel3Slot')) {
-                channel3.splice(previousSlotNumber, 1, silentAudio[previousSlotNumber]);  //put the dropped sample at the <id>-slotX index in the channel3 array
-            }
-            if(previousSlot.includes('channel4Slot')) {
-                channel4.splice(previousSlotNumber, 1, silentAudio[previousSlotNumber]);  //put the dropped sample at the <id>-slotX index in the channel3 array
-            }
-        } else {
-            return;
-        }
-    }
-});
+    });
+}
             
 //https://dl.dropboxusercontent.com/s/6s6rn6rcdlggdzj/Weird%20Synth.wav?dl=0
 // let audios = [audio1, audio2, audio3];
@@ -659,6 +684,7 @@ module.exports = {
     stopAll: stopAll,
     muteChannel: muteChannel,
     unmuteChannel: unmuteChannel,
-    audioRecorder: audioRecorder
+    audioRecorder: audioRecorder,
+    droppableDivs: droppableDivs
 };
 },{}]},{},[1]);
