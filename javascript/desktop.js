@@ -139,15 +139,7 @@ function Desktop() {
         sampleBox.appendChild(img);
     }
 
-    //Remove sampleboxes by right-clicking them
-    window.addEventListener('contextmenu', function (event) { 
-        event.preventDefault();
-        let detectSample = event.target.id;
-        if(detectSample.includes('samplebox')) {
-            $('#' + detectSample).remove();
-        }
-        return false;
-    }, false);
+    
 
     /**
      * Button handler

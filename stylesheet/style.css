@@ -10,7 +10,7 @@ body {
 
 #wrapper {
   margin: 0 auto;
-  /*width: 1800px;*/
+  width: 1800px;
   padding: 10px;
   background-color: #132f44;
   border-radius: 5px;
@@ -64,7 +64,6 @@ body {
    background-color: ghostwhite;
    width: 70px;
    height: 70px;
-   /*float: left;*/
    margin: 0 10px 10px 0;
    font-size: .9em;
    border: solid black;
@@ -196,14 +195,15 @@ body {
   margin-top: 0px;
   margin-right: 420px;
   border-radius: 5px;
+  box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.3);
 }
 
 #volumeKnob { margin-top: 15px; }
 
-.channel-knobs {
+/*.channel-knobs {
   margin-left: 820px;
   margin-top: 45px;
-}
+}*/
 
 .disabledbutton {
     pointer-events: none;
@@ -214,11 +214,13 @@ body {
   color: #8FB3CD;
   font-size: 50px;
   margin-top: 60px;
-  margin-right: 1000px;
+  margin-right: 1200px;
   padding: 20px;
   float: right;
   transition: color 0.2s, background-color 0.2s, box-shadow 0.2s, border-radius 0.2s, opacity 0.2s;
 }
+
+
 
 #mixer-board {
   background-color: #1e4059;
@@ -228,14 +230,17 @@ body {
   float:right;
   margin-top: -300px;
   border: 1px solid black;
+  box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.6);
+  text-align: center;
 }
 
 .mixer-route { float: left; }
 
-#route1 { width: 120px; height: 300px; background-color: #86abc4; border-right: 1px solid black; }
-#route2 { width: 120px; height: 300px; background-color: #86abc4; border-right: 1px solid black; }
-#route3 { width: 120px; height: 300px; background-color: #86abc4; border-right: 1px solid black; }
-#route4 { width: 120px; height: 300px; background-color: #86abc4; border-right: 1px solid black; }
-#route5 { width: 120px; height: 300px; background-color: #86abc4; }
+#route1 { width: 120px; height: 300px; background-color: #4f7795; border-right: 1px solid black; }
+#route2 { width: 120px; height: 300px; background-color: #4f7795; border-right: 1px solid black; }
+#route3 { width: 120px; height: 300px; background-color: #4f7795; border-right: 1px solid black; }
+#route4 { width: 120px; height: 300px; background-color: #4f7795; border-right: 1px solid black; }
+#route5 { width: 120px; height: 300px; background-color: #4f7795; }
 
-#knobTest { -webkit-appearance: slider-vertical; height: 100px; }
+.mixer-volume { -webkit-appearance: slider-vertical; height: 100px; }
+.mixer-filter { -webkit-appearance: slider-vertical; height: 50px; }

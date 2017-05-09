@@ -7,8 +7,6 @@ new Desktop();
 
     
 },{"./javascript/desktop":2}],2:[function(require,module,exports){
-'use strict';
-
 const SampleHandler = require('./samplehandler');
 
 let idCounter = 0;
@@ -20,7 +18,7 @@ function Desktop() {
     let wrapper = document.querySelector('#wrapper');
     let channelDiv = document.querySelector('#snaptarget');
     let removeButton = document.querySelector('#remove-sample');
-    let sampleList = document.querySelector('#sample-list'); //The list with the samples
+    let sampleList = document.querySelector('#sample-list'); 
     let sampleboxes = document.querySelector('.draggable-content ui-draggable ui-draggable-handle');
     let inactiveSamples = document.querySelector('#inactive-samples');
     let playlistContainer = document.querySelector('#playlist-container');
@@ -150,15 +148,7 @@ function Desktop() {
         sampleBox.appendChild(img);
     }
 
-    //Remove sampleboxes by right-clicking them
-    window.addEventListener('contextmenu', function (event) { 
-        event.preventDefault();
-        let detectSample = event.target.id;
-        if(detectSample.includes('samplebox')) {
-            $('#' + detectSample).remove();
-        }
-        return false;
-    }, false);
+    
 
     /**
      * Button handler
@@ -247,15 +237,7 @@ function Desktop() {
 }
 
 module.exports = Desktop;
-
-
-
-
-
-
 },{"./samplehandler":3}],3:[function(require,module,exports){
-'use strict';
-
 let wrapper = document.querySelector('#wrapper');
 let inactiveSamples = document.querySelector('#inactive-samples');
 let volumeKnob = document.querySelector('#volumeKnob');
@@ -283,8 +265,15 @@ let channel3Gain = context.createGain();
 let channel4Gain = context.createGain();
 let channel5Gain = context.createGain();
 
+let channel1Filter = context.createBiquadFilter();
+let channel2Filter = context.createBiquadFilter();
+let channel3Filter = context.createBiquadFilter();
+let channel4Filter = context.createBiquadFilter();
+let channel5Filter = context.createBiquadFilter();
+
 let dest = context.createMediaStreamDestination();
 let recorder = new MediaRecorder(dest.stream);
+
 gainNode.connect(context.destination);
 gainNode.connect(dest);
 
@@ -294,33 +283,13 @@ channel3Gain.connect(gainNode);
 channel4Gain.connect(gainNode);
 channel5Gain.connect(gainNode);
 
-function audioRecorder(recording) {
-    if(recording) {
-        recorder.start();
-        recordButton.style.opacity = '1';
-        console.log('Start recording!');
-    } else {
-        recorder.stop();
-        recordButton.style.opacity = '';
-        console.log('Stop recording!');
+function droppableHandler(droppableId, draggableUi) {
+    $('#' + droppableId).droppable('enable');
+                
+    if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != draggableUi.attr("id")) {
+        $('#' + droppableId).find('div').first().remove();
     }
-
-    recorder.ondataavailable = function(event) {
-        blobCollecter.push(event.data);
-    };
-
-    recorder.onstop = function(event) {
-        let blob = new Blob(blobCollecter, { 'type' : 'audio/ogg; codecs=opus' });
-
-        let downloadLink = document.querySelector("#audio-recorder");
-        downloadLink.href = window.URL.createObjectURL(blob);
-        downloadLink.download = 'DJ_Wannabe_Track.ogg';
-        downloadLink.textContent = 'Download your track!';
-        document.body.appendChild(downloadLink);
-    };
 }
-
-
 
 //Garbage can handler
 $('#garbageCan').droppable({
@@ -329,7 +298,6 @@ $('#garbageCan').droppable({
             let droppableHelper = ui.draggable.attr("helper");  
             let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");
             let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
-
             if(previousSlot !== undefined) {
                 if(previousSlot.includes('channel1Slot')) {
                     channel1.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
@@ -337,22 +305,22 @@ $('#garbageCan').droppable({
                     document.querySelector('#' + previousSlot).removeChild(draggableId);
                 }
                 if(previousSlot.includes('channel2Slot')) {
-                    channel2.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel2 array
+                    channel2.splice(droppableHelper, 1, silentAudio[droppableHelper]); 
                     $('#' + previousSlot).droppable('enable');
                     document.querySelector('#' + previousSlot).removeChild(draggableId);
                 }
                 if(previousSlot.includes('channel3Slot')) {
-                    channel3.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
+                    channel3.splice(droppableHelper, 1, silentAudio[droppableHelper]);  
                     $('#' + previousSlot).droppable('enable');
                     document.querySelector('#' + previousSlot).removeChild(draggableId);
                 }
                 if(previousSlot.includes('channel4Slot')) {
-                    channel4.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
+                    channel4.splice(droppableHelper, 1, silentAudio[droppableHelper]); 
                     $('#' + previousSlot).droppable('enable');
                     document.querySelector('#' + previousSlot).removeChild(draggableId);
                 }
                 if(previousSlot.includes('channel5Slot')) {
-                    channel5.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
+                    channel5.splice(droppableHelper, 1, silentAudio[droppableHelper]);  
                     $('#' + previousSlot).droppable('enable');
                     document.querySelector('#' + previousSlot).removeChild(draggableId);
                 }
@@ -367,6 +335,7 @@ function droppableDivs() {
     $('.sample-slot').droppable({
         accept: '.draggable-content',
         drop: function (event, ui) {
+            let draggableUi = ui.draggable;
             let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
             let droppableHelper = $(this).attr("helper");                               //lägg den i index (droppableId) i playlsit arrayen
             let droppableId = $(this).attr("id");
@@ -376,68 +345,39 @@ function droppableDivs() {
             // console.log('draggable sample '  + draggableId + ' dropped on ' + droppableId);
             if(droppableId.includes('channel1Slot')) {
                 channel1.splice(droppableHelper, 1, samples[draggableHelper]);  //put the dropped sample at the <id>-slotX index in the channel array
-                $('#' + droppableId).droppable('enable');
-                
-                if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
-                    $('#' + droppableId).find('div').first().remove();
-                }
+                droppableHandler(droppableId, draggableUi);
             }
             if(droppableId.includes('channel2Slot')) { 
                 channel2.splice(droppableHelper, 1, samples[draggableHelper]);  
-                $('#' + droppableId).droppable('enable');
-                
-                if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
-                    $('#' + droppableId).find('div').first().remove();
-                }
+                droppableHandler(droppableId, draggableUi);
             }
             if(droppableId.includes('channel3Slot')) {
                 channel3.splice(droppableHelper, 1, samples[draggableHelper]);  
-                $('#' + droppableId).droppable('enable');
-
-                if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
-                    $('#' + droppableId).find('div').first().remove();
-                }
+                droppableHandler(droppableId, draggableUi);
             }   
             if(droppableId.includes('channel4Slot')) {
                 channel4.splice(droppableHelper, 1, samples[draggableHelper]);  
-                $('#' + droppableId).droppable('enable');
-
-                if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
-                    $('#' + droppableId).find('div').first().remove();
-                }
+                droppableHandler(droppableId, draggableUi);
             }   
             if(droppableId.includes('channel5Slot')) {
                 channel5.splice(droppableHelper, 1, samples[draggableHelper]);  
-                $('#' + droppableId).droppable('enable');
-
-                if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
-                    $('#' + droppableId).find('div').first().remove();
-                }
+                droppableHandler(droppableId, draggableUi);
             }   
             $(this).append(ui.draggable);
             ui.draggable.position({of: $(this), my: 'left top', at: 'left top'});
         },
-
         out: function(event, ui) { 
             let previousSlot = ui.draggable.attr("previous-slot"); 
             let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
             let droppableId = $(this).attr("id");
             
             if(previousSlot !== undefined) {
-                let previousSlotNumber = previousSlot.substr(previousSlot.length - 1);
-
-                if(previousSlot.includes('channel1Slot')) {
-                    channel1.splice(previousSlotNumber, 1, silentAudio[previousSlotNumber]);  //put the dropped sample at the <id>-slotX index in the channel1 array
-                }
-                if(previousSlot.includes('channel2Slot')) {
-                    channel2.splice(previousSlotNumber, 1, silentAudio[previousSlotNumber]);  //put the dropped sample at the <id>-slotX index in the channel2 array
-                }
-                if(previousSlot.includes('channel3Slot')) {
-                    channel3.splice(previousSlotNumber, 1, silentAudio[previousSlotNumber]);  //put the dropped sample at the <id>-slotX index in the channel3 array
-                }
-                if(previousSlot.includes('channel4Slot')) {
-                    channel4.splice(previousSlotNumber, 1, silentAudio[previousSlotNumber]);  //put the dropped sample at the <id>-slotX index in the channel3 array
-                }
+                let preSlotNum = previousSlot.substr(previousSlot.length - 1);
+                if(previousSlot.includes('channel1Slot')) { channel1.splice(preSlotNum, 1, silentAudio[preSlotNum]); }
+                if(previousSlot.includes('channel2Slot')) { channel2.splice(preSlotNum, 1, silentAudio[preSlotNum]); }
+                if(previousSlot.includes('channel3Slot')) { channel3.splice(preSlotNum, 1, silentAudio[preSlotNum]); }
+                if(previousSlot.includes('channel4Slot')) { channel4.splice(preSlotNum, 1, silentAudio[preSlotNum]); }
+                if(previousSlot.includes('channel5Slot')) { channel5.splice(preSlotNum, 1, silentAudio[preSlotNum]); }
             } else {
                 return;
             }
@@ -447,7 +387,6 @@ function droppableDivs() {
             
 //https://dl.dropboxusercontent.com/s/6s6rn6rcdlggdzj/Weird%20Synth.wav?dl=0
 // let audios = [audio1, audio2, audio3];
-
 //sources = collection of audio buffersource nodes
 let preview, audio1, audio2, audio3, audio4, audio5, sources1 = [], sources2 = [], sources3 = [], sources4 = [], sources5 = [];  
 
@@ -535,7 +474,8 @@ function scheduler1(audioStart, index, starthere) {
         audio1 = context.createBufferSource(); 
         sources1.splice(index, 0, audio1);
         audio1.buffer = channel1[index]; 
-        audio1.connect(channel1Gain);
+        audio1.connect(channel1Filter);
+        channel1Filter.connect(channel1Gain);
         audio1.start(audioStart + (audio1.buffer.duration * starthere));
         audio1.onended = function() {
             playingSlot.style.boxShadow = '';
@@ -553,7 +493,8 @@ function scheduler2(audioStart, index, starthere) {
         audio2 = context.createBufferSource();
         sources2.splice(index, 0, audio2);
         audio2.buffer = channel2[index];  //array with all the loaded audio
-        audio2.connect(channel2Gain);
+        audio2.connect(channel2Filter);
+        channel2Filter.connect(channel2Gain);
         audio2.start(audioStart + (audio2.buffer.duration * starthere));
         audio2.onended = function() {
             playingSlot.style.boxShadow = '';
@@ -571,7 +512,8 @@ function scheduler3(audioStart, index, starthere) {
         audio3 = context.createBufferSource();
         sources3.splice(index, 0, audio3);
         audio3.buffer = channel3[index];  //array with all the loaded audio
-        audio3.connect(channel3Gain);
+        audio3.connect(channel3Filter);
+        channel3Filter.connect(channel3Gain);
         audio3.start(audioStart + (audio3.buffer.duration * starthere));  
         audio3.onended = function() {
             playingSlot.style.boxShadow = '';
@@ -589,7 +531,8 @@ function scheduler4(audioStart, index, starthere) {
         audio4 = context.createBufferSource();
         sources4.splice(index, 0, audio4);
         audio4.buffer = channel4[index];  //array with all the loaded audio
-        audio4.connect(channel4Gain);
+        audio4.connect(channel4Filter);
+        channel4Filter.connect(channel4Gain);
         audio4.start(audioStart + (audio4.buffer.duration * starthere));
         audio4.onended = function() {
             playingSlot.style.boxShadow = '';    
@@ -607,7 +550,8 @@ function scheduler5(audioStart, index, starthere) {
         audio5 = context.createBufferSource();
         sources5.splice(index, 0, audio5);
         audio5.buffer = channel5[index];  //array with all the loaded audio
-        audio5.connect(channel5Gain);
+        audio5.connect(channel5Filter);
+        channel5Filter.connect(channel5Gain);
         audio5.start(audioStart + (audio5.buffer.duration * starthere));
         audio5.onended = function() {
             playingSlot.style.boxShadow = '';    
@@ -681,7 +625,93 @@ function unmuteChannel(id) {
     if(id == 5) { channel5Gain.gain.value = 1; }
 }
 
-volumeKnob.addEventListener('click', function() {
+function audioRecorder(recording) {
+    if(recording) {
+        recorder.start();
+        recordButton.style.opacity = '1';
+        console.log('Start recording!');
+    } else {
+        recorder.stop();
+        recordButton.style.opacity = '';
+        console.log('Stop recording!');
+    }
+
+    recorder.ondataavailable = function(event) {
+        blobCollecter.push(event.data);
+    };
+
+    recorder.onstop = function(event) {
+        let blob = new Blob(blobCollecter, { 'type' : 'audio/ogg; codecs=opus' });
+
+        let downloadLink = document.querySelector("#audio-recorder");
+        downloadLink.href = window.URL.createObjectURL(blob);
+        downloadLink.download = 'DJ_Wannabe_Track.ogg';
+        downloadLink.textContent = 'Download your track!';
+        document.body.appendChild(downloadLink);
+    };
+}
+
+let mixerBoard = document.querySelector('#mixer-board');
+mixerBoard.addEventListener('input', function(event) {
+    if(event.target.className === 'mixer-volume') {
+        switch(event.target.id) {
+            case 'mixVolume1': channel1Gain.gain.value = event.target.value / 100;
+                break;
+            case 'mixVolume2': channel2Gain.gain.value = event.target.value / 100;
+                break;
+            case 'mixVolume3': channel3Gain.gain.value = event.target.value / 100;
+                break;
+            case 'mixVolume4': channel4Gain.gain.value = event.target.value / 100;
+                break;
+            case 'mixVolume5': channel5Gain.gain.value = event.target.value / 100;
+                break;
+        }
+    }
+    if(event.target.className === 'mixer-filter') {
+        let filterFrequency = 20000 / event.target.value;
+        if(filterFrequency > 20000) {
+            filterFrequency = 20000;
+        }
+        console.log(filterFrequency);
+        switch(event.target.id) {
+            case 'lowpassFilter1': channel1Filter.frequency.value = filterFrequency;
+                break;
+            case 'lowpassFilter2': channel2Filter.frequency.value = filterFrequency;
+                break;
+            case 'lowpassFilter3': channel3Filter.frequency.value = filterFrequency;
+                break;
+            case 'lowpassFilter4': channel4Filter.frequency.value = filterFrequency;
+                break;
+            case 'lowpassFilter5': channel5Filter.frequency.value = filterFrequency;
+                break;
+        }
+    }
+})
+
+function mixerVolume(volume, id) {
+    // volume = volume / 100;
+    // if(id === 'mixVolume1') { channel1Gain.gain.value = volume; }
+    // if(id === 'mixVolume2') { channel2Gain.gain.value = volume; }    
+    // if(id === 'mixVolume3') { channel3Gain.gain.value = volume; }
+    // if(id === 'mixVolume4') { channel4Gain.gain.value = volume; }
+    // if(id === 'mixVolume5') { channel5Gain.gain.value = volume; }
+}
+
+// FilterSample.toggleFilter = function(element) {
+//   this.source.disconnect(0);
+//   this.filter.disconnect(0);
+//   // Check if we want to enable the filter.
+//   if (element.checked) {
+//     // Connect through the filter.
+//     this.source.connect(this.filter);
+//     this.filter.connect(context.destination);
+//   } else {
+//     // Otherwise, connect directly.
+//     this.source.connect(context.destination);
+//   }
+// };
+
+volumeKnob.addEventListener('input', function() {
     let volume = volumeKnob.value / 100;
     let volumeUp = document.querySelector('#volume-icon-up');
     let volumeDown = document.querySelector('#volume-icon-down');
@@ -705,6 +735,7 @@ module.exports = {
     muteChannel: muteChannel,
     unmuteChannel: unmuteChannel,
     audioRecorder: audioRecorder,
-    droppableDivs: droppableDivs
+    droppableDivs: droppableDivs,
+    mixerVolume: mixerVolume
 };
 },{}]},{},[1]);
