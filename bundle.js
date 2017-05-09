@@ -23,15 +23,15 @@ function Desktop() {
     let inactiveSamples = document.querySelector('#inactive-samples');
     let playlistContainer = document.querySelector('#playlist-container');
     
-    function createChannel() {
-        for(let i = 1; i < 6; i++) {
+    function createChannel(numChannels, numSlots) {
+        for(let i = 1; i < numChannels; i++) {
             let snapDiv = document.createElement('div');
             snapDiv.setAttribute('id', 'snaptarget' + i);
             snapDiv.setAttribute('class', 'main-timeline');
             let h3 = document.createElement('h3');
             h3.textContent = i;
             snapDiv.appendChild(h3);
-            for(let j = 0; j < 8; j++) {
+            for(let j = 0; j < numSlots; j++) {
                 let sampleSlot = document.createElement('div');
                 sampleSlot.classList.add('sample-slot');
                 sampleSlot.setAttribute('id', 'channel' + i + 'Slot' + j);
@@ -41,7 +41,7 @@ function Desktop() {
             }
         }
     }
-    createChannel();
+    createChannel(6, 8);
     SampleHandler.droppableDivs();
 
     /**
@@ -243,6 +243,7 @@ let inactiveSamples = document.querySelector('#inactive-samples');
 let volumeKnob = document.querySelector('#volumeKnob');
 let delayKnob = document.querySelector('#delayKnob');
 let recordButton = document.querySelector('#record-button');
+let mixerBoard = document.querySelector('#mixer-board');
 
 let samples = [];       //Array with all unused loaded samples
 let silentAudio = [];   //Silent audiobuffers
@@ -270,6 +271,11 @@ let channel2Filter = context.createBiquadFilter();
 let channel3Filter = context.createBiquadFilter();
 let channel4Filter = context.createBiquadFilter();
 let channel5Filter = context.createBiquadFilter();
+channel1Filter.frequency.value = 20000;
+channel2Filter.frequency.value = 20000;
+channel3Filter.frequency.value = 20000;
+channel4Filter.frequency.value = 20000;
+channel5Filter.frequency.value = 20000;
 
 let dest = context.createMediaStreamDestination();
 let recorder = new MediaRecorder(dest.stream);
@@ -283,9 +289,30 @@ channel3Gain.connect(gainNode);
 channel4Gain.connect(gainNode);
 channel5Gain.connect(gainNode);
 
+function Channel() {
+    this.samples = []; //channels audiobuffers
+    this.audio;
+    this.sources = []; //Keep track of buffersource nodes created from scheduler method
+}
+
+Channel.prototype = {
+    addSamples: function(bufferedAudio) {
+        this.samples.push(bufferedAudio)
+    },
+    swapSample: function(sampleSlot, newSample) {
+        this.samples.splice(sampleSlot, 1, newSample);
+    },
+    scheduler: function(index, startTime) {
+        this.audio = context.createBufferSource();
+        this.sources[index] = this.audio;
+        this.audio.buffer = this.samples[index];
+        this.audio.connect();
+        this.audio.start(context.currentTime + (this.audio.buffer.duration * startTime));
+    }   
+}
+
 function droppableHandler(droppableId, draggableUi) {
-    $('#' + droppableId).droppable('enable');
-                
+    $('#' + droppableId).droppable('enable');       
     if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != draggableUi.attr("id")) {
         $('#' + droppableId).find('div').first().remove();
     }
@@ -348,7 +375,10 @@ function droppableDivs() {
             if(droppableId.includes('channel2Slot')) { channel2.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }
             if(droppableId.includes('channel3Slot')) { channel3.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }   
             if(droppableId.includes('channel4Slot')) { channel4.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }   
-            if(droppableId.includes('channel5Slot')) { channel5.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); console.log(droppableHelper); }   
+            if(droppableId.includes('channel5Slot')) { 
+                channel5.splice(droppableHelper, 1, samples[draggableHelper]); 
+                droppableHandler(droppableId, draggableUi); 
+            }   
             $(this).append(ui.draggable);
             ui.draggable.position({of: $(this), my: 'left top', at: 'left top'});
         },
@@ -637,7 +667,6 @@ function audioRecorder(recording) {
     };
 }
 
-let mixerBoard = document.querySelector('#mixer-board');
 mixerBoard.addEventListener('input', function(event) {
     if(event.target.className === 'mixer-volume') {
         switch(event.target.id) {
@@ -674,26 +703,17 @@ mixerBoard.addEventListener('input', function(event) {
     }
 })
 
-function mixerVolume(volume, id) {
-    // volume = volume / 100;
-    // if(id === 'mixVolume1') { channel1Gain.gain.value = volume; }
-    // if(id === 'mixVolume2') { channel2Gain.gain.value = volume; }    
-    // if(id === 'mixVolume3') { channel3Gain.gain.value = volume; }
-    // if(id === 'mixVolume4') { channel4Gain.gain.value = volume; }
-    // if(id === 'mixVolume5') { channel5Gain.gain.value = volume; }
-}
-
 // function toggler(element) {
-//   this.source.disconnect(0);
-//   this.filter.disconnect(0);
-//   // Check if we want to enable the filter.
+//   source.disconnect(0);
+//   filter.disconnect(0);
+//   
 //   if (element.checked) {
-//     // Connect through the filter.
-//     this.source.connect(this.filter);
-//     this.filter.connect(context.destination);
+//     
+//     source.connect(filter);
+//     filter.connect(context.destination);
 //   } else {
-//     // Otherwise, connect directly.
-//     this.source.connect(context.destination);
+//    
+//     source.connect(context.destination);
 //   }
 // };
 
@@ -722,6 +742,5 @@ module.exports = {
     unmuteChannel: unmuteChannel,
     audioRecorder: audioRecorder,
     droppableDivs: droppableDivs,
-    mixerVolume: mixerVolume
 };
 },{}]},{},[1]);

@@ -200,11 +200,6 @@ body {
 
 #volumeKnob { margin-top: 15px; }
 
-/*.channel-knobs {
-  margin-left: 820px;
-  margin-top: 45px;
-}*/
-
 .disabledbutton {
     pointer-events: none;
     opacity: 0.4;

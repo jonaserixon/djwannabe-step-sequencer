@@ -14,15 +14,15 @@ function Desktop() {
     let inactiveSamples = document.querySelector('#inactive-samples');
     let playlistContainer = document.querySelector('#playlist-container');
     
-    function createChannel() {
-        for(let i = 1; i < 6; i++) {
+    function createChannel(numChannels, numSlots) {
+        for(let i = 1; i < numChannels; i++) {
             let snapDiv = document.createElement('div');
             snapDiv.setAttribute('id', 'snaptarget' + i);
             snapDiv.setAttribute('class', 'main-timeline');
             let h3 = document.createElement('h3');
             h3.textContent = i;
             snapDiv.appendChild(h3);
-            for(let j = 0; j < 8; j++) {
+            for(let j = 0; j < numSlots; j++) {
                 let sampleSlot = document.createElement('div');
                 sampleSlot.classList.add('sample-slot');
                 sampleSlot.setAttribute('id', 'channel' + i + 'Slot' + j);
@@ -32,7 +32,7 @@ function Desktop() {
             }
         }
     }
-    createChannel();
+    createChannel(6, 8);
     SampleHandler.droppableDivs();
 
     /**
