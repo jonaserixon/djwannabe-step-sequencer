@@ -270,6 +270,7 @@ let channel1 = [];      //Channel 1's list of samples
 let channel2 = [];      //Channel 2's list of samples
 let channel3 = [];      //Channel 3's list of samples
 let channel4 = [];      //Channel 4's list of samples
+let channel5 = [];      //Channel 5's list of samples
 
 let context = new AudioContext();
 
@@ -280,6 +281,7 @@ let channel1Gain = context.createGain();
 let channel2Gain = context.createGain();
 let channel3Gain = context.createGain();
 let channel4Gain = context.createGain();
+let channel5Gain = context.createGain();
 
 let dest = context.createMediaStreamDestination();
 let recorder = new MediaRecorder(dest.stream);
@@ -290,6 +292,7 @@ channel1Gain.connect(gainNode);
 channel2Gain.connect(gainNode);
 channel3Gain.connect(gainNode);
 channel4Gain.connect(gainNode);
+channel5Gain.connect(gainNode);
 
 function audioRecorder(recording) {
     if(recording) {
@@ -301,21 +304,23 @@ function audioRecorder(recording) {
         recordButton.style.opacity = '';
         console.log('Stop recording!');
     }
+
+    recorder.ondataavailable = function(event) {
+        blobCollecter.push(event.data);
+    };
+
+    recorder.onstop = function(event) {
+        let blob = new Blob(blobCollecter, { 'type' : 'audio/ogg; codecs=opus' });
+
+        let downloadLink = document.querySelector("#audio-recorder");
+        downloadLink.href = window.URL.createObjectURL(blob);
+        downloadLink.download = 'DJ_Wannabe_Track.ogg';
+        downloadLink.textContent = 'Download your track!';
+        document.body.appendChild(downloadLink);
+    };
 }
 
-recorder.ondataavailable = function(event) {
-    blobCollecter.push(event.data);
-};
 
-recorder.onstop = function(event) {
-    let blob = new Blob(blobCollecter, { 'type' : 'audio/ogg; codecs=opus' });
-
-    let downloadLink = document.querySelector("#audio-recorder");
-    downloadLink.href = window.URL.createObjectURL(blob);
-    downloadLink.download = 'DJ_Wannabe_Track.ogg';
-    downloadLink.textContent = 'Download your track!';
-    document.body.appendChild(downloadLink);
-};
 
 //Garbage can handler
 $('#garbageCan').droppable({
@@ -329,26 +334,26 @@ $('#garbageCan').droppable({
                 if(previousSlot.includes('channel1Slot')) {
                     channel1.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
                     $('#' + previousSlot).droppable('enable');
-                    // draggableId.style.visibility = 'hidden';
                     document.querySelector('#' + previousSlot).removeChild(draggableId);
                 }
                 if(previousSlot.includes('channel2Slot')) {
                     channel2.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel2 array
                     $('#' + previousSlot).droppable('enable');
-                    // draggableId.style.visibility = 'hidden';
                     document.querySelector('#' + previousSlot).removeChild(draggableId);
                 }
                 if(previousSlot.includes('channel3Slot')) {
                     channel3.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
                     $('#' + previousSlot).droppable('enable');
-                    // draggableId.style.visibility = 'hidden';
                     document.querySelector('#' + previousSlot).removeChild(draggableId);
                 }
                 if(previousSlot.includes('channel4Slot')) {
                     channel4.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
                     $('#' + previousSlot).droppable('enable');
-                    
-                    // draggableId.style.visibility = 'hidden';
+                    document.querySelector('#' + previousSlot).removeChild(draggableId);
+                }
+                if(previousSlot.includes('channel5Slot')) {
+                    channel5.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel3 array
+                    $('#' + previousSlot).droppable('enable');
                     document.querySelector('#' + previousSlot).removeChild(draggableId);
                 }
             } else {
@@ -400,14 +405,14 @@ function droppableDivs() {
                 if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
                     $('#' + droppableId).find('div').first().remove();
                 }
-                    console.log($('#' + droppableId).find('div').attr("id"));
-                
-                // let firstElement = $('#' + droppableId).find('div').first();
-                // firstElement.remove();
-                // let newFirstElement = $('#' + droppableId).find('div').first();
-                // $('#' + newFirstElement.attr("id")).draggable('enable');
-                // console.log(newFirstElement.attr("id"));
+            }   
+            if(droppableId.includes('channel5Slot')) {
+                channel5.splice(droppableHelper, 1, samples[draggableHelper]);  
+                $('#' + droppableId).droppable('enable');
 
+                if($('#' + droppableId).find('div').length > 0 && $('#' + droppableId).find('div').attr("id") != ui.draggable.attr("id")) {
+                    $('#' + droppableId).find('div').first().remove();
+                }
             }   
             $(this).append(ui.draggable);
             ui.draggable.position({of: $(this), my: 'left top', at: 'left top'});
@@ -443,19 +448,11 @@ function droppableDivs() {
 //https://dl.dropboxusercontent.com/s/6s6rn6rcdlggdzj/Weird%20Synth.wav?dl=0
 // let audios = [audio1, audio2, audio3];
 
-let preview;        //preview a samplebox
-let audio1;         //channel 1 audio 
-let audio2;         //channel 2 audio 
-let audio3;         //channel 3 audio
-let audio4;         //channel 4 audio
-let sources1 = [];  //audio1 buffersource nodes
-let sources2 = [];  //audio2 buffersource nodes
-let sources3 = [];  //audio3 buffersource nodes
-let sources4 = [];  //audio4 buffersource nodes
+//sources = collection of audio buffersource nodes
+let preview, audio1, audio2, audio3, audio4, audio5, sources1 = [], sources2 = [], sources3 = [], sources4 = [], sources5 = [];  
 
 // Store audio sample buffer in an array
 function loadSound(audiosample, silence) {
-
     let request = new XMLHttpRequest();
     request.open('GET', audiosample, true);
     request.responseType = 'arraybuffer';
@@ -467,6 +464,7 @@ function loadSound(audiosample, silence) {
                     channel2.push(buffer);
                     channel3.push(buffer);
                     channel4.push(buffer);
+                    channel5.push(buffer);
                     silentAudio.push(buffer);
                 }
             } else {
@@ -523,6 +521,7 @@ function startPointHandler(audioStart, next, startingPoint) {
     scheduler2(audioStart, next, startingPoint);
     scheduler3(audioStart, next, startingPoint);
     scheduler4(audioStart, next, startingPoint);
+    scheduler5(audioStart, next, startingPoint);
 }
 
 function scheduler1(audioStart, index, starthere) {
@@ -595,8 +594,26 @@ function scheduler4(audioStart, index, starthere) {
         audio4.onended = function() {
             playingSlot.style.boxShadow = '';    
             playingSlot.style.opacity = '0.5';
+        }
+    }
+}
+
+function scheduler5(audioStart, index, starthere) {
+    let playingSlot = document.querySelector('#channel5Slot' + index);
+    if(playingSlot === null) {
+        return;
+    } else {
+        playingSlot.style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
+        audio5 = context.createBufferSource();
+        sources5.splice(index, 0, audio5);
+        audio5.buffer = channel5[index];  //array with all the loaded audio
+        audio5.connect(channel5Gain);
+        audio5.start(audioStart + (audio5.buffer.duration * starthere));
+        audio5.onended = function() {
+            playingSlot.style.boxShadow = '';    
+            playingSlot.style.opacity = '0.5';
             if(index === 7) {      //Reset the opacity when channel is finished playing or stopped
-                for(let j = 1; j < 5; j++) {
+                for(let j = 1; j < 6; j++) {
                     for(let i = 0; i < 8; i++) {
                         document.querySelector('#channel' + j + 'Slot' + i).style.opacity = '';
                         $('#starting-point').prop('disabled', false); //enable all starting point buttons
@@ -630,6 +647,7 @@ function stopAll(playButton) {
             sources2[i].stop(0);
             sources3[i].stop(0);
             sources4[i].stop(0);
+            sources5[i].stop(0);
         }
         if(playButton) {
             playButton.style.opacity = '';
@@ -652,6 +670,7 @@ function muteChannel(id) {
     if(id == 2) { channel2Gain.gain.value = 0; }    
     if(id == 3) { channel3Gain.gain.value = 0; }
     if(id == 4) { channel4Gain.gain.value = 0; }
+    if(id == 5) { channel5Gain.gain.value = 0; }
 }
 
 function unmuteChannel(id) {
@@ -659,6 +678,7 @@ function unmuteChannel(id) {
     if(id == 2) { channel2Gain.gain.value = 1; }    
     if(id == 3) { channel3Gain.gain.value = 1; }
     if(id == 4) { channel4Gain.gain.value = 1; }
+    if(id == 5) { channel5Gain.gain.value = 1; }
 }
 
 volumeKnob.addEventListener('click', function() {

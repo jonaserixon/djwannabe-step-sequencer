@@ -1,5 +1,3 @@
-'use strict';
-
 const SampleHandler = require('./samplehandler');
 
 let idCounter = 0;
@@ -11,7 +9,7 @@ function Desktop() {
     let wrapper = document.querySelector('#wrapper');
     let channelDiv = document.querySelector('#snaptarget');
     let removeButton = document.querySelector('#remove-sample');
-    let sampleList = document.querySelector('#sample-list'); //The list with the samples
+    let sampleList = document.querySelector('#sample-list'); 
     let sampleboxes = document.querySelector('.draggable-content ui-draggable ui-draggable-handle');
     let inactiveSamples = document.querySelector('#inactive-samples');
     let playlistContainer = document.querySelector('#playlist-container');
@@ -238,8 +236,3 @@ function Desktop() {
 }
 
 module.exports = Desktop;
-
-
-
-
-
