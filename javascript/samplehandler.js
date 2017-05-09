@@ -417,13 +417,25 @@ function audioRecorder(recording) {
     };
 
     recorder.onstop = function(event) {
-        let blob = new Blob(blobCollecter, { 'type' : 'audio/ogg; codecs=opus' });
+        let chromeChecker = MediaRecorder.isTypeSupported('audio/webm;codecs=opus');
+        let firefoxChecker = MediaRecorder.isTypeSupported('audio/ogg;codecs=opus'); 
+        let blob;
+        if(chromeChecker) {
+            alert('Chrome är cp. Om du vill ladda ner låten så använd Firefox.');
+        } 
+        if(firefoxChecker) {
+            blob = new Blob(blobCollecter, { 'type' : 'audio/ogg; codecs=opus' });
+        }
+        
+        var url = URL.createObjectURL(blob);
+        var a = document.querySelector("#audio-recorder");
+        a.style = 'display: none';
+        a.href = url;
+        a.download = 'djwannabe_track.ogg';
+        a.click();
+        window.URL.revokeObjectURL(url);
 
-        let downloadLink = document.querySelector("#audio-recorder");
-        downloadLink.href = window.URL.createObjectURL(blob);
-        downloadLink.download = 'DJ_Wannabe_Track.ogg';
-        downloadLink.textContent = 'Download your track!';
-        document.body.appendChild(downloadLink);
+
     };
 }
 
