@@ -56,7 +56,7 @@ function Desktop() {
             }
         }
     }
-    
+
     createChannel(6, 8);
     SampleHandler.droppableDivs();
 
@@ -71,7 +71,6 @@ function Desktop() {
         }
     });
 
-    $('#project-controller').draggable({containment: 'document'});
     $('#mixer-board').draggable({containment: 'document'});
     
     /**
@@ -155,9 +154,7 @@ function Desktop() {
         sampleBox.appendChild(img);
     }
 
-    /**
-     * Button handler
-     */
+    //Button handler
     document.addEventListener('click', function(event) {
         if(event.target.id === '') {
             return;
@@ -209,7 +206,19 @@ function Desktop() {
                     SampleHandler.audioRecorder(false);
                     recordChecker = true;
                 }
-            } 
+            //Project-controller locker
+            } else if(playButton.id === 'locker') {
+                if(playButton.className === 'fa fa-lock') {
+                    $('#project-controller').draggable({containment: 'document'});
+                    $('#project-controller').draggable('enable');
+                    playButton.removeAttribute('class');
+                    playButton.setAttribute('class', 'fa fa-unlock-alt ');
+                } else {
+                    $('#project-controller').draggable('disable');
+                    playButton.removeAttribute('class');
+                    playButton.setAttribute('class', 'fa fa-lock');
+                }
+            }  
         }
     });
 
@@ -285,7 +294,7 @@ let channel3Filter = context.createBiquadFilter();
 let channel4Filter = context.createBiquadFilter();
 let channel5Filter = context.createBiquadFilter();
 
-channel1Filter.frequency.value = 300;
+channel1Filter.frequency.value = 20000;
 channel2Filter.frequency.value = 20000;
 channel3Filter.frequency.value = 20000;
 channel4Filter.frequency.value = 20000;
@@ -324,25 +333,21 @@ Channel.prototype = {
     addSample: function(sampleSlot, samplePath) {
         loadSound(this, samplePath, sampleSlot);
     },
-    swapSample: function(sampleSlot, newSample) {
-        this.samples.splice(sampleSlot, 1, newSample);
-    },
     scheduler: function(gainControl, filterControl) {
-        console.log(filterControl);
         for (let i = 0; i < this.samples.length; i++) {
+            
             let audio = context.createBufferSource();
             this.sources[i] = audio;
             audio.buffer = this.samples[i];
             audio.connect(filterControl);
             filterControl.connect(gainControl);
             audio.start(context.currentTime + (audio.buffer.duration * i));
-
             this.timeouts.push(setTimeout(function() {
                 // Add the border to the playing sample slot
                 let playingSlot = this.sampleslotDivs[i];
                 playingSlot.style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
             }.bind(this), audio.buffer.duration * i * 1000));
-
+            
             audio.onended = function() {
                 this.sampleslotDivs[i].style.boxShadow = '';
             }.bind(this);
@@ -368,6 +373,12 @@ function droppableHandler(droppableId, draggableUi, droppableHelper, draggableSa
     channel.addSample(droppableHelper, samples[draggableSampleId]);
 }
 
+function garbageHandler(droppableHelper, previousSlot, draggableId, channel) {
+    channel.addSample(droppableHelper, "./audio/Silence.ogg");
+    $('#' + previousSlot).droppable('enable');
+    document.querySelector('#' + previousSlot).removeChild(draggableId);
+}
+
 $('#garbageCan').droppable({
         drop: function (event, ui) {
             let previousSlot = ui.draggable.attr("previous-slot");
@@ -375,31 +386,11 @@ $('#garbageCan').droppable({
             let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");
             let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
             if(previousSlot !== undefined) {
-                if(previousSlot.includes('channel1Slot')) {
-                    channel1.splice(droppableHelper, 1, silentAudio[droppableHelper]);  //put the dropped sample at the <id>-slotX index in the channel1 array
-                    $('#' + previousSlot).droppable('enable');
-                    document.querySelector('#' + previousSlot).removeChild(draggableId);
-                }
-                if(previousSlot.includes('channel2Slot')) {
-                    channel2.splice(droppableHelper, 1, silentAudio[droppableHelper]); 
-                    $('#' + previousSlot).droppable('enable');
-                    document.querySelector('#' + previousSlot).removeChild(draggableId);
-                }
-                if(previousSlot.includes('channel3Slot')) {
-                    channel3.splice(droppableHelper, 1, silentAudio[droppableHelper]);  
-                    $('#' + previousSlot).droppable('enable');
-                    document.querySelector('#' + previousSlot).removeChild(draggableId);
-                }
-                if(previousSlot.includes('channel4Slot')) {
-                    channel4.splice(droppableHelper, 1, silentAudio[droppableHelper]); 
-                    $('#' + previousSlot).droppable('enable');
-                    document.querySelector('#' + previousSlot).removeChild(draggableId);
-                }
-                if(previousSlot.includes('channel5Slot')) {
-                    channel5.splice(droppableHelper, 1, silentAudio[droppableHelper]);  
-                    $('#' + previousSlot).droppable('enable');
-                    document.querySelector('#' + previousSlot).removeChild(draggableId);
-                }
+                if(previousSlot.includes('channel1Slot')) { garbageHandler(droppableHelper, previousSlot, draggableId, channel1); }
+                if(previousSlot.includes('channel2Slot')) { garbageHandler(droppableHelper, previousSlot, draggableId, channel2); }
+                if(previousSlot.includes('channel3Slot')) { garbageHandler(droppableHelper, previousSlot, draggableId, channel3); }
+                if(previousSlot.includes('channel4Slot')) { garbageHandler(droppableHelper, previousSlot, draggableId, channel4); }
+                if(previousSlot.includes('channel5Slot')) { garbageHandler(droppableHelper, previousSlot, draggableId, channel5); }
             } else {
                 document.querySelector('#inactive-samples').removeChild(draggableId);
             }     
@@ -512,13 +503,12 @@ function previewSample(index, stopper) {
 }
 
 function stopAll(playButton) {
-    for(let i = 0; i < 8; i++) {
-        channel1.stop();
-        channel2.stop();
-        channel3.stop();
-        channel4.stop();
-        channel5.stop();
-    }
+    channel1.stop();
+    channel2.stop();
+    channel3.stop();
+    channel4.stop();
+    channel5.stop();
+
     if(playButton) {
         playButton.style.opacity = '';
         playButton.style.color = '#d3e2ed';

@@ -33,7 +33,7 @@ function Desktop() {
             }
         }
     }
-    
+
     createChannel(6, 8);
     SampleHandler.droppableDivs();
 
@@ -48,7 +48,6 @@ function Desktop() {
         }
     });
 
-    $('#project-controller').draggable({containment: 'document'});
     $('#mixer-board').draggable({containment: 'document'});
     
     /**
@@ -132,9 +131,7 @@ function Desktop() {
         sampleBox.appendChild(img);
     }
 
-    /**
-     * Button handler
-     */
+    //Button handler
     document.addEventListener('click', function(event) {
         if(event.target.id === '') {
             return;
@@ -186,7 +183,19 @@ function Desktop() {
                     SampleHandler.audioRecorder(false);
                     recordChecker = true;
                 }
-            } 
+            //Project-controller locker
+            } else if(playButton.id === 'locker') {
+                if(playButton.className === 'fa fa-lock') {
+                    $('#project-controller').draggable({containment: 'document'});
+                    $('#project-controller').draggable('enable');
+                    playButton.removeAttribute('class');
+                    playButton.setAttribute('class', 'fa fa-unlock-alt ');
+                } else {
+                    $('#project-controller').draggable('disable');
+                    playButton.removeAttribute('class');
+                    playButton.setAttribute('class', 'fa fa-lock');
+                }
+            }  
         }
     });
 
