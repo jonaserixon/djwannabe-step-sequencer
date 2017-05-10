@@ -5,7 +5,11 @@ let delayKnob = document.querySelector('#delayKnob');
 let recordButton = document.querySelector('#record-button');
 let mixerBoard = document.querySelector('#mixer-board');
 
-let samples = [];       //Array with all unused loaded samples
+let samples = [
+    "./audio/HIMITSU Big Synth Chord.ogg",
+    "./audio/HIMITSU Soft Piano.ogg"
+];       //Array with all unused loaded samples
+
 let silentAudio = [];   //Silent audiobuffers
 let blobCollecter = [];
 
@@ -49,27 +53,55 @@ channel3Gain.connect(gainNode);
 channel4Gain.connect(gainNode);
 channel5Gain.connect(gainNode);
 
-function Channel() {
+function Channel(id) {
+    this.id = id;
     this.samples = []; //channels audiobuffers
-    this.audio;
     this.sources = []; //Keep track of buffersource nodes created from scheduler method
+
+    this.sampleslotDivs = [];
+
+    for (let i = 0; i < 8; i++) {
+        let exde = document.querySelector('#channel' + this.id + 'Slot' + i);
+        console.log('#channel' + this.id + 'Slot' + i);
+        this.sampleslotDivs.push(exde);
+    }
+
+    // console.log(this.sampleslotDivs);
+
+    for (let i = 0; i < 8; i++) {
+        loadSound(this, './audio/Silence.ogg');
+    }
 }
 
 Channel.prototype = {
-    addSamples: function(bufferedAudio) {
-        this.samples.push(bufferedAudio)
+    addSample: function(sampleSlot, samplePath) {
+        loadSound(this, samplePath, sampleSlot);
     },
     swapSample: function(sampleSlot, newSample) {
         this.samples.splice(sampleSlot, 1, newSample);
     },
-    scheduler: function(index, startTime) {
-        this.audio = context.createBufferSource();
-        this.sources[index] = this.audio;
-        this.audio.buffer = this.samples[index];
-        this.audio.connect();
-        this.audio.start(context.currentTime + (this.audio.buffer.duration * startTime));
+    scheduler: function() {
+        for (let i = 0; i < this.samples.length; i++) {
+            let audio = context.createBufferSource();
+            this.sources[i] = audio;
+            audio.buffer = this.samples[i];
+            audio.connect(context.destination);
+            audio.start(context.currentTime + (audio.buffer.duration * i));
+
+            setTimeout(function() {
+                console.log('bajs');
+                // Add the border to the playing sample slot
+                let playingSlot = this.sampleslotDivs[i];
+                playingSlot.style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
+            }.bind(this), audio.buffer.duration * i * 1000);
+
+            audio.onended = function() {
+                this.sampleslotDivs[i].style.boxShadow = '';
+            }.bind(this);
+        }
     }   
 }
+
 
 function droppableHandler(droppableId, draggableUi) {
     $('#' + droppableId).droppable('enable');       
@@ -117,8 +149,14 @@ $('#garbageCan').droppable({
         }    
 });
 
+let channel55;
+
 //Sample slot handler
 function droppableDivs() {
+    channel55 = new Channel(5);
+    // inactiveSampleHandler.addSample(0, "./audio/HIMITSU Soft Piano.ogg");
+    // inactiveSampleHandler.addSample(1, "./audio/HIMITSU Piano Low.ogg");
+
     $('.sample-slot').droppable({
         accept: '.draggable-content',
         drop: function (event, ui) {
@@ -127,6 +165,7 @@ function droppableDivs() {
             let droppableHelper = $(this).attr("helper");                               //lägg den i index (droppableId) i playlsit arrayen
             let droppableId = $(this).attr("id");
             let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
+            let draggableSampleId = ui.draggable.attr("sample-id");
             draggableId.setAttribute('previous-slot', droppableId);
             draggableId.setAttribute('helper', droppableHelper);
                                                                                             // console.log('draggable sample '  + draggableId + ' dropped on ' + droppableId);
@@ -135,10 +174,13 @@ function droppableDivs() {
             if(droppableId.includes('channel2Slot')) { channel2.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }
             if(droppableId.includes('channel3Slot')) { channel3.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }   
             if(droppableId.includes('channel4Slot')) { channel4.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }   
-            if(droppableId.includes('channel5Slot')) { 
-                channel5.splice(droppableHelper, 1, samples[draggableHelper]); 
+
+            if(droppableId.includes('channel5Slot')) {
+                channel55.addSample(droppableHelper, samples[draggableSampleId]); 
+                // channel5.splice(droppableHelper, 1, samples[draggableHelper]); 
                 droppableHandler(droppableId, draggableUi); 
             }   
+
             $(this).append(ui.draggable);
             ui.draggable.position({of: $(this), my: 'left top', at: 'left top'});
         },
@@ -153,7 +195,10 @@ function droppableDivs() {
                 if(previousSlot.includes('channel2Slot')) { channel2.splice(preSlotNum, 1, silentAudio[preSlotNum]); }
                 if(previousSlot.includes('channel3Slot')) { channel3.splice(preSlotNum, 1, silentAudio[preSlotNum]); }
                 if(previousSlot.includes('channel4Slot')) { channel4.splice(preSlotNum, 1, silentAudio[preSlotNum]); }
-                if(previousSlot.includes('channel5Slot')) { channel5.splice(preSlotNum, 1, silentAudio[preSlotNum]); }
+                if(previousSlot.includes('channel5Slot')) { 
+                    // channel5.splice(preSlotNum, 1, silentAudio[preSlotNum]);
+                    channel55.addSample(preSlotNum, "./audio/Silence.ogg");
+                }
             } else {
                 return;
             }
@@ -166,25 +211,35 @@ function droppableDivs() {
 //sources = collection of audio buffersource nodes
 let preview, audio1, audio2, audio3, audio4, audio5, sources1 = [], sources2 = [], sources3 = [], sources4 = [], sources5 = [];  
 
+
+
 // Store audio sample buffer in an array
-function loadSound(audiosample, silence) {
+function loadSound(channel, audiosample, sampleSlot) {
     let request = new XMLHttpRequest();
     request.open('GET', audiosample, true);
     request.responseType = 'arraybuffer';
     request.onload = function() {
         context.decodeAudioData(request.response, function(buffer) {
-            if(silence) {
-                for(let i = 0; i < 8; i++) {
-                    channel1.push(buffer);
-                    channel2.push(buffer);
-                    channel3.push(buffer);
-                    channel4.push(buffer);
-                    channel5.push(buffer);
-                    silentAudio.push(buffer);
-                }
+            console.log(sampleSlot);
+            if (sampleSlot !== undefined) {
+                channel.samples[sampleSlot] = buffer;
             } else {
-                samples.push(buffer);
+                channel.samples.push(buffer);
             }
+            
+            // if(silence) {
+            //     for(let i = 0; i < 8; i++) {
+            //         // channel1.push(buffer);
+            //         // channel2.push(buffer);
+            //         // channel3.push(buffer);
+            //         // channel4.push(buffer);
+            //         // channel5.push(buffer);
+            //         inactiveSampleHandler.samples.push(buffer);
+            //         silentAudio.push(buffer);
+            //     }
+            // } else {
+            //     inactiveSampleHandler.samples.push(buffer);
+            // }
         }, function() {
             console.error('Could not load a sample');
         });
@@ -440,6 +495,8 @@ function audioRecorder(recording) {
 }
 
 mixerBoard.addEventListener('input', function(event) {
+    channel55.scheduler(audioTime);
+    // inactiveSampleHandler.scheduler(1);
     if(event.target.className === 'mixer-volume') {
         switch(event.target.id) {
             case 'mixVolume1': channel1Gain.gain.value = event.target.value / 100;

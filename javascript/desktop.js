@@ -57,8 +57,8 @@ function Desktop() {
      * @param id = idCounter
      * @param sample = path to sample
      */
-    function samplebox(id, sample, e) {
-        
+    function samplebox(id, sample, event) {
+        console.log(event.target);
         $(function () {
             $('#samplebox' + id).draggable({
                 revert: 'invalid', 
@@ -86,7 +86,7 @@ function Desktop() {
         let sampleBox = document.createElement('div');
         sampleBox.setAttribute('class', 'draggable-content');
         sampleBox.setAttribute('id', 'samplebox' + id);
-        sampleBox.setAttribute('sample', sample);
+        sampleBox.setAttribute('sample-id', event.target.getAttribute('sample-id'));
         let img = document.createElement('img');
         
         switch(sample) {
@@ -130,9 +130,9 @@ function Desktop() {
         playButton.style.fontSize = '30px';
 
         //Create new audio sample
-        let audiosample = './audio/' + sample;
-        SampleHandler.loadSound('./audio/Silence.ogg', true); 
-        SampleHandler.loadSound(audiosample, false);
+        // let audiosample = './audio/' + sample;
+        // SampleHandler.loadSound('./audio/Silence.ogg', true); 
+        // SampleHandler.loadSound(audiosample, false);
 
         inactiveSamples.appendChild(sampleBox);
         sampleBox.appendChild(playButton);
