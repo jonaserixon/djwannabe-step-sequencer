@@ -14,6 +14,7 @@ function Desktop() {
     let inactiveSamples = document.querySelector('#inactive-samples');
     let playlistContainer = document.querySelector('#playlist-container');
     
+    //Create channels + sample slots
     function createChannel(numChannels, numSlots) {
         for(let i = 1; i < numChannels; i++) {
             let snapDiv = document.createElement('div');
@@ -32,12 +33,11 @@ function Desktop() {
             }
         }
     }
+    
     createChannel(6, 8);
     SampleHandler.droppableDivs();
 
-    /**
-     * Sends audiosample path to the samplebox method
-     */
+    //Sends audiosample path to samplebox()
     sampleList.addEventListener('click', function(event) {
         if(event.target.id === 'sample-list' || event.target.id === 'library-h3') {
             return;
@@ -51,14 +51,13 @@ function Desktop() {
     $('#project-controller').draggable({containment: 'document'});
     $('#mixer-board').draggable({containment: 'document'});
     
-
     /**
      * Skapar en samplebox div som är draggable + innehåller ett sample + en play knapp
      * @param id = idCounter
      * @param sample = path to sample
      */
     function samplebox(id, sample, event) {
-        console.log(event.target);
+        //Make samplebox draggable
         $(function () {
             $('#samplebox' + id).draggable({
                 revert: 'invalid', 
@@ -83,12 +82,14 @@ function Desktop() {
             });   
         });
 
+        //Create a samplebox
         let sampleBox = document.createElement('div');
         sampleBox.setAttribute('class', 'draggable-content');
         sampleBox.setAttribute('id', 'samplebox' + id);
         sampleBox.setAttribute('sample-id', event.target.getAttribute('sample-id'));
         let img = document.createElement('img');
         
+        //Set color and image
         switch(sample) {
             case 'HIMITSU Big Synth Chord.ogg':
                 img.src = "./images/synth_icon.png";
@@ -118,10 +119,7 @@ function Desktop() {
                 sampleBox.style.backgroundColor = '#93e6ff';
                 break;
         }
-
-        /**
-         * The 'play' button for specific samplebox
-         */
+        //Create a preview button
         let playButton = document.createElement('i');
         playButton.setAttribute('data-playbuttonid', event.target.getAttribute('sample-id'));
         playButton.setAttribute('class', 'fa fa-play-circle');
@@ -129,17 +127,10 @@ function Desktop() {
         playButton.setAttribute('aria-hidden', 'true');
         playButton.style.fontSize = '30px';
 
-        //Create new audio sample
-        // let audiosample = './audio/' + sample;
-        // SampleHandler.loadSound('./audio/Silence.ogg', true); 
-        // SampleHandler.loadSound(audiosample, false);
-
         inactiveSamples.appendChild(sampleBox);
         sampleBox.appendChild(playButton);
         sampleBox.appendChild(img);
     }
-
-    
 
     /**
      * Button handler
@@ -149,7 +140,7 @@ function Desktop() {
             return;
         } else {
             let playButton = document.getElementById(event.target.id);
-            //'play-specific-sample-button'
+            //Preview button
             if(playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle') {
                 if(playChecker) {
                     SampleHandler.previewSample(playButton.getAttribute("data-playbuttonid"), false);
@@ -162,6 +153,7 @@ function Desktop() {
                     playButton.setAttribute('class', 'fa fa-play-circle');
                     playChecker = true;
                 }
+            //Global play/stop button
             } else if (playButton.tagName === 'I' && playButton.id === 'play-all-button' || playButton.tagName === 'I' && playButton.id === 'stop-all-button') {    //'play-all-channels-button'
                 if(playButton.id === 'play-all-button') {
                     SampleHandler.playChannels(false, playButton);
@@ -172,7 +164,8 @@ function Desktop() {
                         recordChecker = true;
                     }
                 }
-            } else if(playButton.type === 'checkbox') {     //Check if checkbox is checked or not
+            //Mixer checkbox
+            } else if(playButton.type === 'checkbox') {     
                 let idSelector = function() { return this.id; };
                 let checkedChannel = $(":checkbox:checked").map(idSelector).get();
                 let notChecked = $(":checkbox:not(:checked)").map(idSelector).get();
@@ -182,6 +175,7 @@ function Desktop() {
                 for(let j = 0; j < notChecked.length; j++) {
                     SampleHandler.unmuteChannel(notChecked[j]);
                 }
+            //Record button
             } else if(playButton.id === 'record-button') {
                 if(recordChecker) {
                     SampleHandler.playChannels(false);
@@ -196,6 +190,7 @@ function Desktop() {
         }
     });
 
+    //Playback starting point
     document.querySelector('#starting-point').addEventListener('change', function(event) {
         switch(this.options[this.selectedIndex].value) {
             case '1': SampleHandler.playChannels(1); 
@@ -215,6 +210,7 @@ function Desktop() {
         }
     });
 
+    //Sample library minimizer
     $("#minimize-button").click(function(){
         if($(this).html() == "-"){
             $(this).html("+");
