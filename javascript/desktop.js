@@ -123,7 +123,7 @@ function Desktop() {
          * The 'play' button for specific samplebox
          */
         let playButton = document.createElement('i');
-        playButton.setAttribute('data-playbuttonid', id);
+        playButton.setAttribute('data-playbuttonid', event.target.getAttribute('sample-id'));
         playButton.setAttribute('class', 'fa fa-play-circle');
         playButton.setAttribute('id', 'playbutton' + id);
         playButton.setAttribute('aria-hidden', 'true');

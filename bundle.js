@@ -132,7 +132,7 @@ function Desktop() {
          * The 'play' button for specific samplebox
          */
         let playButton = document.createElement('i');
-        playButton.setAttribute('data-playbuttonid', id);
+        playButton.setAttribute('data-playbuttonid', event.target.getAttribute('sample-id'));
         playButton.setAttribute('class', 'fa fa-play-circle');
         playButton.setAttribute('id', 'playbutton' + id);
         playButton.setAttribute('aria-hidden', 'true');
@@ -247,17 +247,22 @@ let mixerBoard = document.querySelector('#mixer-board');
 
 let samples = [
     "./audio/HIMITSU Big Synth Chord.ogg",
-    "./audio/HIMITSU Soft Piano.ogg"
+    "./audio/HIMITSU Soft Piano.ogg",
+    "./audio/HIMITSU Soft Synth.ogg",
+    "./audio/HIMITSU Piano Low.ogg",
+    "./audio/HIMITSU Drum Beat.ogg",
+    "./audio/HIMITSU Cute Vocals.ogg",
+    "./audio/HIMITSU Main Melody.ogg"
 ];       //Array with all unused loaded samples
 
 let silentAudio = [];   //Silent audiobuffers
 let blobCollecter = [];
 
-let channel1 = [];      //Channel 1's list of samples
-let channel2 = [];      //Channel 2's list of samples
-let channel3 = [];      //Channel 3's list of samples
-let channel4 = [];      //Channel 4's list of samples
-let channel5 = [];      //Channel 5's list of samples
+let channel1;      //Channel 1's list of samples
+let channel2;         //Channel 2's list of samples
+let channel3;        //Channel 3's list of samples
+let channel4;        //Channel 4's list of samples
+let channel5;       //Channel 5's list of samples
 
 let context = new AudioContext();
 
@@ -297,16 +302,14 @@ function Channel(id) {
     this.id = id;
     this.samples = []; //channels audiobuffers
     this.sources = []; //Keep track of buffersource nodes created from scheduler method
-
+    this.timeouts = [];
     this.sampleslotDivs = [];
 
     for (let i = 0; i < 8; i++) {
-        let exde = document.querySelector('#channel' + this.id + 'Slot' + i);
+        let theSlot = document.querySelector('#channel' + this.id + 'Slot' + i);
         console.log('#channel' + this.id + 'Slot' + i);
-        this.sampleslotDivs.push(exde);
+        this.sampleslotDivs.push(theSlot);
     }
-
-    // console.log(this.sampleslotDivs);
 
     for (let i = 0; i < 8; i++) {
         loadSound(this, './audio/Silence.ogg');
@@ -321,23 +324,33 @@ Channel.prototype = {
         this.samples.splice(sampleSlot, 1, newSample);
     },
     scheduler: function() {
-        for (let i = 0; i < this.samples.length; i++) {
-            let audio = context.createBufferSource();
-            this.sources[i] = audio;
-            audio.buffer = this.samples[i];
-            audio.connect(context.destination);
-            audio.start(context.currentTime + (audio.buffer.duration * i));
+            for (let i = 0; i < this.samples.length; i++) {
+                let audio = context.createBufferSource();
+                this.sources[i] = audio;
+                audio.buffer = this.samples[i];
+                audio.connect(context.destination);
+                audio.start(context.currentTime + (audio.buffer.duration * i));
 
-            setTimeout(function() {
-                console.log('bajs');
-                // Add the border to the playing sample slot
-                let playingSlot = this.sampleslotDivs[i];
-                playingSlot.style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
-            }.bind(this), audio.buffer.duration * i * 1000);
+                this.timeouts.push(setTimeout(function() {
+                    console.log('bajs');
+                    // Add the border to the playing sample slot
+                    let playingSlot = this.sampleslotDivs[i];
+                    playingSlot.style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
+                }.bind(this), audio.buffer.duration * i * 1000));
 
-            audio.onended = function() {
-                this.sampleslotDivs[i].style.boxShadow = '';
-            }.bind(this);
+                audio.onended = function() {
+                    this.sampleslotDivs[i].style.boxShadow = '';
+                    console.log('onended');
+                }.bind(this);
+        }
+    },
+    stop: function() {
+        for (let i = 0; i < this.sources.length; i++) {
+            this.sources[i].stop(0);
+        }
+
+        for (let i = 0; i < this.timeouts.length; i++) {
+            clearTimeout(this.timeouts[i]);
         }
     }   
 }
@@ -350,7 +363,6 @@ function droppableHandler(droppableId, draggableUi) {
     }
 }
 
-//Garbage can handler
 $('#garbageCan').droppable({
         drop: function (event, ui) {
             let previousSlot = ui.draggable.attr("previous-slot");
@@ -389,37 +401,29 @@ $('#garbageCan').droppable({
         }    
 });
 
-let channel55;
-
-//Sample slot handler
 function droppableDivs() {
-    channel55 = new Channel(5);
-    // inactiveSampleHandler.addSample(0, "./audio/HIMITSU Soft Piano.ogg");
-    // inactiveSampleHandler.addSample(1, "./audio/HIMITSU Piano Low.ogg");
-
+    channel1 = new Channel(1); 
+    channel2 = new Channel(2); 
+    channel3 = new Channel(3); 
+    channel4 = new Channel(4); 
+    channel5 = new Channel(5); 
     $('.sample-slot').droppable({
         accept: '.draggable-content',
         drop: function (event, ui) {
             let draggableUi = ui.draggable;
             let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");    //ta ut samplets index från sample arrayen
-            let droppableHelper = $(this).attr("helper");                               //lägg den i index (droppableId) i playlsit arrayen
+            let droppableHelper = $(this).attr("helper");                              //lägg den i index (droppableId) i playlist arrayen
             let droppableId = $(this).attr("id");
             let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
             let draggableSampleId = ui.draggable.attr("sample-id");
             draggableId.setAttribute('previous-slot', droppableId);
             draggableId.setAttribute('helper', droppableHelper);
-                                                                                            // console.log('draggable sample '  + draggableId + ' dropped on ' + droppableId);
-            //put the dropped sample at the slot index in the channels array
-            if(droppableId.includes('channel1Slot')) { channel1.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }
-            if(droppableId.includes('channel2Slot')) { channel2.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }
-            if(droppableId.includes('channel3Slot')) { channel3.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }   
-            if(droppableId.includes('channel4Slot')) { channel4.splice(droppableHelper, 1, samples[draggableHelper]); droppableHandler(droppableId, draggableUi); }   
 
-            if(droppableId.includes('channel5Slot')) {
-                channel55.addSample(droppableHelper, samples[draggableSampleId]); 
-                // channel5.splice(droppableHelper, 1, samples[draggableHelper]); 
-                droppableHandler(droppableId, draggableUi); 
-            }   
+            if(droppableId.includes('channel1Slot')) { channel1.addSample(droppableHelper, samples[draggableSampleId]); droppableHandler(droppableId, draggableUi); }
+            if(droppableId.includes('channel2Slot')) { channel2.addSample(droppableHelper, samples[draggableSampleId]); droppableHandler(droppableId, draggableUi); }
+            if(droppableId.includes('channel3Slot')) { channel3.addSample(droppableHelper, samples[draggableSampleId]); droppableHandler(droppableId, draggableUi); }   
+            if(droppableId.includes('channel4Slot')) { channel4.addSample(droppableHelper, samples[draggableSampleId]); droppableHandler(droppableId, draggableUi); }   
+            if(droppableId.includes('channel5Slot')) { channel5.addSample(droppableHelper, samples[draggableSampleId]); droppableHandler(droppableId, draggableUi); }   
 
             $(this).append(ui.draggable);
             ui.draggable.position({of: $(this), my: 'left top', at: 'left top'});
@@ -431,14 +435,11 @@ function droppableDivs() {
             
             if(previousSlot !== undefined) {
                 let preSlotNum = previousSlot.substr(previousSlot.length - 1);
-                if(previousSlot.includes('channel1Slot')) { channel1.splice(preSlotNum, 1, silentAudio[preSlotNum]); }
-                if(previousSlot.includes('channel2Slot')) { channel2.splice(preSlotNum, 1, silentAudio[preSlotNum]); }
-                if(previousSlot.includes('channel3Slot')) { channel3.splice(preSlotNum, 1, silentAudio[preSlotNum]); }
-                if(previousSlot.includes('channel4Slot')) { channel4.splice(preSlotNum, 1, silentAudio[preSlotNum]); }
-                if(previousSlot.includes('channel5Slot')) { 
-                    // channel5.splice(preSlotNum, 1, silentAudio[preSlotNum]);
-                    channel55.addSample(preSlotNum, "./audio/Silence.ogg");
-                }
+                if(previousSlot.includes('channel1Slot')) { channel1.addSample(preSlotNum, "./audio/Silence.ogg"); }
+                if(previousSlot.includes('channel2Slot')) { channel2.addSample(preSlotNum, "./audio/Silence.ogg"); }
+                if(previousSlot.includes('channel3Slot')) { channel3.addSample(preSlotNum, "./audio/Silence.ogg"); }
+                if(previousSlot.includes('channel4Slot')) { channel4.addSample(preSlotNum, "./audio/Silence.ogg"); }
+                if(previousSlot.includes('channel5Slot')) { channel5.addSample(preSlotNum, "./audio/Silence.ogg"); }
             } else {
                 return;
             }
@@ -446,40 +447,27 @@ function droppableDivs() {
     });
 }
             
-//https://dl.dropboxusercontent.com/s/6s6rn6rcdlggdzj/Weird%20Synth.wav?dl=0
-// let audios = [audio1, audio2, audio3];
-//sources = collection of audio buffersource nodes
 let preview, audio1, audio2, audio3, audio4, audio5, sources1 = [], sources2 = [], sources3 = [], sources4 = [], sources5 = [];  
 
 
-
-// Store audio sample buffer in an array
 function loadSound(channel, audiosample, sampleSlot) {
     let request = new XMLHttpRequest();
     request.open('GET', audiosample, true);
     request.responseType = 'arraybuffer';
     request.onload = function() {
         context.decodeAudioData(request.response, function(buffer) {
-            console.log(sampleSlot);
-            if (sampleSlot !== undefined) {
-                channel.samples[sampleSlot] = buffer;
+            if (channel !== undefined) {
+                if (sampleSlot !== undefined) {
+                    channel.samples[sampleSlot] = buffer;
+                } else {
+                    channel.samples.push(buffer);
+                }
             } else {
-                channel.samples.push(buffer);
+                preview = context.createBufferSource(); 
+                preview.buffer = buffer; 
+                preview.connect(context.destination);  
+                preview.start(0);
             }
-            
-            // if(silence) {
-            //     for(let i = 0; i < 8; i++) {
-            //         // channel1.push(buffer);
-            //         // channel2.push(buffer);
-            //         // channel3.push(buffer);
-            //         // channel4.push(buffer);
-            //         // channel5.push(buffer);
-            //         inactiveSampleHandler.samples.push(buffer);
-            //         silentAudio.push(buffer);
-            //     }
-            // } else {
-            //     inactiveSampleHandler.samples.push(buffer);
-            // }
         }, function() {
             console.error('Could not load a sample');
         });
@@ -487,38 +475,46 @@ function loadSound(channel, audiosample, sampleSlot) {
     request.send();
 }
 
+
+
 function playChannels(startPoint, playButton) {
-    if(channel1[0] === undefined) {
-        return;
-    } else {
-        $('#starting-point').prop('selectedIndex', 0);
-        document.querySelector('#play-all-button').style.pointerEvents = 'none';
-        $('#starting-point').prop('disabled', true); //disable all starting point buttons
+    channel1.scheduler();
+    channel2.scheduler();
+    channel3.scheduler();
+    channel4.scheduler();
+    channel5.scheduler();
+    // if(channel1[0] === undefined) {
+    //     return;
+    // } else {
+    //     $('#starting-point').prop('selectedIndex', 0);
+    //     document.querySelector('#play-all-button').style.pointerEvents = 'none';
+    //     $('#starting-point').prop('disabled', true); //disable all starting point buttons
         
-        if(playButton) {
-            playButton.style.opacity = '';
-            playButton.style.color = '#d3e2ed';
-            playButton.style.pointerEvents = 'none';    //prevent spamming multiple layer of sounds by disabling button
-            document.querySelector('#stop-all-button').style.opacity = '0.6';
-            document.querySelector('#stop-all-button').style.color = '';
-        }
-        let counterPoint = startPoint;
-        let audioStart = context.currentTime;  //start the sound at this time
-        let next = 0;
-        // scheduler(audioStart, next, index)
-        if(startPoint) {
-            for(let i = 0; i < 8; i++) {
-                startPointHandler(audioStart, counterPoint, next);  //the specified starting point of playback
-                counterPoint++;
-                next++;
-            }
-        } else {
-            for(let i = 0; i < 8; i++) {
-                startPointHandler(audioStart, next, next);
-                next++;
-            }
-        }
-    }
+    //     if(playButton) {
+    //         playButton.style.opacity = '';
+    //         playButton.style.color = '#d3e2ed';
+    //         playButton.style.pointerEvents = 'none';    //prevent spamming multiple layer of sounds by disabling button
+    //         document.querySelector('#stop-all-button').style.opacity = '0.6';
+    //         document.querySelector('#stop-all-button').style.color = '';
+    //     }
+    //     let counterPoint = startPoint;
+    //     let audioStart = context.currentTime;  //start the sound at this time
+    //     let next = 0;
+    //     // scheduler(audioStart, next, index)
+    //     if(startPoint) {
+    //         for(let i = 0; i < 8; i++) {
+    //             startPointHandler(audioStart, counterPoint, next);  //the specified starting point of playback
+    //             counterPoint++;
+    //             next++;
+    //         }
+    //     } else {
+    //         for(let i = 0; i < 8; i++) {
+    //             startPointHandler(audioStart, next, next);
+    //             next++;
+    //         }
+    //     }
+    // }
+
 }
 
 /**
@@ -534,150 +530,44 @@ function startPointHandler(audioStart, next, startingPoint) {
     scheduler5(audioStart, next, startingPoint);
 }
 
-function scheduler1(audioStart, index, starthere) {
-    let playingSlot = document.querySelector('#channel1Slot' + index);
-    if(playingSlot === null) {
-        return;
-    } else {
-        playingSlot.style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
-        playingSlot.style.opacity = '';
-        // audios[index] = context.createBufferSource(); 
-        audio1 = context.createBufferSource(); 
-        sources1.splice(index, 0, audio1);
-        audio1.buffer = channel1[index]; 
-        audio1.connect(channel1Filter);
-        channel1Filter.connect(channel1Gain);
-        audio1.start(audioStart + (audio1.buffer.duration * starthere));
-        audio1.onended = function() {
-            playingSlot.style.boxShadow = '';
-            playingSlot.style.opacity = '0.5';
-        }
-    }
-}
-
-function scheduler2(audioStart, index, starthere) {
-    let playingSlot = document.querySelector('#channel2Slot' + index);
-    if(playingSlot === null) {
-        return;
-    } else {
-        playingSlot.style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
-        audio2 = context.createBufferSource();
-        sources2.splice(index, 0, audio2);
-        audio2.buffer = channel2[index];  //array with all the loaded audio
-        audio2.connect(channel2Filter);
-        channel2Filter.connect(channel2Gain);
-        audio2.start(audioStart + (audio2.buffer.duration * starthere));
-        audio2.onended = function() {
-            playingSlot.style.boxShadow = '';
-            playingSlot.style.opacity = '0.5';
-        }
-    }
-}
-
-function scheduler3(audioStart, index, starthere) {
-    let playingSlot = document.querySelector('#channel3Slot' + index);
-    if(playingSlot === null) {
-        return;
-    } else {
-        playingSlot.style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
-        audio3 = context.createBufferSource();
-        sources3.splice(index, 0, audio3);
-        audio3.buffer = channel3[index];  //array with all the loaded audio
-        audio3.connect(channel3Filter);
-        channel3Filter.connect(channel3Gain);
-        audio3.start(audioStart + (audio3.buffer.duration * starthere));  
-        audio3.onended = function() {
-            playingSlot.style.boxShadow = '';
-            playingSlot.style.opacity = '0.5';
-        }
-    }
-}
-
-function scheduler4(audioStart, index, starthere) {
-    let playingSlot = document.querySelector('#channel4Slot' + index);
-    if(playingSlot === null) {
-        return;
-    } else {
-        playingSlot.style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
-        audio4 = context.createBufferSource();
-        sources4.splice(index, 0, audio4);
-        audio4.buffer = channel4[index];  //array with all the loaded audio
-        audio4.connect(channel4Filter);
-        channel4Filter.connect(channel4Gain);
-        audio4.start(audioStart + (audio4.buffer.duration * starthere));
-        audio4.onended = function() {
-            playingSlot.style.boxShadow = '';    
-            playingSlot.style.opacity = '0.5';
-        }
-    }
-}
-
-function scheduler5(audioStart, index, starthere) {
-    let playingSlot = document.querySelector('#channel5Slot' + index);
-    if(playingSlot === null) {
-        return;
-    } else {
-        playingSlot.style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
-        audio5 = context.createBufferSource();
-        sources5.splice(index, 0, audio5);
-        audio5.buffer = channel5[index];  //array with all the loaded audio
-        audio5.connect(channel5Filter);
-        channel5Filter.connect(channel5Gain);
-        audio5.start(audioStart + (audio5.buffer.duration * starthere));
-        audio5.onended = function() {
-            playingSlot.style.boxShadow = '';    
-            playingSlot.style.opacity = '0.5';
-            if(index === 7) {      //Reset the opacity when channel is finished playing or stopped
-                for(let j = 1; j < 6; j++) {
-                    for(let i = 0; i < 8; i++) {
-                        document.querySelector('#channel' + j + 'Slot' + i).style.opacity = '';
-                        $('#starting-point').prop('disabled', false); //enable all starting point buttons
-                        document.querySelector('#play-all-button').style.pointerEvents = '';
-
-                        recorder.stop();
-                        recordButton.style.opacity = '';
-                        console.log('Stop recording!');
-                    }
-                }
-            }
-        }
-    }
-}
-
 function previewSample(index, stopper) {
     if(stopper) {
         preview.stop(0);
     } else {
-        preview = context.createBufferSource(); 
-        preview.buffer = samples[index]; 
-        preview.connect(context.destination);  
-        preview.start(0);
+       loadSound(undefined, samples[index]);
     }
 }
 
 function stopAll(playButton) {
-    for(let i = 0; i < 8; i++) {
-        if (sources1[i]) {
-            sources1[i].stop(0);
-            sources2[i].stop(0);
-            sources3[i].stop(0);
-            sources4[i].stop(0);
-            sources5[i].stop(0);
-        }
-        if(playButton) {
-            playButton.style.opacity = '';
-            playButton.style.color = '#d3e2ed';
-            document.querySelector('#play-all-button').style.opacity = '0.6';
-            document.querySelector('#play-all-button').style.color = '';
-            document.querySelector('#play-all-button').style.pointerEvents = '';
-        }
-    }
-    if(typeof sources !== 'undefined') {
-        $('#starting-point').prop('disabled', false); //enable all starting point buttons
-    } else {
-        return;
-    }
     
+    for(let i = 0; i < 8; i++) {
+            channel1.stop();
+            channel2.stop();
+            channel3.stop();
+            channel4.stop();
+            channel5.stop();
+
+        // if (channel1.sources[i]) {
+        //     channel1.sources[i].stop(0);
+        //     // channel1.scheduler(true);
+        //     channel2.sources[i].stop(0);
+        //     channel3.sources[i].stop(0);
+        //     channel4.sources[i].stop(0);
+        //     channel5.sources[i].stop(0);
+        // }
+        // if(playButton) {
+        //     playButton.style.opacity = '';
+        //     playButton.style.color = '#d3e2ed';
+        //     document.querySelector('#play-all-button').style.opacity = '0.6';
+        //     document.querySelector('#play-all-button').style.color = '';
+        //     document.querySelector('#play-all-button').style.pointerEvents = '';
+        // }
+    }
+    // if(typeof sources !== 'undefined') {
+    //     $('#starting-point').prop('disabled', false); //enable all starting point buttons
+    // } else {
+    //     return;
+    // }
 }
 
 function muteChannel(id) {
@@ -735,8 +625,6 @@ function audioRecorder(recording) {
 }
 
 mixerBoard.addEventListener('input', function(event) {
-    channel55.scheduler(audioTime);
-    // inactiveSampleHandler.scheduler(1);
     if(event.target.className === 'mixer-volume') {
         switch(event.target.id) {
             case 'mixVolume1': channel1Gain.gain.value = event.target.value / 100;
