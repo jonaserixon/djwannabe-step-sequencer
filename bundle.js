@@ -318,6 +318,9 @@ function Channel(id) {
     this.sources = [];          //Keep track of buffersource nodes created from scheduler method
     this.timeouts = [];         //setTimeOuts
     this.sampleslotDivs = [];   //Sample-slot id
+    this.channelGain = context.createGain();
+    this.channelFilter = context.createBiquadFilter();
+    this.channelFilter.frequency.value = 20000;
 
     for (let i = 0; i < 8; i++) {
         let theSlot = document.querySelector('#channel' + this.id + 'Slot' + i);
@@ -333,14 +336,15 @@ Channel.prototype = {
     addSample: function(sampleSlot, samplePath) {
         loadSound(this, samplePath, sampleSlot);
     },
-    scheduler: function(gainControl, filterControl) {
+    scheduler: function() {
         for (let i = 0; i < this.samples.length; i++) {
             
             let audio = context.createBufferSource();
             this.sources[i] = audio;
             audio.buffer = this.samples[i];
-            audio.connect(filterControl);
-            filterControl.connect(gainControl);
+            audio.connect(this.channelFilter);
+            this.channelFilter.connect(this.channelGain);
+            this.channelGain.connect(gainNode);
             audio.start(context.currentTime + (audio.buffer.duration * i));
             this.timeouts.push(setTimeout(function() {
                 // Add the border to the playing sample slot
@@ -519,11 +523,11 @@ function stopAll(playButton) {
 }
 
 function muteChannel(id) {
-    if(id == 1) { channel1Gain.gain.value = 0; }
-    if(id == 2) { channel2Gain.gain.value = 0; }    
-    if(id == 3) { channel3Gain.gain.value = 0; }
-    if(id == 4) { channel4Gain.gain.value = 0; }
-    if(id == 5) { channel5Gain.gain.value = 0; }
+    if(id == 1) { channel1.channelGain.gain.value = 0; }
+    if(id == 2) { channel2.channelGain.gain.value = 0; }    
+    if(id == 3) { channel3.channelGain.gain.value = 0; }
+    if(id == 4) { channel4.channelGain.gain.value = 0; }
+    if(id == 5) { channel5.channelGain.gain.value = 0; }
 }
 
 function unmuteChannel(id) {

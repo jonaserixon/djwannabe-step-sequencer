@@ -23,23 +23,7 @@ let context = new AudioContext();
 let gainNode = context.createGain(); //Create a gain node
 let audioTime = context.currentTime; //Current time since audioContext declared
 
-let channel1Gain = context.createGain();
-let channel2Gain = context.createGain();
-let channel3Gain = context.createGain();
-let channel4Gain = context.createGain();
-let channel5Gain = context.createGain();
 
-let channel1Filter = context.createBiquadFilter();
-let channel2Filter = context.createBiquadFilter();
-let channel3Filter = context.createBiquadFilter();
-let channel4Filter = context.createBiquadFilter();
-let channel5Filter = context.createBiquadFilter();
-
-channel1Filter.frequency.value = 20000;
-channel2Filter.frequency.value = 20000;
-channel3Filter.frequency.value = 20000;
-channel4Filter.frequency.value = 20000;
-channel5Filter.frequency.value = 20000;
 
 let dest = context.createMediaStreamDestination();
 let recorder = new MediaRecorder(dest.stream);
@@ -47,11 +31,6 @@ let recorder = new MediaRecorder(dest.stream);
 gainNode.connect(context.destination);
 gainNode.connect(dest);
 
-channel1Gain.connect(gainNode);
-channel2Gain.connect(gainNode);
-channel3Gain.connect(gainNode);
-channel4Gain.connect(gainNode);
-channel5Gain.connect(gainNode);
 
 function Channel(id) {
     this.id = id;               //Channel id
@@ -59,6 +38,9 @@ function Channel(id) {
     this.sources = [];          //Keep track of buffersource nodes created from scheduler method
     this.timeouts = [];         //setTimeOuts
     this.sampleslotDivs = [];   //Sample-slot id
+    this.channelGain = context.createGain();
+    this.channelFilter = context.createBiquadFilter();
+    this.channelFilter.frequency.value = 20000;
 
     for (let i = 0; i < 8; i++) {
         let theSlot = document.querySelector('#channel' + this.id + 'Slot' + i);
@@ -74,14 +56,15 @@ Channel.prototype = {
     addSample: function(sampleSlot, samplePath) {
         loadSound(this, samplePath, sampleSlot);
     },
-    scheduler: function(gainControl, filterControl) {
+    scheduler: function() {
         for (let i = 0; i < this.samples.length; i++) {
             
             let audio = context.createBufferSource();
             this.sources[i] = audio;
             audio.buffer = this.samples[i];
-            audio.connect(filterControl);
-            filterControl.connect(gainControl);
+            audio.connect(this.channelFilter);
+            this.channelFilter.connect(this.channelGain);
+            this.channelGain.connect(gainNode);
             audio.start(context.currentTime + (audio.buffer.duration * i));
             this.timeouts.push(setTimeout(function() {
                 // Add the border to the playing sample slot
@@ -260,11 +243,11 @@ function stopAll(playButton) {
 }
 
 function muteChannel(id) {
-    if(id == 1) { channel1Gain.gain.value = 0; }
-    if(id == 2) { channel2Gain.gain.value = 0; }    
-    if(id == 3) { channel3Gain.gain.value = 0; }
-    if(id == 4) { channel4Gain.gain.value = 0; }
-    if(id == 5) { channel5Gain.gain.value = 0; }
+    if(id == 1) { channel1.channelGain.gain.value = 0; }
+    if(id == 2) { channel2.channelGain.gain.value = 0; }    
+    if(id == 3) { channel3.channelGain.gain.value = 0; }
+    if(id == 4) { channel4.channelGain.gain.value = 0; }
+    if(id == 5) { channel5.channelGain.gain.value = 0; }
 }
 
 function unmuteChannel(id) {
