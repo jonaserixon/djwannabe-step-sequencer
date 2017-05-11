@@ -218,7 +218,7 @@ function Desktop() {
                     playButton.removeAttribute('class');
                     playButton.setAttribute('class', 'fa fa-lock');
                 }
-            }  
+            } 
         }
     });
 
@@ -265,8 +265,9 @@ let volumeKnob = document.querySelector('#volumeKnob');
 let delayKnob = document.querySelector('#delayKnob');
 let recordButton = document.querySelector('#record-button');
 let mixerBoard = document.querySelector('#mixer-board');
+let looper = document.querySelector('#loop-button');
 
-let samples = audioSamples.audioSamples();
+let samples = audioSamples.audioSamples(); //audiosample paths
 
 let blobCollecter = [];
 let preview;
@@ -279,26 +280,18 @@ let channel5;
 
 let context = new AudioContext();
 
+
+
+let analyser = context.createAnalyser();
+let bufferLength = analyser.frequencyBinCount;
+let dataArray = new Uint8Array(bufferLength);
+analyser.getByteTimeDomainData(dataArray);
+
+let canvas = document.querySelector('#visualizer');
+let canvasCtx = canvas.getContext('2d');
+
 let gainNode = context.createGain(); //Create a gain node
 let audioTime = context.currentTime; //Current time since audioContext declared
-
-let channel1Gain = context.createGain();
-let channel2Gain = context.createGain();
-let channel3Gain = context.createGain();
-let channel4Gain = context.createGain();
-let channel5Gain = context.createGain();
-
-let channel1Filter = context.createBiquadFilter();
-let channel2Filter = context.createBiquadFilter();
-let channel3Filter = context.createBiquadFilter();
-let channel4Filter = context.createBiquadFilter();
-let channel5Filter = context.createBiquadFilter();
-
-channel1Filter.frequency.value = 20000;
-channel2Filter.frequency.value = 20000;
-channel3Filter.frequency.value = 20000;
-channel4Filter.frequency.value = 20000;
-channel5Filter.frequency.value = 20000;
 
 let dest = context.createMediaStreamDestination();
 let recorder = new MediaRecorder(dest.stream);
@@ -306,11 +299,7 @@ let recorder = new MediaRecorder(dest.stream);
 gainNode.connect(context.destination);
 gainNode.connect(dest);
 
-channel1Gain.connect(gainNode);
-channel2Gain.connect(gainNode);
-channel3Gain.connect(gainNode);
-channel4Gain.connect(gainNode);
-channel5Gain.connect(gainNode);
+let loopCheck = false;
 
 function Channel(id) {
     this.id = id;               //Channel id
@@ -336,15 +325,18 @@ Channel.prototype = {
     addSample: function(sampleSlot, samplePath) {
         loadSound(this, samplePath, sampleSlot);
     },
-    scheduler: function() {
+    scheduler: function(channel) {
         for (let i = 0; i < this.samples.length; i++) {
             
             let audio = context.createBufferSource();
             this.sources[i] = audio;
             audio.buffer = this.samples[i];
+
             audio.connect(this.channelFilter);
-            this.channelFilter.connect(this.channelGain);
+            this.channelFilter.connect(analyser);
+            analyser.connect(this.channelGain);
             this.channelGain.connect(gainNode);
+
             audio.start(context.currentTime + (audio.buffer.duration * i));
             this.timeouts.push(setTimeout(function() {
                 // Add the border to the playing sample slot
@@ -354,6 +346,10 @@ Channel.prototype = {
             
             audio.onended = function() {
                 this.sampleslotDivs[i].style.boxShadow = '';
+                if(i === 7 && loopCheck === true) {
+                    console.log('loopa');
+                    channel.scheduler(channel);
+                }
             }.bind(this);
         }
     },
@@ -475,11 +471,11 @@ function loadSound(channel, audiosample, sampleSlot) {
 }
 
 function playChannels(startPoint, playButton) {
-    channel1.scheduler(channel1Gain, channel1Filter);
-    channel2.scheduler(channel2Gain, channel2Filter);
-    channel3.scheduler(channel3Gain, channel3Filter);
-    channel4.scheduler(channel4Gain, channel4Filter);
-    channel5.scheduler(channel5Gain, channel5Filter);
+    channel1.scheduler(channel1);
+    channel2.scheduler(channel2);
+    channel3.scheduler(channel3);
+    channel4.scheduler(channel4);
+    channel5.scheduler(channel5);
 
     if(channel1.samples[0] === undefined) {
         return;
@@ -531,11 +527,11 @@ function muteChannel(id) {
 }
 
 function unmuteChannel(id) {
-    if(id == 1) { channel1Gain.gain.value = 1; }
-    if(id == 2) { channel2Gain.gain.value = 1; }    
-    if(id == 3) { channel3Gain.gain.value = 1; }
-    if(id == 4) { channel4Gain.gain.value = 1; }
-    if(id == 5) { channel5Gain.gain.value = 1; }
+    if(id == 1) { channel1.channelGain.gain.value = 1; }
+    if(id == 2) { channel2.channelGain.gain.value = 1; }    
+    if(id == 3) { channel3.channelGain.gain.value = 1; }
+    if(id == 4) { channel4.channelGain.gain.value = 1; }
+    if(id == 5) { channel5.channelGain.gain.value = 1; }
 }
 
 function audioRecorder(recording) {
@@ -594,15 +590,15 @@ mixerBoard.addEventListener('input', function(event) {
         }
         console.log(filterFrequency);
         switch(event.target.id) {
-            case 'lowpassFilter1': channel1Filter.frequency.value = filterFrequency;
+            case 'lowpassFilter1': channel1.channelFilter.frequency.value = filterFrequency;
                 break;
-            case 'lowpassFilter2': channel2Filter.frequency.value = filterFrequency;
+            case 'lowpassFilter2': channel2.channelFilter.value = filterFrequency;
                 break;
-            case 'lowpassFilter3': channel3Filter.frequency.value = filterFrequency;
+            case 'lowpassFilter3': channel3.channelFilter.value = filterFrequency;
                 break;
-            case 'lowpassFilter4': channel4Filter.frequency.value = filterFrequency;
+            case 'lowpassFilter4': channel4.channelFilter.value = filterFrequency;
                 break;
-            case 'lowpassFilter5': channel5Filter.frequency.value = filterFrequency;
+            case 'lowpassFilter5': channel5.channelFilter.value = filterFrequency;
                 break;
         }
     }
@@ -623,7 +619,21 @@ volumeKnob.addEventListener('input', function() {
     }
     console.log('Volume: ' + (Math.round(gainNode.gain.value * 100)) + '%');
 })
- 
+
+looper.addEventListener('click', function(event) {
+    let loopButton = document.getElementById(event.target.id);
+    let checker = false;
+    if(loopButton.className === 'fa fa-repeat') {
+        loopCheck = true;
+        console.log('click');
+        if(checker) {
+            loopCheck = false;
+        }
+
+        checker = true;
+    } 
+})
+
 module.exports = {
     playChannels: playChannels,
     previewSample: previewSample, 

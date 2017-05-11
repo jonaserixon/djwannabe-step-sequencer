@@ -195,7 +195,7 @@ function Desktop() {
                     playButton.removeAttribute('class');
                     playButton.setAttribute('class', 'fa fa-lock');
                 }
-            }  
+            } 
         }
     });
 
