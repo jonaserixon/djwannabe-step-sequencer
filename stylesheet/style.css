@@ -24,19 +24,19 @@ body {
 
 .main-timeline { display: inline-block; margin-bottom: 75px; }
 
-#snaptarget1 { height: 95px; width:750px; margin-top: 20px; margin-left: 10px; background-color: #061a29; border-radius: 5px; }
+#snaptarget1 { height: 95px; width:750px; margin-top: 20px; margin-left: 10px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
 #snaptarget1 h3 { float: left; color: #86abc4; margin-left: 5px; margin-top: 40px; margin-right: 10px; }
 
-#snaptarget2 { height: 95px; width:750px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; }
+#snaptarget2 { height: 95px; width:750px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
 #snaptarget2 h3 { float: left; color: #86abc4; margin-left: 5px; margin-top: 40px; margin-right: 10px; }
 
-#snaptarget3 { height: 95px; width:750px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; }
+#snaptarget3 { height: 95px; width:750px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
 #snaptarget3 h3 { float: left; color: #86abc4; margin-left: 5px; margin-top: 40px; margin-right: 10px; }
 
-#snaptarget4 { height: 95px; width:750px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; }
+#snaptarget4 { height: 95px; width:750px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
 #snaptarget4 h3 { float: left; color: #86abc4; margin-left: 5px; margin-top: 40px; margin-right: 10px; }
 
-#snaptarget5 { height: 95px; width:750px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; }
+#snaptarget5 { height: 95px; width:750px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
 #snaptarget5 h3 { float: left; color: #86abc4; margin-left: 5px; margin-top: 40px; margin-right: 10px; }
 
 .sample-slot {
