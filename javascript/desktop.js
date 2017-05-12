@@ -118,6 +118,7 @@ function Desktop() {
                 sampleBox.style.backgroundColor = '#93e6ff';
                 break;
         }
+        
         //Create a preview button
         let playButton = document.createElement('i');
         playButton.setAttribute('data-playbuttonid', event.target.getAttribute('sample-id'));

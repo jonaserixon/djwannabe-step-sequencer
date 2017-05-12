@@ -141,6 +141,7 @@ function Desktop() {
                 sampleBox.style.backgroundColor = '#93e6ff';
                 break;
         }
+        
         //Create a preview button
         let playButton = document.createElement('i');
         playButton.setAttribute('data-playbuttonid', event.target.getAttribute('sample-id'));
@@ -267,6 +268,7 @@ let recordButton = document.querySelector('#record-button');
 let mixerBoard = document.querySelector('#mixer-board');
 let looper = document.querySelector('#loop-button');
 
+
 let samples = audioSamples.audioSamples(); //audiosample paths
 
 let blobCollecter = [];
@@ -280,26 +282,26 @@ let channel5;
 
 let context = new AudioContext();
 
-
-
-let analyser = context.createAnalyser();
-let bufferLength = analyser.frequencyBinCount;
-let dataArray = new Uint8Array(bufferLength);
-analyser.getByteTimeDomainData(dataArray);
-
-let canvas = document.querySelector('#visualizer');
-let canvasCtx = canvas.getContext('2d');
-
 let gainNode = context.createGain(); //Create a gain node
+let analyser = context.createAnalyser(); //Create an analyser node
 let audioTime = context.currentTime; //Current time since audioContext declared
 
 let dest = context.createMediaStreamDestination();
 let recorder = new MediaRecorder(dest.stream);
 
-gainNode.connect(context.destination);
+gainNode.connect(analyser);
+analyser.connect(context.destination);
 gainNode.connect(dest);
 
-let loopCheck = false;
+let freqDomain = new Float32Array(analyser.frequencyBinCount);
+analyser.getFloatFrequencyData(freqDomain);
+
+function test() {
+    for (let i = 0; i < analyser.frequencyBinCount; i++) {
+        console.log('test');
+    }
+}
+
 
 function Channel(id) {
     this.id = id;               //Channel id
@@ -325,37 +327,32 @@ Channel.prototype = {
     addSample: function(sampleSlot, samplePath) {
         loadSound(this, samplePath, sampleSlot);
     },
-    scheduler: function(channel) {
-        for (let i = 0; i < this.samples.length; i++) {
-            
+    scheduler: function(startPoint, i) {            
             let audio = context.createBufferSource();
-            this.sources[i] = audio;
-            audio.buffer = this.samples[i];
+
+            this.sources[startPoint] = audio;
+            audio.buffer = this.samples[startPoint];
 
             audio.connect(this.channelFilter);
-            this.channelFilter.connect(analyser);
-            analyser.connect(this.channelGain);
+            this.channelFilter.connect(this.channelGain);
             this.channelGain.connect(gainNode);
 
             audio.start(context.currentTime + (audio.buffer.duration * i));
             this.timeouts.push(setTimeout(function() {
                 // Add the border to the playing sample slot
-                let playingSlot = this.sampleslotDivs[i];
+                let playingSlot = this.sampleslotDivs[startPoint];
                 playingSlot.style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
             }.bind(this), audio.buffer.duration * i * 1000));
             
             audio.onended = function() {
-                this.sampleslotDivs[i].style.boxShadow = '';
-                if(i === 7 && loopCheck === true) {
-                    console.log('loopa');
-                    channel.scheduler(channel);
-                }
+                this.sampleslotDivs[startPoint].style.boxShadow = '';
             }.bind(this);
-        }
     },
     stop: function() {
-        for (let i = 0; i < this.sources.length; i++) {
-            this.sources[i].stop(0);
+        for (let i = 0; i < 8; i++) {
+            if (this.sources[i] !== undefined) {
+                this.sources[i].stop(0);
+            }
         }
 
         for (let i = 0; i < this.timeouts.length; i++) {
@@ -470,13 +467,26 @@ function loadSound(channel, audiosample, sampleSlot) {
     request.send();
 }
 
-function playChannels(startPoint, playButton) {
-    channel1.scheduler(channel1);
-    channel2.scheduler(channel2);
-    channel3.scheduler(channel3);
-    channel4.scheduler(channel4);
-    channel5.scheduler(channel5);
+function playChannels(counterPoint, playButton) {
+    test();
+    if(channel1.samples[0] === undefined || channel1.samples[0] === null) {
+        return;
+    }
+    let startPoint = counterPoint;
 
+    if(counterPoint) {
+        console.log('startPoint');
+        for(let i = 0; i < channel1.samples.length; i++) {
+            startPointHandler(startPoint, i);
+            startPoint++;
+        }
+    } else {
+        console.log('vanligt');
+        for(let i = 0; i < channel1.samples.length; i++) {
+            startPointHandler(i, i);
+        }
+    }
+    
     if(channel1.samples[0] === undefined) {
         return;
     } else {
@@ -492,6 +502,14 @@ function playChannels(startPoint, playButton) {
             document.querySelector('#stop-all-button').style.color = '';
         }
     }
+}
+
+function startPointHandler(startPoint, i) {
+    channel1.scheduler(startPoint, i);
+    channel2.scheduler(startPoint, i);
+    channel3.scheduler(startPoint, i);
+    channel4.scheduler(startPoint, i);
+    channel5.scheduler(startPoint, i);
 }
 
 function previewSample(index, stopper) {
@@ -536,7 +554,7 @@ function unmuteChannel(id) {
 
 function audioRecorder(recording) {
     if(recording) {
-        recorder.start();
+        gotStream(recorder.start());
         recordButton.style.opacity = '1';
     } else {
         recorder.stop();
@@ -571,15 +589,15 @@ function audioRecorder(recording) {
 mixerBoard.addEventListener('input', function(event) {
     if(event.target.className === 'mixer-volume') {
         switch(event.target.id) {
-            case 'mixVolume1': channel1Gain.gain.value = event.target.value / 100;
+            case 'mixVolume1': channel1.channelGain.gain.value = event.target.value / 100;
                 break;
-            case 'mixVolume2': channel2Gain.gain.value = event.target.value / 100;
+            case 'mixVolume2': channel2.channelGain.gain.value = event.target.value / 100;
                 break;
-            case 'mixVolume3': channel3Gain.gain.value = event.target.value / 100;
+            case 'mixVolume3': channel3.channelGain.gain.value = event.target.value / 100;
                 break;
-            case 'mixVolume4': channel4Gain.gain.value = event.target.value / 100;
+            case 'mixVolume4': channel4.channelGain.gain.value = event.target.value / 100;
                 break;
-            case 'mixVolume5': channel5Gain.gain.value = event.target.value / 100;
+            case 'mixVolume5': channel5.channelGain.gain.value = event.target.value / 100;
                 break;
         }
     }
@@ -618,20 +636,6 @@ volumeKnob.addEventListener('input', function() {
         volumeUp.style.color = 'ghostwhite';
     }
     console.log('Volume: ' + (Math.round(gainNode.gain.value * 100)) + '%');
-})
-
-looper.addEventListener('click', function(event) {
-    let loopButton = document.getElementById(event.target.id);
-    let checker = false;
-    if(loopButton.className === 'fa fa-repeat') {
-        loopCheck = true;
-        console.log('click');
-        if(checker) {
-            loopCheck = false;
-        }
-
-        checker = true;
-    } 
 })
 
 module.exports = {
