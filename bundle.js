@@ -38,7 +38,6 @@ function Desktop() {
     let inactiveSamples = document.querySelector('#inactive-samples');
     let playlistContainer = document.querySelector('#playlist-container');
     
-    //Create channels + sample slots
     function createChannel(numChannels, numSlots) {
         for(let i = 1; i < numChannels; i++) {
             let snapDiv = document.createElement('div');
