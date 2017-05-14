@@ -6,6 +6,7 @@ let muteChecker = true;
 let recordChecker = true;
 let timer; 
 let lastPlayed;
+let startingPoint;
 
 
 function Desktop() {
@@ -46,7 +47,6 @@ function Desktop() {
             return;
         } else {
             samplebox(idCounter, $(event.target).text(), event);
-            $('#starting-point').prop('disabled', false); //enable all starting point buttons
             idCounter += 1;
         }
     });
@@ -54,7 +54,7 @@ function Desktop() {
     $('#mixer-board').draggable({containment: 'document'});
     
     /**
-     * Skapar en samplebox div som är draggable + innehåller ett sample + en play knapp
+     * Create samplebox
      * @param id = idCounter
      * @param sample = path to sample
      */
@@ -149,6 +149,7 @@ function Desktop() {
                     playButton.setAttribute('class', 'fa fa-stop-circle');
                     playChecker = false;
                     lastPlayed = playButton;
+                    //Reset preview button
                     timer = setTimeout(function() {
                         playButton.removeAttribute('class');
                         playButton.setAttribute('class', 'fa fa-play-circle');
@@ -162,12 +163,17 @@ function Desktop() {
                     lastPlayed.removeAttribute('class');
                     lastPlayed.setAttribute('class', 'fa fa-play-circle');
                     playChecker = true;
+                    //Clear preview timeout
                     clearTimeout(timer);
                 }
             //Global play/stop button
             } else if (playButton.tagName === 'I' && playButton.id === 'play-all-button' || playButton.tagName === 'I' && playButton.id === 'stop-all-button') {    //'play-all-channels-button'
                 if(playButton.id === 'play-all-button') {
-                    SampleHandler.playChannels(false, playButton);
+                    if(startingPoint !== undefined && startingPoint !== '-') {
+                        SampleHandler.playChannels(startingPoint, playButton);
+                    } else {
+                        SampleHandler.playChannels(false, playButton);
+                    }
                 } else {
                     SampleHandler.stopAll(playButton);
                     if(recordChecker === false) {
@@ -215,35 +221,18 @@ function Desktop() {
 
     //Playback starting point
     document.querySelector('#starting-point').addEventListener('change', function(event) {
-        switch(this.options[this.selectedIndex].value) {
-            case '1': SampleHandler.playChannels(1); 
-                break;
-            case '2': SampleHandler.playChannels(2); 
-                break;
-            case '3': SampleHandler.playChannels(3);
-                break;
-            case '4': SampleHandler.playChannels(4);
-                break;
-            case '5': SampleHandler.playChannels(5);
-                break;
-            case '6': SampleHandler.playChannels(6);
-                break;
-            case '7': SampleHandler.playChannels(7);
-                break;                    
-        }
+        startingPoint = this.options[this.selectedIndex].value;
     });
 
     //Sample library minimizer
     $("#minimize-button").click(function(){
         if($(this).html() == "-"){
             $(this).html("+");
-        }
-        else{
+        } else{
             $(this).html("-");
         }
         $("#box").slideToggle();
     });
-
 }
 
 module.exports = Desktop;

@@ -10,7 +10,7 @@ let looper = document.querySelector('#loop-button');
 
 let samples = audioSamples.audioSamples(); //audiosample paths
 
-let blobCollecter = [];
+let blobCollecter = []; //Recorded audio
 let preview;
 
 let channel1, channel2, channel3, channel4, channel5;      
@@ -19,10 +19,10 @@ let context = new AudioContext();
 let dest = context.createMediaStreamDestination();
 let recorder = new MediaRecorder(dest.stream);
 
-let gainNode = context.createGain(); //Create a gain node
-gainNode.connect(dest);
+let gainNode = context.createGain(); //Master gain
+gainNode.connect(dest);              //Enables audio playback during recording
 
-let audioTime = context.currentTime; //Current time since audioContext declared
+
 
 function Channel(id) {
     this.id = id;               //Channel id
@@ -30,13 +30,11 @@ function Channel(id) {
     this.sources = [];          //Keep track of buffersource nodes created from scheduler method
     this.timeouts = [];         //setTimeOuts
     this.sampleslotDivs = [];   //Sample-slot id
-    this.ctx = document.getElementById("volume-meter-" + id).getContext("2d");
+    this.ctx = document.getElementById("volume-meter-" + id).getContext("2d");  //Canvas context
 
     this.javascriptNode = context.createScriptProcessor(512);
-
     this.analyser = context.createAnalyser();
     this.analyser.smoothingTimeConstant = 0.3;
-
     this.channelGain = context.createGain();
     this.channelFilter = context.createBiquadFilter();
     this.channelFilter.frequency.value = 20000;
@@ -47,7 +45,9 @@ function Channel(id) {
             let average = this.getAverageVolume(array)
             
             this.ctx.clearRect(0, 0, 60, 130);
-            this.ctx.fillStyle= 'green';
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeStyle = 'rgb(0, 0, 0)';
+            this.ctx.fillStyle= 'black';
             this.ctx.fillRect(0, 130 - average, 25, 130);
         }.bind(this);
 
@@ -75,12 +75,16 @@ Channel.prototype = {
             this.channelGain.connect(gainNode);
             gainNode.connect(context.destination);
 
-            //For the volume-meter
+            //Connect the volume-meter
             this.channelGain.connect(this.analyser);
             this.analyser.connect(this.javascriptNode);
             this.javascriptNode.connect(gainNode);
             
             audio.start(context.currentTime + (5.5 * i));
+
+            if(audio.buffer === null) {
+                return;
+            }
 
             this.timeouts.push(setTimeout(function() {
                 // Add the border to the playing sample slot
@@ -115,7 +119,6 @@ Channel.prototype = {
         return average;
     }
 }
-
 
 function droppableHandler(droppableId, draggableUi, droppableHelper, draggableSampleId, channel) {
     $('#' + droppableId).droppable('enable');       
@@ -223,10 +226,6 @@ function loadSound(channel, audiosample, sampleSlot) {
 }
 
 function playChannels(counterPoint, playButton) {
-    if(channel1.samples[0] === undefined || channel1.samples[0] === null) {
-        return;
-    }
-
     let startPoint = counterPoint;
 
     if(counterPoint) {
@@ -240,20 +239,12 @@ function playChannels(counterPoint, playButton) {
         }
     }
     
-    if(channel1.samples[0] === undefined) {
-        return;
-    } else {
-        $('#starting-point').prop('selectedIndex', 0);
-        document.querySelector('#play-all-button').style.pointerEvents = 'none';
-        $('#starting-point').prop('disabled', true);                                //disable all starting point buttons
-
-        if(playButton) {
-            playButton.style.opacity = '';
-            playButton.style.color = '#d3e2ed';
-            playButton.style.pointerEvents = 'none';                                //prevent spamming multiple layer of sounds by disabling button
-            document.querySelector('#stop-all-button').style.opacity = '0.6';
-            document.querySelector('#stop-all-button').style.color = '';
-        }
+    if(playButton) {
+        playButton.style.opacity = '';
+        playButton.style.color = '#d3e2ed';
+        playButton.style.pointerEvents = 'none';                                //disable playbutton
+        document.querySelector('#stop-all-button').style.opacity = '0.6';
+        document.querySelector('#stop-all-button').style.color = '';
     }
 }
 
@@ -309,7 +300,7 @@ function audioRecorder(recording) {
     let chromeChecker = MediaRecorder.isTypeSupported('audio/webm;codecs=opus');
     let firefoxChecker = MediaRecorder.isTypeSupported('audio/ogg;codecs=opus'); 
     if(chromeChecker) {
-            return alert('Chrome är cp. Om du vill ladda ner låten så använd Firefox.');
+        return alert('Chrome är cp. Om du vill ladda ner låten så använd Firefox.');
     } 
     if(recording) {
         recorder.start();
