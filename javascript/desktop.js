@@ -4,6 +4,9 @@ let idCounter = 0;
 let playChecker = true;
 let muteChecker = true;
 let recordChecker = true;
+let timer; 
+let lastPlayed;
+
 
 function Desktop() {
     let wrapper = document.querySelector('#wrapper');
@@ -145,11 +148,21 @@ function Desktop() {
                     playButton.removeAttribute('class');
                     playButton.setAttribute('class', 'fa fa-stop-circle');
                     playChecker = false;
+                    lastPlayed = playButton;
+                    timer = setTimeout(function() {
+                        playButton.removeAttribute('class');
+                        playButton.setAttribute('class', 'fa fa-play-circle');
+                        playChecker = true;
+                    }, 5500);
                 } else {
-                    SampleHandler.previewSample(null, true);
+                    SampleHandler.previewSample(null, true, playButton);
                     playButton.removeAttribute('class');
                     playButton.setAttribute('class', 'fa fa-play-circle');
+
+                    lastPlayed.removeAttribute('class');
+                    lastPlayed.setAttribute('class', 'fa fa-play-circle');
                     playChecker = true;
+                    clearTimeout(timer);
                 }
             //Global play/stop button
             } else if (playButton.tagName === 'I' && playButton.id === 'play-all-button' || playButton.tagName === 'I' && playButton.id === 'stop-all-button') {    //'play-all-channels-button'

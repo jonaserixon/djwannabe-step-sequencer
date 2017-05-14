@@ -27,6 +27,9 @@ let idCounter = 0;
 let playChecker = true;
 let muteChecker = true;
 let recordChecker = true;
+let timer; 
+let lastPlayed;
+
 
 function Desktop() {
     let wrapper = document.querySelector('#wrapper');
@@ -168,11 +171,21 @@ function Desktop() {
                     playButton.removeAttribute('class');
                     playButton.setAttribute('class', 'fa fa-stop-circle');
                     playChecker = false;
+                    lastPlayed = playButton;
+                    timer = setTimeout(function() {
+                        playButton.removeAttribute('class');
+                        playButton.setAttribute('class', 'fa fa-play-circle');
+                        playChecker = true;
+                    }, 5500);
                 } else {
-                    SampleHandler.previewSample(null, true);
+                    SampleHandler.previewSample(null, true, playButton);
                     playButton.removeAttribute('class');
                     playButton.setAttribute('class', 'fa fa-play-circle');
+
+                    lastPlayed.removeAttribute('class');
+                    lastPlayed.setAttribute('class', 'fa fa-play-circle');
                     playChecker = true;
+                    clearTimeout(timer);
                 }
             //Global play/stop button
             } else if (playButton.tagName === 'I' && playButton.id === 'play-all-button' || playButton.tagName === 'I' && playButton.id === 'stop-all-button') {    //'play-all-channels-button'
@@ -274,34 +287,68 @@ let samples = audioSamples.audioSamples(); //audiosample paths
 let blobCollecter = [];
 let preview;
 
-let channel1;  
-let channel2;     
-let channel3;       
-let channel4;       
-let channel5;      
+let channel1, channel2, channel3, channel4, channel5;      
 
 let context = new AudioContext();
 
 let gainNode = context.createGain(); //Create a gain node
-let analyser = context.createAnalyser(); //Create an analyser node
+
+
+
 let audioTime = context.currentTime; //Current time since audioContext declared
 
 let dest = context.createMediaStreamDestination();
 let recorder = new MediaRecorder(dest.stream);
 
-gainNode.connect(analyser);
-analyser.connect(context.destination);
+let javascriptNode = context.createScriptProcessor(512);
+
+let ctx = document.getElementById("meter").getContext("2d");
+
+let analyser = context.createAnalyser(); //Create an analyser node
+analyser.smoothingTimeConstant = 0.3;
+// analyser.fftSize = 1024;
+// analyser.getFloatFrequencyData(freqDomain);
+
+javascriptNode.connect(context.destination);
+analyser.connect(javascriptNode);
+
+gainNode.connect(context.destination);
 gainNode.connect(dest);
 
-let freqDomain = new Float32Array(analyser.frequencyBinCount);
-analyser.getFloatFrequencyData(freqDomain);
+javascriptNode.onaudioprocess = function() {
+        // get the average, bincount is fftsize / 2
+        let array =  new Uint8Array(analyser.frequencyBinCount);
+        analyser.getByteFrequencyData(array);
+        let average = getAverageVolume(array)
+        let gradient = ctx.createLinearGradient(0,0,0,170);
+        // clear the current state
+        ctx.clearRect(0, 0, 500, 50);
+ 
+        let my_gradient=ctx.createLinearGradient(0,0,0,170);
+        my_gradient.addColorStop(0,"black");
+        my_gradient.addColorStop(1,"white");
+        ctx.fillStyle=my_gradient;
+        // create the meters
+        // ctx.fillRect(0,0,average*500*1.4 ,50);
+        ctx.fillRect(0, 0, average, 50);
+        // console.log(average);
 
-function test() {
-    for (let i = 0; i < analyser.frequencyBinCount; i++) {
-        console.log('test');
-    }
 }
 
+function getAverageVolume(array) {
+        let values = 0;
+        let average;
+ 
+        let length = array.length;
+ 
+        // get all the frequency amplitudes
+        for (let i = 0; i < length; i++) {
+            values += array[i];
+        }
+ 
+        average = values / length;
+        return average;
+}
 
 function Channel(id) {
     this.id = id;               //Channel id
@@ -329,7 +376,6 @@ Channel.prototype = {
     },
     scheduler: function(startPoint, i) {            
             let audio = context.createBufferSource();
-
             this.sources[startPoint] = audio;
             audio.buffer = this.samples[startPoint];
 
@@ -337,7 +383,11 @@ Channel.prototype = {
             this.channelFilter.connect(this.channelGain);
             this.channelGain.connect(gainNode);
 
+            audio.connect(analyser);
+
+
             audio.start(context.currentTime + (audio.buffer.duration * i));
+
             this.timeouts.push(setTimeout(function() {
                 // Add the border to the playing sample slot
                 let playingSlot = this.sampleslotDivs[startPoint];
@@ -457,7 +507,7 @@ function loadSound(channel, audiosample, sampleSlot) {
                 //Preview a sample
                 preview = context.createBufferSource(); 
                 preview.buffer = buffer; 
-                preview.connect(context.destination);  
+                preview.connect(gainNode);  
                 preview.start(0);
             }
         }, function() {
@@ -468,20 +518,18 @@ function loadSound(channel, audiosample, sampleSlot) {
 }
 
 function playChannels(counterPoint, playButton) {
-    test();
     if(channel1.samples[0] === undefined || channel1.samples[0] === null) {
         return;
     }
+
     let startPoint = counterPoint;
 
     if(counterPoint) {
-        console.log('startPoint');
         for(let i = 0; i < channel1.samples.length; i++) {
             startPointHandler(startPoint, i);
             startPoint++;
         }
     } else {
-        console.log('vanligt');
         for(let i = 0; i < channel1.samples.length; i++) {
             startPointHandler(i, i);
         }
@@ -512,7 +560,7 @@ function startPointHandler(startPoint, i) {
     channel5.scheduler(startPoint, i);
 }
 
-function previewSample(index, stopper) {
+function previewSample(index, stopper, playButton) {
     if(stopper) {
         preview.stop(0);
     } else {
@@ -553,8 +601,13 @@ function unmuteChannel(id) {
 }
 
 function audioRecorder(recording) {
+    let chromeChecker = MediaRecorder.isTypeSupported('audio/webm;codecs=opus');
+    let firefoxChecker = MediaRecorder.isTypeSupported('audio/ogg;codecs=opus'); 
+    if(chromeChecker) {
+            return alert('Chrome är cp. Om du vill ladda ner låten så använd Firefox.');
+    } 
     if(recording) {
-        gotStream(recorder.start());
+        recorder.start();
         recordButton.style.opacity = '1';
     } else {
         recorder.stop();
@@ -566,12 +619,8 @@ function audioRecorder(recording) {
     };
 
     recorder.onstop = function(event) {
-        let chromeChecker = MediaRecorder.isTypeSupported('audio/webm;codecs=opus');
-        let firefoxChecker = MediaRecorder.isTypeSupported('audio/ogg;codecs=opus'); 
         let blob;
-        if(chromeChecker) {
-            return alert('Chrome är cp. Om du vill ladda ner låten så använd Firefox.');
-        } 
+        
         if(firefoxChecker) {
             blob = new Blob(blobCollecter, { 'type' : 'audio/ogg; codecs=opus' });
         }
@@ -603,20 +652,22 @@ mixerBoard.addEventListener('input', function(event) {
     }
     if(event.target.className === 'mixer-filter') {
         let filterFrequency = 20000 / event.target.value;
+
+        //Preventing the frequency to become infinite
         if(filterFrequency > 20000) {
             filterFrequency = 20000;
         }
-        console.log(filterFrequency);
+
         switch(event.target.id) {
             case 'lowpassFilter1': channel1.channelFilter.frequency.value = filterFrequency;
                 break;
-            case 'lowpassFilter2': channel2.channelFilter.value = filterFrequency;
+            case 'lowpassFilter2': channel2.channelFilter.frequency.value = filterFrequency;
                 break;
-            case 'lowpassFilter3': channel3.channelFilter.value = filterFrequency;
+            case 'lowpassFilter3': channel3.channelFilter.frequency.value = filterFrequency;
                 break;
-            case 'lowpassFilter4': channel4.channelFilter.value = filterFrequency;
+            case 'lowpassFilter4': channel4.channelFilter.frequency.value = filterFrequency;
                 break;
-            case 'lowpassFilter5': channel5.channelFilter.value = filterFrequency;
+            case 'lowpassFilter5': channel5.channelFilter.frequency.value = filterFrequency;
                 break;
         }
     }
