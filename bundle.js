@@ -281,7 +281,6 @@ let recordButton = document.querySelector('#record-button');
 let mixerBoard = document.querySelector('#mixer-board');
 let looper = document.querySelector('#loop-button');
 
-
 let samples = audioSamples.audioSamples(); //audiosample paths
 
 let blobCollecter = [];
@@ -290,65 +289,13 @@ let preview;
 let channel1, channel2, channel3, channel4, channel5;      
 
 let context = new AudioContext();
-
-let gainNode = context.createGain(); //Create a gain node
-
-
-
-let audioTime = context.currentTime; //Current time since audioContext declared
-
 let dest = context.createMediaStreamDestination();
 let recorder = new MediaRecorder(dest.stream);
 
-let javascriptNode = context.createScriptProcessor(512);
-
-let ctx = document.getElementById("meter").getContext("2d");
-
-let analyser = context.createAnalyser(); //Create an analyser node
-analyser.smoothingTimeConstant = 0.3;
-// analyser.fftSize = 1024;
-// analyser.getFloatFrequencyData(freqDomain);
-
-javascriptNode.connect(context.destination);
-analyser.connect(javascriptNode);
-
-gainNode.connect(context.destination);
+let gainNode = context.createGain(); //Create a gain node
 gainNode.connect(dest);
 
-javascriptNode.onaudioprocess = function() {
-        // get the average, bincount is fftsize / 2
-        let array =  new Uint8Array(analyser.frequencyBinCount);
-        analyser.getByteFrequencyData(array);
-        let average = getAverageVolume(array)
-        let gradient = ctx.createLinearGradient(0,0,0,170);
-        // clear the current state
-        ctx.clearRect(0, 0, 500, 50);
- 
-        let my_gradient=ctx.createLinearGradient(0,0,0,170);
-        my_gradient.addColorStop(0,"black");
-        my_gradient.addColorStop(1,"white");
-        ctx.fillStyle=my_gradient;
-        // create the meters
-        // ctx.fillRect(0,0,average*500*1.4 ,50);
-        ctx.fillRect(0, 0, average, 50);
-        // console.log(average);
-
-}
-
-function getAverageVolume(array) {
-        let values = 0;
-        let average;
- 
-        let length = array.length;
- 
-        // get all the frequency amplitudes
-        for (let i = 0; i < length; i++) {
-            values += array[i];
-        }
- 
-        average = values / length;
-        return average;
-}
+let audioTime = context.currentTime; //Current time since audioContext declared
 
 function Channel(id) {
     this.id = id;               //Channel id
@@ -356,9 +303,26 @@ function Channel(id) {
     this.sources = [];          //Keep track of buffersource nodes created from scheduler method
     this.timeouts = [];         //setTimeOuts
     this.sampleslotDivs = [];   //Sample-slot id
+    this.ctx = document.getElementById("volume-meter-" + id).getContext("2d");
+
+    this.javascriptNode = context.createScriptProcessor(512);
+
+    this.analyser = context.createAnalyser();
+    this.analyser.smoothingTimeConstant = 0.3;
+
     this.channelGain = context.createGain();
     this.channelFilter = context.createBiquadFilter();
     this.channelFilter.frequency.value = 20000;
+
+    this.javascriptNode.onaudioprocess = function() {
+            let array =  new Uint8Array(this.analyser.frequencyBinCount);
+            this.analyser.getByteFrequencyData(array);
+            let average = this.getAverageVolume(array)
+            
+            this.ctx.clearRect(0, 0, 60, 130);
+            this.ctx.fillStyle= 'green';
+            this.ctx.fillRect(0, 130 - average, 25, 130);
+        }.bind(this);
 
     for (let i = 0; i < 8; i++) {
         let theSlot = document.querySelector('#channel' + this.id + 'Slot' + i);
@@ -382,11 +346,14 @@ Channel.prototype = {
             audio.connect(this.channelFilter);
             this.channelFilter.connect(this.channelGain);
             this.channelGain.connect(gainNode);
+            gainNode.connect(context.destination);
 
-            audio.connect(analyser);
-
-
-            audio.start(context.currentTime + (audio.buffer.duration * i));
+            //For the volume-meter
+            this.channelGain.connect(this.analyser);
+            this.analyser.connect(this.javascriptNode);
+            this.javascriptNode.connect(gainNode);
+            
+            audio.start(context.currentTime + (5.5 * i));
 
             this.timeouts.push(setTimeout(function() {
                 // Add the border to the playing sample slot
@@ -408,7 +375,18 @@ Channel.prototype = {
         for (let i = 0; i < this.timeouts.length; i++) {
             clearTimeout(this.timeouts[i]);
         }
-    }   
+    },
+    getAverageVolume: function(array) {
+        let values = 0;
+        let average;
+ 
+        let length = array.length;
+        for (let i = 0; i < length; i++) {
+            values += array[i];
+        }
+        average = values / length;
+        return average;
+    }
 }
 
 

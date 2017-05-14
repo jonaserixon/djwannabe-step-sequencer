@@ -251,20 +251,5 @@ body {
 #route4 { width: 120px; height: 300px; background-color: #4f7795; border-right: 1px solid black; }
 #route5 { width: 120px; height: 300px; background-color: #4f7795; }
 
-.mixer-volume { -webkit-appearance: slider-vertical; height: 100px; }
+.mixer-volume { -webkit-appearance: slider-vertical; height: 60px; }
 .mixer-filter { -webkit-appearance: slider-vertical; height: 50px; }
-
-#visualisation {
-    height: 255px;
-    position: relative;
-    margin: 10px;
-    -webkit-box-reflect: below 3px -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(255,255,255,0.2)));
-}
-
-#visualisation > div {
-    width: 10px;
-    background-color: darkorange;
-    display: inline-block;
-    position: absolute;
-    bottom: 0px;
-}
