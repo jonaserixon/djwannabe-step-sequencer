@@ -115,6 +115,7 @@ body {
 
 #box{
   height: 400px;
+  min-height: 400px;
 }
 
 #box ul {
@@ -123,6 +124,8 @@ body {
   border-radius: 5px;
   border: 1px solid black;
   opacity: 0.6;
+  width: 310px;
+  margin-top: 0px;
   transition: opacity 0.2s, box-shadow 0.2s;
 }
 
@@ -138,7 +141,9 @@ body {
   margin-top: 0px;
   margin-right: 420px;
   border-radius: 5px;
-  box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.6)
+  box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.6);
+  font-size: 30px;
+
 }
 
 #play-all-button {
@@ -146,7 +151,6 @@ body {
   float: left;
   margin-top:15px;
   margin-left: 15px;
-  font-size: 30px;
   transition: color 0.1s;
 }
 
@@ -155,7 +159,6 @@ body {
   float: left;
   margin-top:15px;
   margin-left: 15px;
-  font-size: 30px;
   transition: color 0.1s;
 }
 
@@ -165,7 +168,6 @@ body {
   float: left;
   margin-top:15px;
   margin-left: 15px;
-  font-size: 30px;
   transition: color 0.2s;
 }
 
@@ -183,14 +185,13 @@ body {
 
 #starting-point { margin-left: -40px; margin-right: 10px; }
 
-#volume-icon-up { color: ghostwhite; transition: color 0.3s; }
-#volume-icon-down { color: #8FB3CD; transition: color 0.3s; }
+#volume-icon-up { color: ghostwhite; transition: color 0.3s; font-size: 15px; }
+#volume-icon-down { color: #8FB3CD; transition: color 0.3s; font-size: 15px; }
 #volumeKnob { margin-top: 15px; width: 80px; }
 
-
-
-#locker { margin-right: -60px; margin-left: 15px; color: #abc4d6; transition: color 0.2s; }
+#locker { margin-right: -60px; margin-left: 15px; color: #abc4d6; transition: color 0.2s; font-size: 15px; }
 #locker:hover { color: ghostwhite; }
+
 
 #inactive-samples {
   border-radius: 5px;
@@ -255,3 +256,34 @@ body {
 .mixer-filter { -webkit-appearance: slider-vertical; height: 50px; }
 
 /*.volumeMeter { border: 1px solid black; }*/
+
+@media only screen and (max-width: 1920px) {
+    #wrapper { width: 95%; }
+
+    .draggable-content { width: 60px; height: 40px; }
+    .draggable-content > img { height: 30px; width: 50px; margin-left: 5px; }
+
+    #playlist-container { width: 700px; height: 620px;  }
+
+    #snaptarget1 { height: 85px; width:670px; margin-top: 20px; margin-left: 10px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+    #snaptarget2 { height: 85px; width:670px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+    #snaptarget3 { height: 85px; width:670px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+    #snaptarget4 { height: 85px; width:670px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+    #snaptarget5 { height: 85px; width:670px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+      
+    .sample-slot { width: 62px; height: 62px; }
+
+    #sample-library {
+      z-index: 1;
+      width: 350px;
+      margin-right: -20px;
+      margin-top: -625px;
+      float: right;
+      font-size: 14px;
+    }
+
+    #box ul { width: 270px; }
+
+    #title-bar{ width: 332px; border-radius: 5px; }
+    #inactive-samples { width: 390px; min-height: 160px; }
+}
