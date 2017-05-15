@@ -19,33 +19,8 @@
 <h1 id="header"><img src="images/turntable_icon.png">DJ Wannabe</h1>
 
     <div id="wrapper">
-        <div id="project-controller">
-            <i id="play-all-button" class="fa fa-play" aria-hidden="true"></i>
-            <i id="stop-all-button" class="fa fa-stop" aria-hidden="true"></i>
-            <i id="record-button"class="fa fa-circle" aria-hidden="true"></i>
-            <!--<i id="loop-button" class="fa fa-repeat" aria-hidden="true"></i>-->
+        <div id="playlist-container"></div>
 
-            <select id="starting-point">
-                <option selected="selected">-</option>
-                <option id="button1" value="1">2</option>
-                <option id="button2" value="2">3</option>
-                <option id="button3" value="3">4</option>
-                <option id="button4" value="4">5</option>
-                <option id="button5" value="5">6</option>
-                <option id="button6" value="6">7</option>
-                <option id="button7" value="7">8</option>
-                <option id="button8" value="8">9</option>
-                <option id="button9" value="9">10</option>
-                <option id="button10" value="10">11</option>
-                <option id="button11" value="11">12</option>
-            </select>
-            <i id="volume-icon-down" class="fa fa-volume-down" aria-hidden="true"></i>
-            <input id="volumeKnob" type="range" value="100">
-            <i id="volume-icon-up" class="fa fa-volume-up" aria-hidden="true"></i>
-
-            <i id="locker" class="fa fa-lock" aria-hidden="true"></i>
-        </div>
-            <div id="playlist-container"></div>
         <div id="sample-library">
             <div id="title-bar">
                 <p>Pick your audio samples here!</p>
@@ -129,6 +104,36 @@
 
                 <canvas id="volume-meter-5" class="volumeMeter" width="25" height="130"></canvas>
             </div>
+        </div>
+        <div id="project-controller">
+            <i id="play-all-button" class="fa fa-play" aria-hidden="true"></i>
+            <i id="stop-all-button" class="fa fa-stop" aria-hidden="true"></i>
+            <i id="record-button" class="fa fa-circle" aria-hidden="true"></i>
+            <!--<i id="loop-button" class="fa fa-repeat" aria-hidden="true"></i>-->
+
+            <select id="starting-point">
+                <option selected="selected">-</option>
+                <option id="button1" value="1">2</option>
+                <option id="button2" value="2">3</option>
+                <option id="button3" value="3">4</option>
+                <option id="button4" value="4">5</option>
+                <option id="button5" value="5">6</option>
+                <option id="button6" value="6">7</option>
+                <option id="button7" value="7">8</option>
+                <option id="button8" value="8">9</option>
+                <option id="button9" value="9">10</option>
+                <option id="button10" value="10">11</option>
+                <option id="button11" value="11">12</option>
+                <option id="button12" value="12">13</option>
+                <option id="button13" value="13">14</option>
+                <option id="button14" value="14">15</option>
+                <option id="button15" value="15">16</option>
+            </select>
+            <i id="volume-icon-down" class="fa fa-volume-down" aria-hidden="true"></i>
+            <input id="volumeKnob" type="range" value="100">
+            <i id="volume-icon-up" class="fa fa-volume-up" aria-hidden="true"></i>
+
+            <i id="locker" class="fa fa-lock" aria-hidden="true"></i>
         </div>
         <a id="audio-recorder"></a>
     </div>

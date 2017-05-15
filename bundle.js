@@ -65,7 +65,7 @@ function Desktop() {
         SampleHandler.droppableDivs();
     }
 
-    createChannel(6, 12);
+    createChannel(6, 16);
     
     //Sends audiosample path to samplebox()
     sampleList.addEventListener('click', function(event) {
@@ -168,7 +168,7 @@ function Desktop() {
             return;
         } else {
             let playButton = document.getElementById(event.target.id);
-            
+            console.log(playButton);
             //Samplebox preview button
             if(playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' && playButton.parentNode.tagName === 'DIV' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle' && playButton.parentNode.tagName === 'DIV' ) {
                 if(playChecker) {
@@ -257,7 +257,8 @@ function Desktop() {
                     recordChecker = true;
                 }
             //Project-controller locker
-            } else if(playButton.id === 'locker') {
+        } else if(playButton.id === 'locker') {
+            console.log('hehehehehe');
                 if(playButton.className === 'fa fa-lock') {
                     $('#project-controller').draggable({containment: 'document'});
                     $('#project-controller').draggable('enable');
@@ -344,7 +345,7 @@ function Channel(id) {
         }.bind(this);
 
     //Change number of sample-slots here
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 16; i++) {
         let theSlot = document.querySelector('#channel' + this.id + 'Slot' + i);
         this.sampleslotDivs.push(theSlot);
     }
@@ -388,7 +389,7 @@ Channel.prototype = {
             }.bind(this);
     },
     stop: function() {
-        for (let i = 0; i < this.sampleslotDivs.length; i++) {
+        for (let i = 0; i < 16; i++) {
             if (this.sources[i] !== undefined) {
                 this.sources[i].stop(0);
             }
@@ -499,11 +500,10 @@ function loadSound(channel, audiosample, sampleSlot) {
             if (channel !== undefined) {
                 if (sampleSlot !== undefined) {
                     channel.samples[sampleSlot] = buffer;
-                } else {
-                    for(let i = 0; i < channel.sampleslotDivs.length; i++) {
+                } else {    //silence audio
+                    for(let i = 0; i < 16; i++) {
                         channel.samples[i] = buffer;
                     }
-                    // channel.samples.push(buffer); //silence
                 }
             } else {
                 //Preview a sample

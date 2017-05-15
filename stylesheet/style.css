@@ -11,6 +11,7 @@ body {
 #wrapper {
   margin: 0 auto;
   width: 1800px;
+  min-height: 880px;
   padding: 10px;
   background-color: #132f44;
   border-radius: 5px;
@@ -41,7 +42,7 @@ body {
 
 .sample-slot {
   float: left;
-  margin-left: 10px;
+  margin-right: 10px;
   margin-top: 10px;
   height: 72px;
   width: 72px;
@@ -52,6 +53,7 @@ body {
   background: linear-gradient(#2a4e6a, black, #2a4e6a);
   opacity: 1;
   box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.6);
+  transition: box-shadow 0.3s;
 }
 
 #playlist-container {
@@ -147,8 +149,8 @@ body {
   background-color: #4a657a;
   width: 400px;
   height: 60px;
-  margin-top: 0px;
-  margin-right: 380px;
+  margin-top: -200px;
+  margin-right: 50px;
   border-radius: 5px;
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.6);
   font-size: 30px;
@@ -224,8 +226,8 @@ body {
 #garbageCan {
   color: #8FB3CD;
   font-size: 50px;
-  margin-top: 60px;
-  margin-right: 1100px;
+  margin-top: 90px;
+  margin-right: 1300px;
   padding: 20px;
   float: right;
   transition: color 0.2s, background-color 0.2s, box-shadow 0.2s, border-radius 0.2s, opacity 0.2s;
@@ -239,7 +241,7 @@ body {
   height: 300px;
   border-radius: 2px;
   float:right;
-  margin-top: -300px;
+  margin-top: -200px;
   /*border: 1px solid black;*/
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.6);
   text-align: center;
@@ -279,19 +281,19 @@ body {
 
 
 @media only screen and (max-width: 1920px) {
-    #wrapper { width: 95%; }
+    #wrapper { width: 98%; }
 
     .draggable-content { width: 60px; height: 40px; }
     .draggable-content > img { height: 30px; width: 50px; margin-left: 5px; }
     .draggable-content > i { font-size: 52px; }
 
-    #playlist-container { width: 1000px; height: 590px;  }
+    #playlist-container { width: 1300px; height: 550px;  }
 
-    #snaptarget1 { height: 85px; width:970px; margin-top: 20px; margin-left: 10px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
-    #snaptarget2 { height: 85px; width:970px; margin-left: 10px; margin-top: -50px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
-    #snaptarget3 { height: 85px; width:970px; margin-left: 10px; margin-top: -50px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
-    #snaptarget4 { height: 85px; width:970px; margin-left: 10px; margin-top: -50px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
-    #snaptarget5 { height: 85px; width:970px; margin-left: 10px; margin-top: -50px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+    #snaptarget1 { height: 85px; width:1280px; margin-top: 10px; margin-left: 10px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+    #snaptarget2 { height: 85px; width:1280px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+    #snaptarget3 { height: 85px; width:1280px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+    #snaptarget4 { height: 85px; width:1280px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+    #snaptarget5 { height: 85px; width:1280px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
       
     .sample-slot { width: 62px; height: 62px; }
 

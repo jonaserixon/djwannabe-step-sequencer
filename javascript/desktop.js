@@ -41,7 +41,7 @@ function Desktop() {
         SampleHandler.droppableDivs();
     }
 
-    createChannel(6, 12);
+    createChannel(6, 16);
     
     //Sends audiosample path to samplebox()
     sampleList.addEventListener('click', function(event) {
@@ -144,7 +144,7 @@ function Desktop() {
             return;
         } else {
             let playButton = document.getElementById(event.target.id);
-            
+            console.log(playButton);
             //Samplebox preview button
             if(playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' && playButton.parentNode.tagName === 'DIV' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle' && playButton.parentNode.tagName === 'DIV' ) {
                 if(playChecker) {
@@ -233,7 +233,8 @@ function Desktop() {
                     recordChecker = true;
                 }
             //Project-controller locker
-            } else if(playButton.id === 'locker') {
+        } else if(playButton.id === 'locker') {
+            console.log('hehehehehe');
                 if(playButton.className === 'fa fa-lock') {
                     $('#project-controller').draggable({containment: 'document'});
                     $('#project-controller').draggable('enable');
