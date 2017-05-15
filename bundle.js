@@ -27,6 +27,8 @@ let recordChecker = true;
 let timer; 
 let lastPlayed;
 let startingPoint;
+let channelSetter;
+let slotSetter;
 
 
 function Desktop() {
@@ -41,6 +43,7 @@ function Desktop() {
     function createChannel(numChannels, numSlots) {
         for(let i = 1; i < numChannels; i++) {
             let snapDiv = document.createElement('div');
+            snapDiv.textContent = '';
             snapDiv.setAttribute('id', 'snaptarget' + i);
             snapDiv.setAttribute('class', 'main-timeline');
             let h3 = document.createElement('h3');
@@ -55,14 +58,27 @@ function Desktop() {
                 snapDiv.appendChild(sampleSlot);
             }
         }
+        SampleHandler.droppableDivs();
     }
 
     createChannel(6, 8);
-    SampleHandler.droppableDivs();
+    
+
+    // document.querySelector('#channel-setter').addEventListener('change', function() {
+    //     channelSetter = this.options[this.selectedIndex].value;
+    // })  
+
+    // document.querySelector('#slot-setter').addEventListener('change', function() {
+    //     slotSetter = this.options[this.selectedIndex].value;
+    // })  
+
+    // document.querySelector('#createChannels').addEventListener('click', function() {
+    //     createChannel(channelSetter, slotSetter);
+    // })
 
     //Sends audiosample path to samplebox()
     sampleList.addEventListener('click', function(event) {
-        if(event.target.id === 'sample-list' || event.target.id === 'library-h3') {
+        if(event.target.id === 'sample-list' || event.target.id === 'library-h3' || event.target.tagName === 'I') {
             return;
         } else {
             samplebox(idCounter, $(event.target).text(), event);
@@ -161,8 +177,10 @@ function Desktop() {
             return;
         } else {
             let playButton = document.getElementById(event.target.id);
+            
             //Preview button
-            if(playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle') {
+            if(playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' && playButton.parentNode.tagName === 'DIV' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle' && playButton.parentNode.tagName === 'DIV' ) {
+                console.log('BOX PREVIEW');
                 if(playChecker) {
                     SampleHandler.previewSample(playButton.getAttribute("data-playbuttonid"), false);
                     playButton.removeAttribute('class');
@@ -186,8 +204,33 @@ function Desktop() {
                     //Clear preview timeout
                     clearTimeout(timer);
                 }
+            } else if (playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' && playButton.parentNode.tagName === 'LI' ||playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle' && playButton.parentNode.tagName === 'LI' ) {
+                if(playChecker) {
+                    console.log('SAMPLE LIB PREVIEW');
+                    SampleHandler.previewSample(playButton.id, false);
+                    playButton.removeAttribute('class');
+                    playButton.setAttribute('class', 'fa fa-stop-circle');
+                    playChecker = false;
+                    lastPlayed = playButton;
+                    //Reset preview button
+                    timer = setTimeout(function() {
+                        playButton.removeAttribute('class');
+                        playButton.setAttribute('class', 'fa fa-play-circle');
+                        playChecker = true;
+                    }, 5500);
+                } else {
+                    SampleHandler.previewSample(null, true, playButton);
+                    playButton.removeAttribute('class');
+                    playButton.setAttribute('class', 'fa fa-play-circle');
+
+                    lastPlayed.removeAttribute('class');
+                    lastPlayed.setAttribute('class', 'fa fa-play-circle');
+                    playChecker = true;
+                    //Clear preview timeout
+                    clearTimeout(timer);
+                }
             //Global play/stop button
-            } else if (playButton.tagName === 'I' && playButton.id === 'play-all-button' || playButton.tagName === 'I' && playButton.id === 'stop-all-button') {    //'play-all-channels-button'
+            } else if (playButton.tagName === 'I' && playButton.id === 'play-all-button' || playButton.tagName === 'I' && playButton.id === 'stop-all-button') {   
                 if(playButton.id === 'play-all-button') {
                     if(startingPoint !== undefined && startingPoint !== '-') {
                         SampleHandler.playChannels(startingPoint, playButton);
@@ -475,7 +518,7 @@ function loadSound(channel, audiosample, sampleSlot) {
                 //Preview a sample
                 preview = context.createBufferSource(); 
                 preview.buffer = buffer; 
-                preview.connect(gainNode);  
+                preview.connect(context.destination);  
                 preview.start(0);
             }
         }, function() {

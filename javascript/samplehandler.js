@@ -216,7 +216,7 @@ function loadSound(channel, audiosample, sampleSlot) {
                 //Preview a sample
                 preview = context.createBufferSource(); 
                 preview.buffer = buffer; 
-                preview.connect(gainNode);  
+                preview.connect(context.destination);  
                 preview.start(0);
             }
         }, function() {
