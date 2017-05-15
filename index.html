@@ -4,13 +4,18 @@
     <link rel="stylesheet" type="text/css" href="stylesheet/style.css">
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
     <link rel="shortcut icon" href="favicon.ico">
     <meta charset="UTF-8">
     <title>DJ Wannabe</title>
 </head>
 <body>
-    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.13/jquery.knob.min.js"></script>
+<script>
+    $( "*" ).css({'visibility': 'hidden'});
+</script>
+
 <h1 id="header"><img src="images/turntable_icon.png">DJ Wannabe</h1>
 
     <div id="wrapper">
@@ -29,6 +34,10 @@
                 <option id="button5" value="5">6</option>
                 <option id="button6" value="6">7</option>
                 <option id="button7" value="7">8</option>
+                <option id="button8" value="8">9</option>
+                <option id="button9" value="9">10</option>
+                <option id="button10" value="10">11</option>
+                <option id="button11" value="11">12</option>
             </select>
             <i id="volume-icon-down" class="fa fa-volume-down" aria-hidden="true"></i>
             <input id="volumeKnob" type="range" value="100">
@@ -39,6 +48,7 @@
             <div id="playlist-container"></div>
         <div id="sample-library">
             <div id="title-bar">
+                <p>Pick your audio samples here!</p>
                 <div id="minimize-button">-</div>
             </div>
                 <div id="box">
@@ -63,11 +73,11 @@
                     <input id="mixVolume1" class="mixer-volume" type="range" value="100" orient="vertical">
                 </div>
                 <div>    
-                    <input id="lowpassFilter1" class="mixer-filter" type="range" value="0" orient="vertical">
+                    <input id="lowpassFilter1" type="text" value="0" class="mixer-filter">
                     <p>1</p>
                 </div>
                 
-                <input id="1" class="mutebox" name="checkName" type="checkbox">
+                <input id="m1" class="mutebox" name="checkName" type="checkbox">
 
                 <canvas id="volume-meter-1" class="volumeMeter" width="25" height="130"></canvas>
             </div>
@@ -76,10 +86,10 @@
                     <input id="mixVolume2" class="mixer-volume" type="range" value="100" orient="vertical">
                 </div>
                 <div>
-                    <input id="lowpassFilter2" class="mixer-filter" type="range" value="0" orient="vertical">
+                    <input id="lowpassFilter2" type="text" value="0" class="mixer-filter">
                     <p>2</p>
                 </div>
-                <input id="2" class="mutebox" name="checkName" type="checkbox">
+                <input id="m2" class="mutebox" name="checkName" type="checkbox">
 
                 <canvas id="volume-meter-2" class="volumeMeter" width="25" height="130"></canvas>
             </div>
@@ -88,10 +98,10 @@
                     <input id="mixVolume3" class="mixer-volume" type="range" value="100" orient="vertical">
                 </div>
                 <div>
-                    <input id="lowpassFilter3" class="mixer-filter" type="range" value="0" orient="vertical">
+                    <input id="lowpassFilter3" type="text" value="0" class="mixer-filter">
                     <p>3</p>
                 </div>
-                <input id="3" class="mutebox" name="checkName" type="checkbox">
+                <input id="m3" class="mutebox" name="checkName" type="checkbox">
 
                 <canvas id="volume-meter-3" class="volumeMeter" width="25" height="130"></canvas>
             </div>
@@ -100,10 +110,10 @@
                     <input id="mixVolume4" class="mixer-volume" type="range" value="100" orient="vertical">
                 </div>
                 <div>
-                    <input id="lowpassFilter4" class="mixer-filter" type="range" value="0" orient="vertical">
+                    <input id="lowpassFilter4" type="text" value="0" class="mixer-filter">
                     <p>4</p>
                 </div>
-                <input id="4" class="mutebox" name="checkName" type="checkbox">
+                <input id="m4" class="mutebox" name="checkName" type="checkbox">
 
                 <canvas id="volume-meter-4" class="volumeMeter" width="25" height="130"></canvas>
             </div>
@@ -112,30 +122,16 @@
                     <input id="mixVolume5" class="mixer-volume" type="range" value="100" orient="vertical">
                 </div>
                 <div>
-                    <input id="lowpassFilter5" class="mixer-filter" type="range" value="0" orient="vertical">
+                    <input id="lowpassFilter5" type="text" value="0" class="mixer-filter">
                     <p>5</p>
                 </div>
-                <input id="5" class="mutebox" name="checkName" type="checkbox">
+                <input id="m5" class="mutebox" name="checkName" type="checkbox">
 
                 <canvas id="volume-meter-5" class="volumeMeter" width="25" height="130"></canvas>
             </div>
         </div>
-
-        <select id="channel-setter">
-            <option id="1" value="2">2</option>
-            <option id="1" value="5">5</option>
-        </select>
-
-        <select id="slot-setter">
-            <option id="1" value="4">4</option>
-            <option id="1" value="8">8</option>
-        </select>
-        <button id="createChannels">Create</button>
         <a id="audio-recorder"></a>
     </div>
-    
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="bundle.js"></script>
 </body>
 </html>

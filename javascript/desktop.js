@@ -41,21 +41,8 @@ function Desktop() {
         SampleHandler.droppableDivs();
     }
 
-    createChannel(6, 8);
+    createChannel(6, 12);
     
-
-    // document.querySelector('#channel-setter').addEventListener('change', function() {
-    //     channelSetter = this.options[this.selectedIndex].value;
-    // })  
-
-    // document.querySelector('#slot-setter').addEventListener('change', function() {
-    //     slotSetter = this.options[this.selectedIndex].value;
-    // })  
-
-    // document.querySelector('#createChannels').addEventListener('click', function() {
-    //     createChannel(channelSetter, slotSetter);
-    // })
-
     //Sends audiosample path to samplebox()
     sampleList.addEventListener('click', function(event) {
         if(event.target.id === 'sample-list' || event.target.id === 'library-h3' || event.target.tagName === 'I') {
@@ -158,9 +145,8 @@ function Desktop() {
         } else {
             let playButton = document.getElementById(event.target.id);
             
-            //Preview button
+            //Samplebox preview button
             if(playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' && playButton.parentNode.tagName === 'DIV' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle' && playButton.parentNode.tagName === 'DIV' ) {
-                console.log('BOX PREVIEW');
                 if(playChecker) {
                     SampleHandler.previewSample(playButton.getAttribute("data-playbuttonid"), false);
                     playButton.removeAttribute('class');
@@ -184,9 +170,9 @@ function Desktop() {
                     //Clear preview timeout
                     clearTimeout(timer);
                 }
+            //Sample library preview button
             } else if (playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' && playButton.parentNode.tagName === 'LI' ||playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle' && playButton.parentNode.tagName === 'LI' ) {
                 if(playChecker) {
-                    console.log('SAMPLE LIB PREVIEW');
                     SampleHandler.previewSample(playButton.id, false);
                     playButton.removeAttribute('class');
                     playButton.setAttribute('class', 'fa fa-stop-circle');

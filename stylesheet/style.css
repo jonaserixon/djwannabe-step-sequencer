@@ -45,11 +45,13 @@ body {
   margin-top: 10px;
   height: 72px;
   width: 72px;
-  background-image: url("../images/playlist_bg.jpg");
+  /*background-image: url("../images/playlist_bg.jpg");*/
   border: solid black;
-  border-radius: 10px 10px 10px;
-  opacity: 1!important;
-  box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.5);
+  border-radius: 10px 10px 10px;   
+  /*background: rgba(24, 56, 80, 0.6);*/
+  background: linear-gradient(#2a4e6a, black, #2a4e6a);
+  opacity: 1;
+  box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.6);
 }
 
 #playlist-container {
@@ -90,19 +92,19 @@ body {
   float: right;
 }
 
-#title-bar{
+#title-bar {
     background: #86abc4;
     height: 25px;
     width: 400px;
-    border-radius: 5px;
+    text-align: center;
 }
 
-#title-bar h3{
+#title-bar h3 {
   width: 200px;
   margin-top: 0px;
 }
 
-#minimize-button{
+#minimize-button {
   background-color: ghostwhite;
   border:solid 1px;
   width: 25px;
@@ -111,9 +113,10 @@ body {
   cursor:pointer;
   text-align: center;
   border-radius: 5px;
+  margin-top: -31px;
 }
 
-#box{
+#box {
   height: 400px;
   min-height: 400px;
 }
@@ -129,10 +132,13 @@ body {
   transition: opacity 0.2s, box-shadow 0.2s;
 }
 
+#sample-list li { opacity: 1; transition: opacity 0.1s; }
 #sample-list:hover { opacity: 1; }
-#sample-list li:hover { background-color: #008395; cursor: pointer; }
+#sample-list li:hover { opacity: 0.5; cursor: pointer; }
 
 #sample-list > li { list-style:none; }
+#sample-list > li > i { margin-right: 5px; }
+#sample-list > li > i:hover { font-weight: bold; }
 
 
 #project-controller {
@@ -142,7 +148,7 @@ body {
   width: 400px;
   height: 60px;
   margin-top: 0px;
-  margin-right: 420px;
+  margin-right: 380px;
   border-radius: 5px;
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.6);
   font-size: 30px;
@@ -177,14 +183,6 @@ body {
 #play-all-button:hover { color: #bed8ea; }
 #stop-all-button:hover { color: #bed8ea; }
 #record-button:hover { opacity: 0.7; }
-
-#loop-button {
-  margin-top:15px;
-  color: #abc4d6;
-  font-size: 20px;
-  margin-right: 55px;
-  margin-left: -60px;
-}
 
 #starting-point { margin-left: -40px; margin-right: 10px; }
 
@@ -242,7 +240,7 @@ body {
   border-radius: 2px;
   float:right;
   margin-top: -300px;
-  border: 1px solid black;
+  /*border: 1px solid black;*/
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.6);
   text-align: center;
 }
@@ -271,12 +269,15 @@ body {
   border: 1px solid #132f44; 
   border-bottom: none;
   border-radius: 5px 5px 0px 0px;
-  box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.9); 
-  margin-bottom: -121px;
+  /*box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.9); */
+  margin-bottom: -141px;
+  background-color: #061a29;
 }
 
 .mutebox { margin-left: -20px; }
-/*
+
+
+
 @media only screen and (max-width: 1920px) {
     #wrapper { width: 95%; }
 
@@ -284,13 +285,13 @@ body {
     .draggable-content > img { height: 30px; width: 50px; margin-left: 5px; }
     .draggable-content > i { font-size: 52px; }
 
-    #playlist-container { width: 700px; height: 620px;  }
+    #playlist-container { width: 1000px; height: 590px;  }
 
-    #snaptarget1 { height: 85px; width:670px; margin-top: 20px; margin-left: 10px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
-    #snaptarget2 { height: 85px; width:670px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
-    #snaptarget3 { height: 85px; width:670px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
-    #snaptarget4 { height: 85px; width:670px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
-    #snaptarget5 { height: 85px; width:670px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+    #snaptarget1 { height: 85px; width:970px; margin-top: 20px; margin-left: 10px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+    #snaptarget2 { height: 85px; width:970px; margin-left: 10px; margin-top: -50px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+    #snaptarget3 { height: 85px; width:970px; margin-left: 10px; margin-top: -50px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+    #snaptarget4 { height: 85px; width:970px; margin-left: 10px; margin-top: -50px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+    #snaptarget5 { height: 85px; width:970px; margin-left: 10px; margin-top: -50px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
       
     .sample-slot { width: 62px; height: 62px; }
 
@@ -298,7 +299,7 @@ body {
       z-index: 1;
       width: 350px;
       margin-right: -20px;
-      margin-top: -625px;
+      margin-top: -605px;
       float: right;
       font-size: 14px;
     }
@@ -307,4 +308,4 @@ body {
 
     #title-bar{ width: 332px; border-radius: 5px; }
     #inactive-samples { width: 390px; min-height: 160px; }
-}*/
+}

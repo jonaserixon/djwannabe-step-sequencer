@@ -3,6 +3,10 @@
 
 let Desktop = require('./javascript/desktop');
 new Desktop(); 
+
+let loader = setTimeout(function() {
+    $( "*" ).css('visibility', '');
+}, 300);
 },{"./javascript/desktop":3}],2:[function(require,module,exports){
 exports.audioSamples = function() {
     let audioPath = './audio/HIMITSU';
@@ -61,21 +65,8 @@ function Desktop() {
         SampleHandler.droppableDivs();
     }
 
-    createChannel(6, 8);
+    createChannel(6, 12);
     
-
-    // document.querySelector('#channel-setter').addEventListener('change', function() {
-    //     channelSetter = this.options[this.selectedIndex].value;
-    // })  
-
-    // document.querySelector('#slot-setter').addEventListener('change', function() {
-    //     slotSetter = this.options[this.selectedIndex].value;
-    // })  
-
-    // document.querySelector('#createChannels').addEventListener('click', function() {
-    //     createChannel(channelSetter, slotSetter);
-    // })
-
     //Sends audiosample path to samplebox()
     sampleList.addEventListener('click', function(event) {
         if(event.target.id === 'sample-list' || event.target.id === 'library-h3' || event.target.tagName === 'I') {
@@ -178,9 +169,8 @@ function Desktop() {
         } else {
             let playButton = document.getElementById(event.target.id);
             
-            //Preview button
+            //Samplebox preview button
             if(playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' && playButton.parentNode.tagName === 'DIV' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle' && playButton.parentNode.tagName === 'DIV' ) {
-                console.log('BOX PREVIEW');
                 if(playChecker) {
                     SampleHandler.previewSample(playButton.getAttribute("data-playbuttonid"), false);
                     playButton.removeAttribute('class');
@@ -204,9 +194,9 @@ function Desktop() {
                     //Clear preview timeout
                     clearTimeout(timer);
                 }
+            //Sample library preview button
             } else if (playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' && playButton.parentNode.tagName === 'LI' ||playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle' && playButton.parentNode.tagName === 'LI' ) {
                 if(playChecker) {
-                    console.log('SAMPLE LIB PREVIEW');
                     SampleHandler.previewSample(playButton.id, false);
                     playButton.removeAttribute('class');
                     playButton.setAttribute('class', 'fa fa-stop-circle');
@@ -349,11 +339,12 @@ function Channel(id) {
             this.ctx.clearRect(0, 0, 60, 130);
             this.ctx.lineWidth = 2;
             this.ctx.strokeStyle = 'rgb(0, 0, 0)';
-            this.ctx.fillStyle= '#b5dffe';
+            this.ctx.fillStyle= '#00c543';
             this.ctx.fillRect(0, 130 - average, 25, 130);
         }.bind(this);
 
-    for (let i = 0; i < 8; i++) {
+    //Change number of sample-slots here
+    for (let i = 0; i < 12; i++) {
         let theSlot = document.querySelector('#channel' + this.id + 'Slot' + i);
         this.sampleslotDivs.push(theSlot);
     }
@@ -389,7 +380,7 @@ Channel.prototype = {
             this.timeouts.push(setTimeout(function() {
                 // Add the border to the playing sample slot
                 let playingSlot = this.sampleslotDivs[startPoint];
-                playingSlot.style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
+                playingSlot.style.boxShadow = '0 0 10px 3px rgba( 109, 250, 157 , 1)';
             }.bind(this), audio.buffer.duration * i * 1000));
             
             audio.onended = function() {
@@ -397,7 +388,7 @@ Channel.prototype = {
             }.bind(this);
     },
     stop: function() {
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < this.sampleslotDivs.length; i++) {
             if (this.sources[i] !== undefined) {
                 this.sources[i].stop(0);
             }
@@ -509,7 +500,7 @@ function loadSound(channel, audiosample, sampleSlot) {
                 if (sampleSlot !== undefined) {
                     channel.samples[sampleSlot] = buffer;
                 } else {
-                    for(let i = 0; i < 8; i++) {
+                    for(let i = 0; i < channel.sampleslotDivs.length; i++) {
                         channel.samples[i] = buffer;
                     }
                     // channel.samples.push(buffer); //silence
@@ -584,19 +575,19 @@ function stopAll(playButton) {
 }
 
 function muteChannel(id) {
-    if(id == 1) { channel1.channelGain.gain.value = 0; }
-    if(id == 2) { channel2.channelGain.gain.value = 0; }    
-    if(id == 3) { channel3.channelGain.gain.value = 0; }
-    if(id == 4) { channel4.channelGain.gain.value = 0; }
-    if(id == 5) { channel5.channelGain.gain.value = 0; }
+    if(id == 'm1') { channel1.channelGain.gain.value = 0; }
+    if(id == 'm2') { channel2.channelGain.gain.value = 0; }    
+    if(id == 'm3') { channel3.channelGain.gain.value = 0; }
+    if(id == 'm4') { channel4.channelGain.gain.value = 0; }
+    if(id == 'm5') { channel5.channelGain.gain.value = 0; }
 }
 
 function unmuteChannel(id) {
-    if(id == 1) { channel1.channelGain.gain.value = 1; }
-    if(id == 2) { channel2.channelGain.gain.value = 1; }    
-    if(id == 3) { channel3.channelGain.gain.value = 1; }
-    if(id == 4) { channel4.channelGain.gain.value = 1; }
-    if(id == 5) { channel5.channelGain.gain.value = 1; }
+    if(id == 'm1') { channel1.channelGain.gain.value = 1; }
+    if(id == 'm2') { channel2.channelGain.gain.value = 1; }    
+    if(id == 'm3') { channel3.channelGain.gain.value = 1; }
+    if(id == 'm4') { channel4.channelGain.gain.value = 1; }
+    if(id == 'm5') { channel5.channelGain.gain.value = 1; }
 }
 
 function audioRecorder(recording) {
@@ -634,6 +625,42 @@ function audioRecorder(recording) {
     };
 }
 
+$(function() {
+        $(".mixer-filter").knob({
+            'angleOffset': -125,
+            'angleArc': 250,
+            'width': 50,
+            'height': 50,
+            'lineCap': 'round',
+            'fgColor': '#061a29',
+            'change': function(event) { 
+                $('#mixer-board').draggable('disable');
+                let filterFrequency = 20000 / event;
+
+                //Preventing the frequency to become infinite
+                if(filterFrequency > 20000) {
+                    filterFrequency = 20000;
+                }
+                switch(this.$.attr('id')) {
+                    case 'lowpassFilter1': channel1.channelFilter.frequency.value = filterFrequency;
+                        break;
+                    case 'lowpassFilter2': channel2.channelFilter.frequency.value = filterFrequency;
+                        break;
+                    case 'lowpassFilter3': channel3.channelFilter.frequency.value = filterFrequency;
+                        break;
+                    case 'lowpassFilter4': channel4.channelFilter.frequency.value = filterFrequency;
+                        break;
+                    case 'lowpassFilter5': channel5.channelFilter.frequency.value = filterFrequency;
+                        break;
+                }
+            },
+            'release': function(event) {
+                $('#mixer-board').draggable('enable');
+            }
+        });
+});
+
+
 mixerBoard.addEventListener('input', function(event) {
     if(event.target.className === 'mixer-volume') {
         switch(event.target.id) {
@@ -646,27 +673,6 @@ mixerBoard.addEventListener('input', function(event) {
             case 'mixVolume4': channel4.channelGain.gain.value = event.target.value / 100;
                 break;
             case 'mixVolume5': channel5.channelGain.gain.value = event.target.value / 100;
-                break;
-        }
-    }
-    if(event.target.className === 'mixer-filter') {
-        let filterFrequency = 20000 / event.target.value;
-
-        //Preventing the frequency to become infinite
-        if(filterFrequency > 20000) {
-            filterFrequency = 20000;
-        }
-
-        switch(event.target.id) {
-            case 'lowpassFilter1': channel1.channelFilter.frequency.value = filterFrequency;
-                break;
-            case 'lowpassFilter2': channel2.channelFilter.frequency.value = filterFrequency;
-                break;
-            case 'lowpassFilter3': channel3.channelFilter.frequency.value = filterFrequency;
-                break;
-            case 'lowpassFilter4': channel4.channelFilter.frequency.value = filterFrequency;
-                break;
-            case 'lowpassFilter5': channel5.channelFilter.frequency.value = filterFrequency;
                 break;
         }
     }
