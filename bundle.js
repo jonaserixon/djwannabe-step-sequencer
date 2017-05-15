@@ -60,9 +60,6 @@ function Desktop() {
     createChannel(6, 8);
     SampleHandler.droppableDivs();
 
-    //Tooltip
-      
-
     //Sends audiosample path to samplebox()
     sampleList.addEventListener('click', function(event) {
         if(event.target.id === 'sample-list' || event.target.id === 'library-h3') {
@@ -97,19 +94,11 @@ function Desktop() {
                     document.querySelector('#garbageCan').style.borderRadius = '5px';
                     document.querySelector('#garbageCan').style.backgroundColor = '#1e4059';
                     document.querySelector('#garbageCan').style.opacity = '0.8';
-
-                    // $(document).tooltip({
-                    //     disabled: true
-                    // });
                 },
                 stop: function(event, ui) {
                     document.querySelector('#garbageCan').style.boxShadow = '';
                     document.querySelector('#garbageCan').style.backgroundColor = '';
                     document.querySelector('#garbageCan').style.opacity = '';
-
-                    // $(function() {
-                    //     $(document).tooltip();
-                    // });
                 },
             });   
         });
@@ -264,8 +253,6 @@ function Desktop() {
         }
         $("#box").slideToggle();
     });
-
-    
 }
 
 module.exports = Desktop;
@@ -319,7 +306,7 @@ function Channel(id) {
             this.ctx.clearRect(0, 0, 60, 130);
             this.ctx.lineWidth = 2;
             this.ctx.strokeStyle = 'rgb(0, 0, 0)';
-            this.ctx.fillStyle= 'black';
+            this.ctx.fillStyle= '#b5dffe';
             this.ctx.fillRect(0, 130 - average, 25, 130);
         }.bind(this);
 

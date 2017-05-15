@@ -47,7 +47,7 @@ function Channel(id) {
             this.ctx.clearRect(0, 0, 60, 130);
             this.ctx.lineWidth = 2;
             this.ctx.strokeStyle = 'rgb(0, 0, 0)';
-            this.ctx.fillStyle= 'black';
+            this.ctx.fillStyle= '#b5dffe';
             this.ctx.fillRect(0, 130 - average, 25, 130);
         }.bind(this);
 

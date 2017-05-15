@@ -244,6 +244,9 @@ body {
   text-align: center;
 }
 
+/*#mixer-board > canvas { margin-bottom: -10px; }*/
+
+
 .mixer-route { float: left; }
 
 #route1 { width: 120px; height: 300px; background-color: #4f7795; border-right: 1px solid black; }
@@ -252,16 +255,31 @@ body {
 #route4 { width: 120px; height: 300px; background-color: #4f7795; border-right: 1px solid black; }
 #route5 { width: 120px; height: 300px; background-color: #4f7795; }
 
-.mixer-volume { -webkit-appearance: slider-vertical; height: 60px; }
-.mixer-filter { -webkit-appearance: slider-vertical; height: 50px; }
+#route1 p { float: left; margin-top: 193px; }
+#route2 p { float: left; margin-top: 193px; }
+#route3 p { float: left; margin-top: 193px; }
+#route4 p { float: left; margin-top: 193px; }
+#route5 p { float: left; margin-top: 193px; }
 
-/*.volumeMeter { border: 1px solid black; }*/
+.mixer-volume { -webkit-appearance: slider-vertical; height: 60px; }
+.mixer-filter { -webkit-appearance: slider-vertical; height: 50px; margin-right: 10px; }
+
+.volumeMeter { 
+  border: 1px solid #132f44; 
+  border-bottom: none;
+  border-radius: 5px 5px 0px 0px;
+  box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.9); 
+  margin-bottom: -121px;
+}
+
+.mutebox { margin-left: -20px; }
 
 @media only screen and (max-width: 1920px) {
     #wrapper { width: 95%; }
 
     .draggable-content { width: 60px; height: 40px; }
     .draggable-content > img { height: 30px; width: 50px; margin-left: 5px; }
+    .draggable-content > i { font-size: 52px; }
 
     #playlist-container { width: 700px; height: 620px;  }
 
