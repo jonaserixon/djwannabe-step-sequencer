@@ -1,5 +1,5 @@
 body {
-  background-color: #8FB3CD;
+  background-color: #a3bdd1;
   /*height: 100%;*/
   /*height: auto !important;*/
   font-family: 'Lato', sans-serif;
@@ -90,7 +90,7 @@ body {
   z-index: 1;
   width: 400px;
   margin-right: 0px;
-  margin-top: -685px;
+  margin-top: -500px;
   float: right;
 }
 
@@ -98,6 +98,7 @@ body {
     background: #86abc4;
     height: 25px;
     width: 400px;
+    margin-top: 50px;
     text-align: center;
 }
 
@@ -149,8 +150,8 @@ body {
   background-color: #4a657a;
   width: 400px;
   height: 60px;
-  margin-top: -200px;
-  margin-right: 50px;
+  margin-top: -100px;
+  margin-right: 650px;
   border-radius: 5px;
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.6);
   font-size: 30px;
@@ -241,7 +242,7 @@ body {
   height: 300px;
   border-radius: 2px;
   float:right;
-  margin-top: -200px;
+  margin-top: -300px;
   /*border: 1px solid black;*/
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.6);
   text-align: center;
@@ -281,7 +282,7 @@ body {
 
 
 @media only screen and (max-width: 1920px) {
-    #wrapper { width: 98%; }
+    #wrapper { width: 95%; }
 
     .draggable-content { width: 60px; height: 40px; }
     .draggable-content > img { height: 30px; width: 50px; margin-left: 5px; }
@@ -309,5 +310,5 @@ body {
     #box ul { width: 270px; }
 
     #title-bar{ width: 332px; border-radius: 5px; }
-    #inactive-samples { width: 390px; min-height: 160px; }
+    #inactive-samples { width: 390px; min-height: 250px; }
 }
