@@ -88,6 +88,7 @@ function Desktop() {
         sampleBox.setAttribute('class', 'draggable-content');
         sampleBox.setAttribute('id', 'samplebox' + id);
         sampleBox.setAttribute('sample-id', event.target.getAttribute('sample-id'));
+        sampleBox.setAttribute('title', sample);
         let img = document.createElement('img');
         
         //Set color and image

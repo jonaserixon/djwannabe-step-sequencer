@@ -60,6 +60,9 @@ function Desktop() {
     createChannel(6, 8);
     SampleHandler.droppableDivs();
 
+    //Tooltip
+      
+
     //Sends audiosample path to samplebox()
     sampleList.addEventListener('click', function(event) {
         if(event.target.id === 'sample-list' || event.target.id === 'library-h3') {
@@ -94,11 +97,19 @@ function Desktop() {
                     document.querySelector('#garbageCan').style.borderRadius = '5px';
                     document.querySelector('#garbageCan').style.backgroundColor = '#1e4059';
                     document.querySelector('#garbageCan').style.opacity = '0.8';
+
+                    // $(document).tooltip({
+                    //     disabled: true
+                    // });
                 },
                 stop: function(event, ui) {
                     document.querySelector('#garbageCan').style.boxShadow = '';
                     document.querySelector('#garbageCan').style.backgroundColor = '';
                     document.querySelector('#garbageCan').style.opacity = '';
+
+                    // $(function() {
+                    //     $(document).tooltip();
+                    // });
                 },
             });   
         });
@@ -108,6 +119,7 @@ function Desktop() {
         sampleBox.setAttribute('class', 'draggable-content');
         sampleBox.setAttribute('id', 'samplebox' + id);
         sampleBox.setAttribute('sample-id', event.target.getAttribute('sample-id'));
+        sampleBox.setAttribute('title', sample);
         let img = document.createElement('img');
         
         //Set color and image
@@ -252,6 +264,8 @@ function Desktop() {
         }
         $("#box").slideToggle();
     });
+
+    
 }
 
 module.exports = Desktop;
@@ -288,7 +302,7 @@ function Channel(id) {
     this.sources = [];          //Keep track of buffersource nodes created from scheduler method
     this.timeouts = [];         //setTimeOuts
     this.sampleslotDivs = [];   //Sample-slot id
-    this.ctx = document.getElementById("volume-meter-" + id).getContext("2d");  //Canvas context
+    this.ctx = document.getElementById("volume-meter-" + this.id).getContext("2d");  //Canvas context
 
     this.javascriptNode = context.createScriptProcessor(512);
     this.analyser = context.createAnalyser();
@@ -314,9 +328,7 @@ function Channel(id) {
         this.sampleslotDivs.push(theSlot);
     }
 
-    for (let i = 0; i < 8; i++) {
-        loadSound(this, './audio/Silence.ogg');
-    }
+    loadSound(this, './audio/Silence.ogg');
 }
 
 Channel.prototype = {
@@ -467,7 +479,10 @@ function loadSound(channel, audiosample, sampleSlot) {
                 if (sampleSlot !== undefined) {
                     channel.samples[sampleSlot] = buffer;
                 } else {
-                    channel.samples.push(buffer);
+                    for(let i = 0; i < 8; i++) {
+                        channel.samples[i] = buffer;
+                    }
+                    // channel.samples.push(buffer); //silence
                 }
             } else {
                 //Preview a sample

@@ -30,7 +30,7 @@ function Channel(id) {
     this.sources = [];          //Keep track of buffersource nodes created from scheduler method
     this.timeouts = [];         //setTimeOuts
     this.sampleslotDivs = [];   //Sample-slot id
-    this.ctx = document.getElementById("volume-meter-" + id).getContext("2d");  //Canvas context
+    this.ctx = document.getElementById("volume-meter-" + this.id).getContext("2d");  //Canvas context
 
     this.javascriptNode = context.createScriptProcessor(512);
     this.analyser = context.createAnalyser();
@@ -56,9 +56,7 @@ function Channel(id) {
         this.sampleslotDivs.push(theSlot);
     }
 
-    for (let i = 0; i < 8; i++) {
-        loadSound(this, './audio/Silence.ogg');
-    }
+    loadSound(this, './audio/Silence.ogg');
 }
 
 Channel.prototype = {
@@ -209,7 +207,10 @@ function loadSound(channel, audiosample, sampleSlot) {
                 if (sampleSlot !== undefined) {
                     channel.samples[sampleSlot] = buffer;
                 } else {
-                    channel.samples.push(buffer);
+                    for(let i = 0; i < 8; i++) {
+                        channel.samples[i] = buffer;
+                    }
+                    // channel.samples.push(buffer); //silence
                 }
             } else {
                 //Preview a sample
