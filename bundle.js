@@ -87,25 +87,27 @@ function Desktop() {
     function samplebox(id, sample, event) {
         //Make samplebox draggable
         $(function () {
-            $('#samplebox' + id).draggable({
+            $('.draggable-content').draggable({
                 revert: 'invalid', 
                 disabled: false,
                 containment: 'document',
                 zIndex: 10,
                 opacity: 0.5,
                 snap: '.sample-slot',
-                scroll: false,
                 snapMode: 'inner',
+                helper: 'clone',
                 drag: function(event, ui) {
                     document.querySelector('#garbageCan').style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
                     document.querySelector('#garbageCan').style.borderRadius = '5px';
                     document.querySelector('#garbageCan').style.backgroundColor = '#1e4059';
-                    document.querySelector('#garbageCan').style.opacity = '0.8';
+                    document.querySelector('#garbageCan').style.opacity = '0.8';                    
                 },
                 stop: function(event, ui) {
                     document.querySelector('#garbageCan').style.boxShadow = '';
                     document.querySelector('#garbageCan').style.backgroundColor = '';
                     document.querySelector('#garbageCan').style.opacity = '';
+
+                    
                 },
             });   
         });
@@ -116,6 +118,7 @@ function Desktop() {
         sampleBox.setAttribute('id', 'samplebox' + id);
         sampleBox.setAttribute('sample-id', event.target.getAttribute('sample-id'));
         sampleBox.setAttribute('title', sample);
+        sampleBox.setAttribute('original-box', sample);
         let img = document.createElement('img');
         
         //Set color and image
@@ -169,7 +172,6 @@ function Desktop() {
             return;
         } else {
             let playButton = document.getElementById(event.target.id);
-            console.log(playButton);
             //Samplebox preview button
             if(playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' && playButton.parentNode.tagName === 'DIV' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle' && playButton.parentNode.tagName === 'DIV' ) {
                 if(playChecker) {
@@ -430,6 +432,8 @@ $('#garbageCan').droppable({
             let droppableHelper = ui.draggable.attr("helper");  
             let draggableHelper = ui.draggable.find("i").attr("data-playbuttonid");
             let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
+            
+
             if(previousSlot !== undefined) {
                 if(previousSlot.includes('channel1Slot')) { garbageHandler(droppableHelper, previousSlot, draggableId, channel1); }
                 if(previousSlot.includes('channel2Slot')) { garbageHandler(droppableHelper, previousSlot, draggableId, channel2); }
@@ -442,6 +446,31 @@ $('#garbageCan').droppable({
         }    
 });
 
+function makeDraggable(id) {
+    $(function () {
+            $(id).draggable({
+                revert: 'invalid', 
+                disabled: false,
+                containment: 'document',
+                zIndex: 10,
+                opacity: 0.5,
+                snap: '.sample-slot',
+                snapMode: 'inner',
+                drag: function(event, ui) {
+                    document.querySelector('#garbageCan').style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
+                    document.querySelector('#garbageCan').style.borderRadius = '5px';
+                    document.querySelector('#garbageCan').style.backgroundColor = '#1e4059';
+                    document.querySelector('#garbageCan').style.opacity = '0.8';                    
+                },
+                stop: function(event, ui) {
+                    document.querySelector('#garbageCan').style.boxShadow = '';
+                    document.querySelector('#garbageCan').style.backgroundColor = '';
+                    document.querySelector('#garbageCan').style.opacity = '';
+                },
+            });   
+        });
+}
+
 function droppableDivs() {
     channel1 = new Channel(1); 
     channel2 = new Channel(2); 
@@ -451,7 +480,7 @@ function droppableDivs() {
 
     // channels.push(new Channel());
     // channels[2]
-
+    let xd = 0;
     $('.sample-slot').droppable({
         accept: '.draggable-content',
         drop: function (event, ui) {
@@ -461,7 +490,7 @@ function droppableDivs() {
             let droppableId = $(this).attr("id");
             let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
             let draggableSampleId = ui.draggable.attr("sample-id");
-            draggableId.setAttribute('previous-slot', droppableId);
+            // draggableId.setAttribute('previous-slot', droppableId);
             draggableId.setAttribute('helper', droppableHelper);
 
             if(droppableId.includes('channel1Slot')) { droppableHandler(droppableId, draggableUi, droppableHelper, draggableSampleId, channel1); }   
@@ -470,10 +499,24 @@ function droppableDivs() {
             if(droppableId.includes('channel4Slot')) { droppableHandler(droppableId, draggableUi, droppableHelper, draggableSampleId, channel4); }    
             if(droppableId.includes('channel5Slot')) { droppableHandler(droppableId, draggableUi, droppableHelper, draggableSampleId, channel5); }   
 
-            $(this).append(ui.draggable);
-            ui.draggable.position({of: $(this), my: 'left top', at: 'left top'});
-
-            
+            if(ui.draggable.attr("original-box")) {
+                // draggableId.removeAttribute('previous-slot');
+                let clonedBox = ui.draggable.clone().prop('id', 'yolo' + xd);
+                $(this).append(clonedBox);
+                // $(clonedBox).one('mouseover', function() {
+                    clonedBox.attr('previous-slot', droppableId);
+                    clonedBox.removeAttr('original-box');
+                    clonedBox.removeClass();
+                    clonedBox.prop('class', 'draggable-content');
+                    makeDraggable('.draggable-content');
+                // })
+            } else {
+                draggableUi.attr('previous-slot', droppableId);
+                $(this).append(ui.draggable);
+                ui.draggable.position({of: $(this), my: 'left top', at: 'left top'});
+            }
+            xd++;
+            console.log(document.querySelectorAll('#playlist-container .draggable-content').length);
         },
         out: function(event, ui) { 
             let previousSlot = ui.draggable.attr("previous-slot"); 

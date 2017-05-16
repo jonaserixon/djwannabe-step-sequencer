@@ -63,25 +63,27 @@ function Desktop() {
     function samplebox(id, sample, event) {
         //Make samplebox draggable
         $(function () {
-            $('#samplebox' + id).draggable({
+            $('.draggable-content').draggable({
                 revert: 'invalid', 
                 disabled: false,
                 containment: 'document',
                 zIndex: 10,
                 opacity: 0.5,
                 snap: '.sample-slot',
-                scroll: false,
                 snapMode: 'inner',
+                helper: 'clone',
                 drag: function(event, ui) {
                     document.querySelector('#garbageCan').style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
                     document.querySelector('#garbageCan').style.borderRadius = '5px';
                     document.querySelector('#garbageCan').style.backgroundColor = '#1e4059';
-                    document.querySelector('#garbageCan').style.opacity = '0.8';
+                    document.querySelector('#garbageCan').style.opacity = '0.8';                    
                 },
                 stop: function(event, ui) {
                     document.querySelector('#garbageCan').style.boxShadow = '';
                     document.querySelector('#garbageCan').style.backgroundColor = '';
                     document.querySelector('#garbageCan').style.opacity = '';
+
+                    
                 },
             });   
         });
@@ -92,6 +94,7 @@ function Desktop() {
         sampleBox.setAttribute('id', 'samplebox' + id);
         sampleBox.setAttribute('sample-id', event.target.getAttribute('sample-id'));
         sampleBox.setAttribute('title', sample);
+        sampleBox.setAttribute('original-box', sample);
         let img = document.createElement('img');
         
         //Set color and image
@@ -145,7 +148,6 @@ function Desktop() {
             return;
         } else {
             let playButton = document.getElementById(event.target.id);
-            console.log(playButton);
             //Samplebox preview button
             if(playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' && playButton.parentNode.tagName === 'DIV' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle' && playButton.parentNode.tagName === 'DIV' ) {
                 if(playChecker) {

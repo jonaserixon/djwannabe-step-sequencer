@@ -3,7 +3,6 @@ body {
   /*height: 100%;*/
   /*height: auto !important;*/
   font-family: 'Lato', sans-serif;
-  margin: 0 auto -50px;
   overflow-x: hidden;
 }
 
@@ -138,9 +137,9 @@ body {
 
 
 #sample-list > li { list-style:none; }
-#sample-list > li > i {  display: none; }
+#sample-list > li > i {  visibility:hidden }
 #sample-list li:hover { opacity: 0.5; cursor: cell; }
-#sample-list li:hover i { cursor: pointer; display: initial; margin-right: 5px; }
+#sample-list li:hover i { cursor: pointer; visibility: initial; margin-right: 5px; }
 #sample-list > li > i:hover { font-weight: bold; }
 
 #project-controller {
