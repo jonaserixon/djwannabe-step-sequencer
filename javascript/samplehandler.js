@@ -6,7 +6,6 @@ let volumeKnob = document.querySelector('#volumeKnob');
 let delayKnob = document.querySelector('#delayKnob');
 let recordButton = document.querySelector('#record-button');
 let mixerBoard = document.querySelector('#mixer-board');
-let looper = document.querySelector('#loop-button');
 
 let samples = audioSamples.audioSamples(); //audiosample paths
 
@@ -45,8 +44,6 @@ function Channel(id) {
             let average = this.getAverageVolume(array)
             
             this.ctx.clearRect(0, 0, 60, 130);
-            this.ctx.lineWidth = 2;
-            this.ctx.strokeStyle = 'rgb(0, 0, 0)';
             this.ctx.fillStyle= '#00c543';
             this.ctx.fillRect(0, 130 - average, 25, 130);
         }.bind(this);
@@ -152,11 +149,14 @@ $('#garbageCan').droppable({
 });
 
 function droppableDivs() {
-    channel1 = new Channel(1, context); 
-    channel2 = new Channel(2, context); 
-    channel3 = new Channel(3, context); 
-    channel4 = new Channel(4, context); 
-    channel5 = new Channel(5, context); 
+    channel1 = new Channel(1); 
+    channel2 = new Channel(2); 
+    channel3 = new Channel(3); 
+    channel4 = new Channel(4); 
+    channel5 = new Channel(5); 
+
+    // channels.push(new Channel());
+    // channels[2]
 
     $('.sample-slot').droppable({
         accept: '.draggable-content',
@@ -178,6 +178,8 @@ function droppableDivs() {
 
             $(this).append(ui.draggable);
             ui.draggable.position({of: $(this), my: 'left top', at: 'left top'});
+
+            
         },
         out: function(event, ui) { 
             let previousSlot = ui.draggable.attr("previous-slot"); 
@@ -243,7 +245,7 @@ function playChannels(counterPoint, playButton) {
     if(playButton) {
         playButton.style.opacity = '';
         playButton.style.color = '#d3e2ed';
-        playButton.style.pointerEvents = 'none';                                //disable playbutton
+        playButton.style.pointerEvents = 'none'; 
         document.querySelector('#stop-all-button').style.opacity = '0.6';
         document.querySelector('#stop-all-button').style.color = '';
     }
@@ -333,11 +335,13 @@ function audioRecorder(recording) {
 }
 
 $(function() {
+    let size = 50;
+    if($(window).width() < 1600) { size = 40; }
         $(".mixer-filter").knob({
             'angleOffset': -125,
             'angleArc': 250,
-            'width': 50,
-            'height': 50,
+            'width': size,
+            'height': size,
             'lineCap': 'round',
             'fgColor': '#061a29',
             'change': function(event) { 

@@ -4,13 +4,14 @@ body {
   /*height: auto !important;*/
   font-family: 'Lato', sans-serif;
   margin: 0 auto -50px;
+  overflow-x: hidden;
 }
 
 .footer, .push { height: 50px;  text-align: center; }
 
 #wrapper {
   margin: 0 auto;
-  width: 1800px;
+  width: 95%;
   min-height: 880px;
   padding: 10px;
   background-color: #132f44;
@@ -20,32 +21,30 @@ body {
 }
 
 
-#header { font-size: 50px; text-align: center; margin: 0; }
-#header img { width: 60px; height: 36px; }
+#header { font-size: 40px; text-align: center; margin: 0; }
+#header img { width: 50px; height: 30px; }
 
 .main-timeline { display: inline-block; margin-bottom: 75px; }
 
-#snaptarget1 { height: 95px; width:750px; margin-top: 20px; margin-left: 10px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+
+#snaptarget1 { height: 85px; width:1280px; margin-top: 10px; margin-left: 10px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+#snaptarget2 { height: 85px; width:1280px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+#snaptarget3 { height: 85px; width:1280px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+#snaptarget4 { height: 85px; width:1280px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+#snaptarget5 { height: 85px; width:1280px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
+
 #snaptarget1 h3 { float: left; color: #86abc4; margin-left: 5px; margin-top: 40px; margin-right: 10px; }
-
-#snaptarget2 { height: 95px; width:750px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
 #snaptarget2 h3 { float: left; color: #86abc4; margin-left: 5px; margin-top: 40px; margin-right: 10px; }
-
-#snaptarget3 { height: 95px; width:750px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
 #snaptarget3 h3 { float: left; color: #86abc4; margin-left: 5px; margin-top: 40px; margin-right: 10px; }
-
-#snaptarget4 { height: 95px; width:750px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
 #snaptarget4 h3 { float: left; color: #86abc4; margin-left: 5px; margin-top: 40px; margin-right: 10px; }
-
-#snaptarget5 { height: 95px; width:750px; margin-left: 10px; margin-top: -40px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
 #snaptarget5 h3 { float: left; color: #86abc4; margin-left: 5px; margin-top: 40px; margin-right: 10px; }
 
 .sample-slot {
   float: left;
   margin-right: 10px;
   margin-top: 10px;
-  height: 72px;
-  width: 72px;
+  height: 62px;
+  width: 62px;
   /*background-image: url("../images/playlist_bg.jpg");*/
   border: solid black;
   border-radius: 10px 10px 10px;   
@@ -59,8 +58,8 @@ body {
 #playlist-container {
   margin-top: 0px;
   background-color: #1e4059;
-  width: 800px;
-  height: 680px;
+  width: 1300px; 
+  height: 550px;
   border-radius: 10px 10px 10px;
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.6);
 }
@@ -68,10 +67,9 @@ body {
 
 .draggable-content {
    background-color: ghostwhite;
-   width: 70px;
-   height: 70px;
+   width: 60px; 
+   height: 60px; 
    margin: 0 10px 10px 0;
-   font-size: .9em;
    border: solid black;
    border-radius: 10px 10px 10px;
    opacity: 0.8;
@@ -81,25 +79,25 @@ body {
 
 .draggable-content:hover { opacity: 1; cursor: pointer; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.5); }
 
-.draggable-content > img { height: 40px; width: 50px; margin-left: 10px; }
+.draggable-content > img { height: 35px; width: 50px; margin-left: 5px; }
 
-.draggable-content > i { margin-left: 10px; }
+.draggable-content > i { margin-left: 10px; font-size: 25px; }
 .draggable-content i:hover { opacity: 0.7; }
 
 #sample-library {
-  z-index: 1;
-  width: 400px;
-  margin-right: 0px;
-  margin-top: -500px;
+  width: 250px;
+  margin-right: 10px;
+  margin-top: -600px;
   float: right;
+  font-size: 14px;
 }
 
 #title-bar {
     background: #86abc4;
     height: 25px;
-    width: 400px;
     margin-top: 50px;
     text-align: center;
+    border-radius: 5px;
 }
 
 #title-bar h3 {
@@ -120,7 +118,7 @@ body {
 }
 
 #box {
-  height: 400px;
+  width: 300px;
   min-height: 400px;
 }
 
@@ -130,19 +128,20 @@ body {
   border-radius: 5px;
   border: 1px solid black;
   opacity: 0.6;
-  width: 310px;
+  width: 190px;
   margin-top: 0px;
   transition: opacity 0.2s, box-shadow 0.2s;
 }
 
 #sample-list li { opacity: 1; transition: opacity 0.1s; }
 #sample-list:hover { opacity: 1; }
-#sample-list li:hover { opacity: 0.5; cursor: pointer; }
+
 
 #sample-list > li { list-style:none; }
-#sample-list > li > i { margin-right: 5px; }
+#sample-list > li > i {  display: none; }
+#sample-list li:hover { opacity: 0.5; cursor: cell; }
+#sample-list li:hover i { cursor: pointer; display: initial; margin-right: 5px; }
 #sample-list > li > i:hover { font-weight: bold; }
-
 
 #project-controller {
   float: right;
@@ -150,12 +149,11 @@ body {
   background-color: #4a657a;
   width: 400px;
   height: 60px;
-  margin-top: -100px;
+  margin-top: -200px;
   margin-right: 650px;
   border-radius: 5px;
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.6);
   font-size: 30px;
-
 }
 
 #play-all-button {
@@ -200,8 +198,8 @@ body {
 #inactive-samples {
   border-radius: 5px;
   margin-top: 50px;
-  width: 520px;
-  min-height: 100px;
+  width: 390px; 
+  min-height: 250px;
   background-color: #30546f;
   padding-top: 12px;
   padding-left: 15px;
@@ -228,13 +226,11 @@ body {
   color: #8FB3CD;
   font-size: 50px;
   margin-top: 90px;
-  margin-right: 1300px;
+  margin-right: 1100px;
   padding: 20px;
   float: right;
   transition: color 0.2s, background-color 0.2s, box-shadow 0.2s, border-radius 0.2s, opacity 0.2s;
 }
-
-
 
 #mixer-board {
   background-color: #1e4059;
@@ -247,9 +243,6 @@ body {
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.6);
   text-align: center;
 }
-
-/*#mixer-board > canvas { margin-bottom: -10px; }*/
-
 
 .mixer-route { float: left; }
 
@@ -272,43 +265,73 @@ body {
   border: 1px solid #132f44; 
   border-bottom: none;
   border-radius: 5px 5px 0px 0px;
-  /*box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.9); */
-  margin-bottom: -141px;
+  margin-bottom: -142px;
   background-color: #061a29;
 }
 
 .mutebox { margin-left: -20px; }
 
+@media only screen and (max-width: 1600px) {
+  #mixer-board {
+    width: 484px;
+    height: 290px;
+  }
 
+  #route1 { width: 96px; height: 290px; background-color: #4f7795; border-right: 1px solid black; }
+  #route2 { width: 96px; height: 290px; background-color: #4f7795; border-right: 1px solid black; }
+  #route3 { width: 96px; height: 290px; background-color: #4f7795; border-right: 1px solid black; }
+  #route4 { width: 96px; height: 290px; background-color: #4f7795; border-right: 1px solid black; }
+  #route5 { width: 96px; height: 290px; background-color: #4f7795; }
 
-@media only screen and (max-width: 1920px) {
-    #wrapper { width: 95%; }
+  .mixer-volume { height: 51px; }
+  .volumeMeter { margin-bottom: -152px; }
 
-    .draggable-content { width: 60px; height: 40px; }
-    .draggable-content > img { height: 30px; width: 50px; margin-left: 5px; }
-    .draggable-content > i { font-size: 52px; }
+  .sample-slot {
+    width: 50px;
+    height: 50px;
+    margin-top: 5px;
+    margin-right: 9px;
+  }
 
-    #playlist-container { width: 1300px; height: 550px;  }
+  #playlist-container {
+    width: 1090px; 
+    height: 440px;
+  }
 
-    #snaptarget1 { height: 85px; width:1280px; margin-top: 10px; margin-left: 10px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
-    #snaptarget2 { height: 85px; width:1280px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
-    #snaptarget3 { height: 85px; width:1280px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
-    #snaptarget4 { height: 85px; width:1280px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
-    #snaptarget5 { height: 85px; width:1280px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.9); }
-      
-    .sample-slot { width: 62px; height: 62px; }
+  #sample-counter {
+    font-size: 14px;
+    margin-top: -73px;
+  }
 
-    #sample-library {
-      z-index: 1;
-      width: 350px;
-      margin-right: -20px;
-      margin-top: -605px;
-      float: right;
-      font-size: 14px;
-    }
+  #snaptarget1 { height: 65px; width:1070px; margin-left: 10px; margin-top: 30px;  background-color: #061a29; border-radius: 5px; box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
+  #snaptarget2 { height: 65px; width:1070px; margin-left: 10px; margin-top: -65px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
+  #snaptarget3 { height: 65px; width:1070px; margin-left: 10px; margin-top: -65px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
+  #snaptarget4 { height: 65px; width:1070px; margin-left: 10px; margin-top: -65px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
+  #snaptarget5 { height: 65px; width:1070px; margin-left: 10px; margin-top: -65px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
 
-    #box ul { width: 270px; }
+  .draggable-content {
+    height: 45px;
+    width: 50px; 
+  }
+  .draggable-content > img { height: 25px; width: 39px; margin-left: 5px; }
 
-    #title-bar{ width: 332px; border-radius: 5px; }
-    #inactive-samples { width: 390px; min-height: 250px; }
+  i[button-css="boxButton"] {
+    font-size: 20px;
+  }
+  #sample-library { margin-top: -490px; }
+  #box ul { font-size: 12px; }
+
+  #garbageCan { margin-right: 900px; }
+
+  #project-controller { margin-right: 500px; margin-top: -300px; }
+}
+
+@media only screen and (max-width: 1200px) {  
+  #playlist-container {
+    width: 800px;
+    overflow-x: auto;
+  }
+  #sample-library { width: 160px; text-overflow: ellipsis; }
+  #title-bar { font-size: 7px; }
+  #box ul { width: 70px; text-overflow: ellipsis; font-size: 10px;}
 }

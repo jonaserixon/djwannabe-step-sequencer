@@ -130,8 +130,9 @@ function Desktop() {
         playButton.setAttribute('data-playbuttonid', event.target.getAttribute('sample-id'));
         playButton.setAttribute('class', 'fa fa-play-circle');
         playButton.setAttribute('id', 'playbutton' + id);
+        playButton.setAttribute('button-css', 'boxButton');
         playButton.setAttribute('aria-hidden', 'true');
-        playButton.style.fontSize = '30px';
+        // playButton.style.fontSize = '30px';
 
         inactiveSamples.appendChild(sampleBox);
         sampleBox.appendChild(playButton);
