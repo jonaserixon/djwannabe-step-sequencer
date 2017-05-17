@@ -17,6 +17,7 @@ body {
   border-radius: 5px;
   border: 2px solid black;
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.3);
+  position: relative;
 }
 
 
@@ -143,16 +144,17 @@ body {
 #sample-list > li > i:hover { font-weight: bold; }
 
 #project-controller {
-  float: right;
+  position: absolute;
   text-align: center;
   background-color: #4a657a;
   width: 400px;
   height: 60px;
-  margin-top: -300px;
-  margin-right: 250px;
   border-radius: 5px;
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.6);
   font-size: 30px;
+  z-index: 3;
+  top: 500px;
+  right: 10px;
 }
 
 #play-all-button {

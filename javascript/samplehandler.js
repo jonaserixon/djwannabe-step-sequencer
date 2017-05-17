@@ -34,7 +34,7 @@ function Channel(id) {
 
     this.javascriptNode = context.createScriptProcessor(512);
     this.analyser = context.createAnalyser();
-    this.analyser.smoothingTimeConstant = 0.3;
+    this.analyser.smoothingTimeConstant = 0.4;
     this.channelGain = context.createGain();
     this.panNode = context.createStereoPanner();
     this.panNode.pan.value = 0;
@@ -46,8 +46,12 @@ function Channel(id) {
             this.analyser.getByteFrequencyData(array);
             let average = this.getAverageVolume(array)
             
+            let gradient= this.ctx.createLinearGradient(0,0,25,130);
+            gradient.addColorStop(0, '#c56300');
+            gradient.addColorStop(1, '#00c543');
+
             this.ctx.clearRect(0, 0, 60, 130);
-            this.ctx.fillStyle= '#00c543';
+            this.ctx.fillStyle= gradient;
             this.ctx.fillRect(0, 130 - average, 25, 130);
         }.bind(this);
 
