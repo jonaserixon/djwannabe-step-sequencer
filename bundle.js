@@ -106,11 +106,11 @@ function Desktop() {
                     document.querySelector('#garbageCan').style.boxShadow = '';
                     document.querySelector('#garbageCan').style.backgroundColor = '';
                     document.querySelector('#garbageCan').style.opacity = '';
-
-                    
                 },
             });   
         });
+
+        //document.querySelector('.draggable-content').parentElement
 
         //Create a samplebox
         let sampleBox = document.createElement('div');
@@ -302,6 +302,7 @@ let volumeKnob = document.querySelector('#volumeKnob');
 let delayKnob = document.querySelector('#delayKnob');
 let recordButton = document.querySelector('#record-button');
 let mixerBoard = document.querySelector('#mixer-board');
+let panControl = document.querySelector('.stereo-panner');
 
 let samples = audioSamples.audioSamples(); //audiosample paths
 
@@ -331,6 +332,8 @@ function Channel(id) {
     this.analyser = context.createAnalyser();
     this.analyser.smoothingTimeConstant = 0.3;
     this.channelGain = context.createGain();
+    this.panNode = context.createStereoPanner();
+    this.panNode.pan.value = 0;
     this.channelFilter = context.createBiquadFilter();
     this.channelFilter.frequency.value = 20000;
 
@@ -364,7 +367,8 @@ Channel.prototype = {
 
             audio.connect(this.channelFilter);
             this.channelFilter.connect(this.channelGain);
-            this.channelGain.connect(gainNode);
+            this.channelGain.connect(this.panNode);
+            this.panNode.connect(gainNode);
             gainNode.connect(context.destination);
 
             //Connect the volume-meter
@@ -500,16 +504,14 @@ function droppableDivs() {
             if(droppableId.includes('channel5Slot')) { droppableHandler(droppableId, draggableUi, droppableHelper, draggableSampleId, channel5); }   
 
             if(ui.draggable.attr("original-box")) {
-                // draggableId.removeAttribute('previous-slot');
                 let clonedBox = ui.draggable.clone().prop('id', 'yolo' + xd);
                 $(this).append(clonedBox);
-                // $(clonedBox).one('mouseover', function() {
-                    clonedBox.attr('previous-slot', droppableId);
-                    clonedBox.removeAttr('original-box');
-                    clonedBox.removeClass();
-                    clonedBox.prop('class', 'draggable-content');
-                    makeDraggable('.draggable-content');
-                // })
+                clonedBox.position({of: $(this), my: 'left top', at: 'left top'});
+                clonedBox.attr('previous-slot', droppableId);
+                clonedBox.removeAttr('original-box');
+                clonedBox.removeClass();
+                clonedBox.prop('class', 'draggable-content');
+                makeDraggable('.draggable-content');
             } else {
                 draggableUi.attr('previous-slot', droppableId);
                 $(this).append(ui.draggable);
@@ -674,7 +676,7 @@ function audioRecorder(recording) {
 $(function() {
     let size = 50;
     if($(window).width() < 1600) { size = 40; }
-        $(".mixer-filter").knob({
+        $(".jquery-filter-knob").knob({
             'angleOffset': -125,
             'angleArc': 250,
             'width': size,
@@ -721,6 +723,21 @@ mixerBoard.addEventListener('input', function(event) {
             case 'mixVolume4': channel4.channelGain.gain.value = event.target.value / 100;
                 break;
             case 'mixVolume5': channel5.channelGain.gain.value = event.target.value / 100;
+                break;
+        }
+    }
+
+    if(event.target.className === 'stereo-panner') {
+        switch(event.target.id) {
+            case 'panner1': channel1.panNode.pan.value = event.target.value;
+                break;
+            case 'panner2': channel2.panNode.pan.value = event.target.value;
+                break;
+            case 'panner3': channel3.panNode.pan.value = event.target.value;
+                break;
+            case 'panner4': channel4.panNode.pan.value = event.target.value;
+                break;
+            case 'panner5': channel5.panNode.pan.value = event.target.value;
                 break;
         }
     }

@@ -82,11 +82,11 @@ function Desktop() {
                     document.querySelector('#garbageCan').style.boxShadow = '';
                     document.querySelector('#garbageCan').style.backgroundColor = '';
                     document.querySelector('#garbageCan').style.opacity = '';
-
-                    
                 },
             });   
         });
+
+        //document.querySelector('.draggable-content').parentElement
 
         //Create a samplebox
         let sampleBox = document.createElement('div');
