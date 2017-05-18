@@ -127,10 +127,11 @@ body {
   padding: 30px;
   border-radius: 5px;
   border: 1px solid black;
-  opacity: 0.6;
+  opacity: 1;
   width: 190px;
   margin-top: 0px;
   transition: opacity 0.2s, box-shadow 0.2s;
+  box-shadow: 0px 2px 6px 6px ghostwhite;
 }
 
 #sample-list li { opacity: 1; transition: opacity 0.1s; }
@@ -239,9 +240,9 @@ body {
   height: 300px;
   border: 3px solid black;
   border-radius: 2px;
-  float:right;
-  margin-top: -300px;
-  /*border: 1px solid black;*/
+  position: absolute;
+  bottom: 0;
+  right: 0;
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.6);
   text-align: center;
   
@@ -283,8 +284,9 @@ body {
   and (min-resolution:.001dpcm) {
     .mixer-volume { 
       position: absolute;
-      left: -40px;
+      left: 10px;
       top: 177px;
+      width: 20px;
     }
 }
 
@@ -310,8 +312,8 @@ body {
   left: 90px;
 }
 
-@media only screen and (max-width: 1600px) {
-  #mixer-board {
+@media only screen and (max-width: 1700px) {
+  /*#mixer-board {
     width: 484px;
     height: 290px;
   }
@@ -323,7 +325,7 @@ body {
   #route5 { width: 96px; height: 290px; background-color: #4f7795; }
 
   .mixer-volume { height: 51px; }
-  .volumeMeter { margin-bottom: -152px; }
+  .volumeMeter { margin-bottom: -152px; }*/
 
   .sample-slot {
     width: 50px;
@@ -362,7 +364,7 @@ body {
 
   #garbageCan { margin-right: 900px; }
 
-  #project-controller { margin-right: 500px; margin-top: -300px; }
+  /*#project-controller { margin-right: 500px; margin-top: -300px; }*/
 }
 
 @media only screen and (max-width: 1200px) {  

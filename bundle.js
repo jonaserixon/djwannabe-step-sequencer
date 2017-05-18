@@ -34,7 +34,6 @@ let startingPoint;
 let channelSetter;
 let slotSetter;
 
-
 function Desktop() {
     let wrapper = document.querySelector('#wrapper');
     let channelDiv = document.querySelector('#snaptarget');
@@ -69,9 +68,17 @@ function Desktop() {
     
     //Sends audiosample path to samplebox()
     sampleList.addEventListener('click', function(event) {
+        document.querySelector('#box ul').style.boxShadow = 'none';
         if(event.target.id === 'sample-list' || event.target.id === 'library-h3' || event.target.tagName === 'I') {
             return;
         } else {
+            let sampleboxes = document.querySelectorAll('#inactive-samples .draggable-content');
+
+            for(let i = 0; i < sampleboxes.length; i++) {
+                if(sampleboxes[i].getAttribute('sample-id') === event.target.getAttribute('sample-id')) {
+                    return;
+                }
+            } 
             samplebox(idCounter, $(event.target).text(), event);
             idCounter += 1;
         }
@@ -223,15 +230,21 @@ function Desktop() {
                     clearTimeout(timer);
                 }
             //Global play/stop button
-            } else if (playButton.tagName === 'I' && playButton.id === 'play-all-button' || playButton.tagName === 'I' && playButton.id === 'stop-all-button') {   
-                if(playButton.id === 'play-all-button') {
-                    if(startingPoint !== undefined && startingPoint !== '-') {
-                        SampleHandler.playChannels(startingPoint, playButton);
+            } else if (playButton.tagName === 'I' && playButton.className === 'fa fa-play' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop') {   
+                if(playButton.className === 'fa fa-play') {
+                    if(startingPoint !== undefined && startingPoint !== '1') {
+                        SampleHandler.playChannels(startingPoint);
+                        playButton.removeAttribute('class');
+                        playButton.setAttribute('class', 'fa fa-stop');
                     } else {
-                        SampleHandler.playChannels(false, playButton);
+                        SampleHandler.playChannels(false);
+                        playButton.removeAttribute('class');
+                        playButton.setAttribute('class', 'fa fa-stop');
                     }
                 } else {
-                    SampleHandler.stopAll(playButton);
+                    SampleHandler.stopAll();
+                    // playButton.removeAttribute('class');
+                    // playButton.setAttribute('class', 'fa fa-play');
                     if(recordChecker === false) {
                         SampleHandler.audioRecorder(false);
                         recordChecker = true;
@@ -249,7 +262,11 @@ function Desktop() {
                     SampleHandler.unmuteChannel(notChecked[j]);
                 }
             //Record button
-            } else if(playButton.id === 'record-button') {
+        } else if(playButton.id === 'record-button') {
+            let chromeChecker = MediaRecorder.isTypeSupported('audio/webm;codecs=opus');
+            if(chromeChecker) {
+                return alert('Chrome är cp. Om du vill ladda ner låten så använd Firefox.');
+            } 
                 if(recordChecker) {
                     SampleHandler.playChannels(false);
                     SampleHandler.audioRecorder(true);
@@ -317,8 +334,6 @@ let recorder = new MediaRecorder(dest.stream);
 
 let gainNode = context.createGain(); //Master gain
 gainNode.connect(dest);              //Enables audio playback during recording
-
-
 
 function Channel(id) {
     this.id = id;               //Channel id
@@ -394,6 +409,10 @@ Channel.prototype = {
             
             audio.onended = function() {
                 this.sampleslotDivs[startPoint].style.boxShadow = '';
+                if(startPoint == 15) {
+                    document.querySelector('#play-all-button').removeAttribute('class');
+                    document.querySelector('#play-all-button').setAttribute('class', 'fa fa-play');
+                }
             }.bind(this);
     },
     stop: function() {
@@ -571,7 +590,7 @@ function loadSound(channel, audiosample, sampleSlot) {
     request.send();
 }
 
-function playChannels(counterPoint, playButton) {
+function playChannels(counterPoint) {
     let startPoint = counterPoint;
 
     if(counterPoint) {
@@ -583,14 +602,6 @@ function playChannels(counterPoint, playButton) {
         for(let i = 0; i < channel1.samples.length; i++) {
             startPointHandler(i, i);
         }
-    }
-    
-    if(playButton) {
-        playButton.style.opacity = '';
-        playButton.style.color = '#d3e2ed';
-        playButton.style.pointerEvents = 'none'; 
-        document.querySelector('#stop-all-button').style.opacity = '0.6';
-        document.querySelector('#stop-all-button').style.color = '';
     }
 }
 
@@ -610,20 +621,15 @@ function previewSample(index, stopper, playButton) {
     }
 }
 
-function stopAll(playButton) {
+function stopAll() {
     channel1.stop();
     channel2.stop();
     channel3.stop();
     channel4.stop();
     channel5.stop();
 
-    if(playButton) {
-        playButton.style.opacity = '';
-        playButton.style.color = '#d3e2ed';
-        document.querySelector('#play-all-button').style.opacity = '0.6';
-        document.querySelector('#play-all-button').style.color = '';
-        document.querySelector('#play-all-button').style.pointerEvents = '';
-    }
+    document.querySelector('#play-all-button').removeAttribute('class');
+    document.querySelector('#play-all-button').setAttribute('class', 'fa fa-play');
 }
 
 function muteChannel(id) {
@@ -643,11 +649,9 @@ function unmuteChannel(id) {
 }
 
 function audioRecorder(recording) {
-    let chromeChecker = MediaRecorder.isTypeSupported('audio/webm;codecs=opus');
+    
     let firefoxChecker = MediaRecorder.isTypeSupported('audio/ogg;codecs=opus'); 
-    if(chromeChecker) {
-        return alert('Chrome är cp. Om du vill ladda ner låten så använd Firefox.');
-    } 
+    
     if(recording) {
         recorder.start();
         recordButton.style.opacity = '1';
@@ -677,6 +681,7 @@ function audioRecorder(recording) {
     };
 }
 
+//jQuery knobs
 $(function() {
     let size = 50;
     if($(window).width() < 1600) { size = 40; }
@@ -713,7 +718,6 @@ $(function() {
             }
         });
 });
-
 
 mixerBoard.addEventListener('input', function(event) {
     if(event.target.className === 'mixer-volume') {
