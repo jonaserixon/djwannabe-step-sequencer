@@ -22,8 +22,6 @@ let recorder = new MediaRecorder(dest.stream);
 let gainNode = context.createGain(); //Master gain
 gainNode.connect(dest);              //Enables audio playback during recording
 
-
-
 function Channel(id) {
     this.id = id;               //Channel id
     this.samples = [];          //channels audiobuffers
@@ -381,6 +379,7 @@ function audioRecorder(recording) {
     };
 }
 
+//jQuery knobs
 $(function() {
     let size = 50;
     if($(window).width() < 1600) { size = 40; }
@@ -417,7 +416,6 @@ $(function() {
             }
         });
 });
-
 
 mixerBoard.addEventListener('input', function(event) {
     if(event.target.className === 'mixer-volume') {

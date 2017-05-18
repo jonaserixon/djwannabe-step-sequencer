@@ -10,7 +10,6 @@ let startingPoint;
 let channelSetter;
 let slotSetter;
 
-
 function Desktop() {
     let wrapper = document.querySelector('#wrapper');
     let channelDiv = document.querySelector('#snaptarget');
@@ -45,9 +44,17 @@ function Desktop() {
     
     //Sends audiosample path to samplebox()
     sampleList.addEventListener('click', function(event) {
+        document.querySelector('#box ul').style.boxShadow = 'none';
         if(event.target.id === 'sample-list' || event.target.id === 'library-h3' || event.target.tagName === 'I') {
             return;
         } else {
+            let sampleboxes = document.querySelectorAll('#inactive-samples .draggable-content');
+
+            for(let i = 0; i < sampleboxes.length; i++) {
+                if(sampleboxes[i].getAttribute('sample-id') === event.target.getAttribute('sample-id')) {
+                    return;
+                }
+            } 
             samplebox(idCounter, $(event.target).text(), event);
             idCounter += 1;
         }

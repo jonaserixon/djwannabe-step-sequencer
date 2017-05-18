@@ -34,7 +34,6 @@ let startingPoint;
 let channelSetter;
 let slotSetter;
 
-
 function Desktop() {
     let wrapper = document.querySelector('#wrapper');
     let channelDiv = document.querySelector('#snaptarget');
@@ -69,9 +68,17 @@ function Desktop() {
     
     //Sends audiosample path to samplebox()
     sampleList.addEventListener('click', function(event) {
+        document.querySelector('#box ul').style.boxShadow = 'none';
         if(event.target.id === 'sample-list' || event.target.id === 'library-h3' || event.target.tagName === 'I') {
             return;
         } else {
+            let sampleboxes = document.querySelectorAll('#inactive-samples .draggable-content');
+
+            for(let i = 0; i < sampleboxes.length; i++) {
+                if(sampleboxes[i].getAttribute('sample-id') === event.target.getAttribute('sample-id')) {
+                    return;
+                }
+            } 
             samplebox(idCounter, $(event.target).text(), event);
             idCounter += 1;
         }
@@ -317,8 +324,6 @@ let recorder = new MediaRecorder(dest.stream);
 
 let gainNode = context.createGain(); //Master gain
 gainNode.connect(dest);              //Enables audio playback during recording
-
-
 
 function Channel(id) {
     this.id = id;               //Channel id
@@ -677,6 +682,7 @@ function audioRecorder(recording) {
     };
 }
 
+//jQuery knobs
 $(function() {
     let size = 50;
     if($(window).width() < 1600) { size = 40; }
@@ -713,7 +719,6 @@ $(function() {
             }
         });
 });
-
 
 mixerBoard.addEventListener('input', function(event) {
     if(event.target.className === 'mixer-volume') {

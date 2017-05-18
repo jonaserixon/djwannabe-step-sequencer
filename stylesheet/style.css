@@ -127,10 +127,11 @@ body {
   padding: 30px;
   border-radius: 5px;
   border: 1px solid black;
-  opacity: 0.6;
+  opacity: 1;
   width: 190px;
   margin-top: 0px;
   transition: opacity 0.2s, box-shadow 0.2s;
+  box-shadow: 0px 2px 6px 6px ghostwhite;
 }
 
 #sample-list li { opacity: 1; transition: opacity 0.1s; }
@@ -310,8 +311,8 @@ body {
   left: 90px;
 }
 
-@media only screen and (max-width: 1600px) {
-  #mixer-board {
+@media only screen and (max-width: 1700px) {
+  /*#mixer-board {
     width: 484px;
     height: 290px;
   }
@@ -323,7 +324,7 @@ body {
   #route5 { width: 96px; height: 290px; background-color: #4f7795; }
 
   .mixer-volume { height: 51px; }
-  .volumeMeter { margin-bottom: -152px; }
+  .volumeMeter { margin-bottom: -152px; }*/
 
   .sample-slot {
     width: 50px;
