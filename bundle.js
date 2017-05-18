@@ -232,7 +232,7 @@ function Desktop() {
             //Global play/stop button
             } else if (playButton.tagName === 'I' && playButton.className === 'fa fa-play' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop') {   
                 if(playButton.className === 'fa fa-play') {
-                    if(startingPoint !== undefined && startingPoint !== '1') {
+                    if(startingPoint !== undefined && startingPoint !== '0') {
                         SampleHandler.playChannels(startingPoint);
                         playButton.removeAttribute('class');
                         playButton.setAttribute('class', 'fa fa-stop');
@@ -243,8 +243,6 @@ function Desktop() {
                     }
                 } else {
                     SampleHandler.stopAll();
-                    // playButton.removeAttribute('class');
-                    // playButton.setAttribute('class', 'fa fa-play');
                     if(recordChecker === false) {
                         SampleHandler.audioRecorder(false);
                         recordChecker = true;
