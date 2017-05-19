@@ -380,6 +380,11 @@ Channel.prototype = {
     scheduler: function(startPoint, i) {            
             let audio = context.createBufferSource();
             this.sources[startPoint] = audio;
+
+            if(this.samples[startPoint] instanceof AudioBuffer === false) {
+                return;
+            }
+
             audio.buffer = this.samples[startPoint];
 
             audio.connect(this.channelFilter);
@@ -393,11 +398,7 @@ Channel.prototype = {
             this.analyser.connect(this.javascriptNode);
             this.javascriptNode.connect(gainNode);
             
-            audio.start(context.currentTime + (5.5 * i));
-
-            if(audio.buffer === null) {
-                return;
-            }
+            audio.start(context.currentTime + (5.51 * i));
 
             this.timeouts.push(setTimeout(function() {
                 // Add the border to the playing sample slot
@@ -496,13 +497,16 @@ function makeDraggable(id) {
         });
 }
 
-function droppableDivs() {
+function createChannels() {
     channel1 = new Channel(1); 
     channel2 = new Channel(2); 
     channel3 = new Channel(3); 
     channel4 = new Channel(4); 
     channel5 = new Channel(5); 
+}
 
+function droppableDivs() {
+    createChannels();
     // channels.push(new Channel());
     // channels[2]
     let xd = 0;
