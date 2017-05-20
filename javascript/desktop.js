@@ -209,7 +209,7 @@ function Desktop() {
             } else if (playButton.tagName === 'I' && playButton.className === 'fa fa-play' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop') {   
                 if(playButton.className === 'fa fa-play') {
                     if(startingPoint !== undefined && startingPoint !== '0') {
-                        SampleHandler.playChannels(startingPoint);
+                        SampleHandler.playChannels(startingPoint, startingPoint);
                         playButton.removeAttribute('class');
                         playButton.setAttribute('class', 'fa fa-stop');
                     } else {
@@ -239,7 +239,7 @@ function Desktop() {
         } else if(playButton.id === 'record-button') {
             let chromeChecker = MediaRecorder.isTypeSupported('audio/webm;codecs=opus');
             if(chromeChecker) {
-                return alert('Chrome är cp. Om du vill ladda ner låten så använd Firefox.');
+                return alert('The recorder is only available in Firefox!');
             } 
                 if(recordChecker) {
                     SampleHandler.playChannels(false);
@@ -270,6 +270,17 @@ function Desktop() {
     //Playback starting point
     document.querySelector('#starting-point').addEventListener('change', function(event) {
         startingPoint = this.options[this.selectedIndex].value;
+
+        for(let i = 1; i < 6; i++) {
+            for(let j = 0; j < 16; j++) {
+                document.querySelector('#channel' + i + 'Slot' + j).style.boxShadow = 'none';
+            }
+        }
+
+        for(let i = 1; i < 6; i++) {
+            document.querySelector('#channel' + i + 'Slot' + startingPoint).style.boxShadow = '0 0 3px 3px rgba(194, 216, 233, 0.8)';
+        }
+        
     });
 
     //Sample library minimizer

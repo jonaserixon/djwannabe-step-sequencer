@@ -46,7 +46,7 @@ body {
   height: 62px;
   width: 62px;
   /*background-image: url("../images/playlist_bg.jpg");*/
-  border: solid black;
+  border: 3px solid black;
   border-radius: 10px 10px 10px;   
   /*background: rgba(24, 56, 80, 0.6);*/
   background: linear-gradient(#2a4e6a, black, #2a4e6a);
@@ -54,6 +54,12 @@ body {
   box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.6);
   transition: box-shadow 0.3s;
 }
+
+#channel1Slot0 { box-shadow: 0 0 3px 3px rgba(194, 216, 233, 0.8); }
+#channel2Slot0 { box-shadow: 0 0 3px 3px rgba(194, 216, 233, 0.8); }
+#channel3Slot0 { box-shadow: 0 0 3px 3px rgba(194, 216, 233, 0.8); }
+#channel4Slot0 { box-shadow: 0 0 3px 3px rgba(194, 216, 233, 0.8); }
+#channel5Slot0 { box-shadow: 0 0 3px 3px rgba(194, 216, 233, 0.8); }
 
 #playlist-container {
   margin-top: 0px;

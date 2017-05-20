@@ -8,6 +8,8 @@ let recordButton = document.querySelector('#record-button');
 let mixerBoard = document.querySelector('#mixer-board');
 let panControl = document.querySelector('.stereo-panner');
 
+let startIndicator;
+
 let samples = audioSamples.audioSamples(); //audiosample paths
 
 let blobCollecter = []; //Recorded audio
@@ -20,6 +22,7 @@ let dest = context.createMediaStreamDestination();
 let recorder = new MediaRecorder(dest.stream);
 
 let gainNode = context.createGain(); //Master gain
+gainNode.gain.value = 0.75;
 gainNode.connect(dest);              //Enables audio playback during recording
 
 function Channel(id) {
@@ -34,6 +37,7 @@ function Channel(id) {
     this.analyser = context.createAnalyser();
     this.analyser.smoothingTimeConstant = 0.4;
     this.channelGain = context.createGain();
+    this.channelGain.gain.value = 0.75;
     this.panNode = context.createStereoPanner();
     this.panNode.pan.value = 0;
     this.channelFilter = context.createBiquadFilter();
@@ -66,7 +70,7 @@ Channel.prototype = {
     addSample: function(sampleSlot, samplePath) {
         loadSound(this, samplePath, sampleSlot);
     },
-    scheduler: function(startPoint, i) {            
+    scheduler: function(startPoint, i, indicator) {            
             let audio = context.createBufferSource();
             this.sources[startPoint] = audio;
 
@@ -97,6 +101,11 @@ Channel.prototype = {
             
             audio.onended = function() {
                 this.sampleslotDivs[startPoint].style.boxShadow = '';
+                
+                for(let i = 1; i < 6; i++) {
+                    document.querySelector('#channel' + i + 'Slot' + indicator).style.boxShadow = '0 0 3px 3px rgba(194, 216, 233, 0.8)';
+                }
+
                 if(startPoint == 15) {
                     document.querySelector('#play-all-button').removeAttribute('class');
                     document.querySelector('#play-all-button').setAttribute('class', 'fa fa-play');
@@ -281,12 +290,12 @@ function loadSound(channel, audiosample, sampleSlot) {
     request.send();
 }
 
-function playChannels(counterPoint) {
+function playChannels(counterPoint, indicator) {
     let startPoint = counterPoint;
 
     if(counterPoint) {
         for(let i = 0; i < channel1.samples.length; i++) {
-            startPointHandler(startPoint, i);
+            startPointHandler(startPoint, i, indicator);
             startPoint++;
         }
     } else {
@@ -296,12 +305,12 @@ function playChannels(counterPoint) {
     }
 }
 
-function startPointHandler(startPoint, i) {
-    channel1.scheduler(startPoint, i);
-    channel2.scheduler(startPoint, i);
-    channel3.scheduler(startPoint, i);
-    channel4.scheduler(startPoint, i);
-    channel5.scheduler(startPoint, i);
+function startPointHandler(startPoint, i, indicator) {
+    channel1.scheduler(startPoint, i, indicator);
+    channel2.scheduler(startPoint, i, indicator);
+    channel3.scheduler(startPoint, i, indicator);
+    channel4.scheduler(startPoint, i, indicator);
+    channel5.scheduler(startPoint, i, indicator);
 }
 
 function previewSample(index, stopper, playButton) {
