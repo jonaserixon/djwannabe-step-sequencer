@@ -160,7 +160,7 @@ body {
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.6);
   font-size: 30px;
   z-index: 3;
-  top: 500px;
+  top: 520px;
   right: 10px;
 }
 
@@ -231,12 +231,12 @@ body {
 }
 
 #garbageCan {
+  position: absolute;
+  bottom: 100px;
+  left: 430px;
   color: #8FB3CD;
   font-size: 50px;
-  margin-top: 90px;
-  margin-right: 1100px;
   padding: 20px;
-  float: right;
   transition: color 0.2s, background-color 0.2s, box-shadow 0.2s, border-radius 0.2s, opacity 0.2s;
 }
 
@@ -375,8 +375,9 @@ body {
 
 @media only screen and (max-width: 1200px) {  
   #playlist-container {
-    width: 800px;
+    /*width: 800px;
     overflow-x: auto;
+    overflow-y: hidden;*/
   }
   #sample-library { width: 160px; text-overflow: ellipsis; }
   #title-bar { font-size: 7px; }

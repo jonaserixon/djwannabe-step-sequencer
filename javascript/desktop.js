@@ -1,4 +1,5 @@
 const SampleHandler = require('./samplehandler');
+const audioSamples = require('./audioSamples');
 
 let idCounter = 0;
 let playChecker = true;
@@ -55,7 +56,8 @@ function Desktop() {
                     return;
                 }
             } 
-            samplebox(idCounter, $(event.target).text(), event);
+            samplebox(idCounter, event.target.getAttribute('sample-id'), event, $(event.target).text());
+            console.log(event.target.getAttribute('sample-id'));
             idCounter += 1;
         }
     });
@@ -67,7 +69,7 @@ function Desktop() {
      * @param id = idCounter
      * @param sample = path to sample
      */
-    function samplebox(id, sample, event) {
+    function samplebox(id, sample, event, sampleName) {
         //Make samplebox draggable
         $(function () {
             $('.draggable-content').draggable({
@@ -93,47 +95,34 @@ function Desktop() {
             });   
         });
 
-        //document.querySelector('.draggable-content').parentElement
-
         //Create a samplebox
         let sampleBox = document.createElement('div');
         sampleBox.setAttribute('class', 'draggable-content');
         sampleBox.setAttribute('id', 'samplebox' + id);
         sampleBox.setAttribute('sample-id', event.target.getAttribute('sample-id'));
-        sampleBox.setAttribute('title', sample);
+        sampleBox.setAttribute('title', sampleName);
         sampleBox.setAttribute('original-box', sample);
         let img = document.createElement('img');
         
         //Set color and image
-        switch(sample) {
-            case 'HIMITSU Big Synth Chord.ogg':
-                img.src = "./images/synth_icon.png";
-                sampleBox.style.backgroundColor = '#27a0c4';
-                break;
-            case 'HIMITSU Soft Piano.ogg':
-                img.src = "./images/piano_icon.png";
-                sampleBox.style.backgroundColor = '#bdff92';
-                break;
-            case 'HIMITSU Piano Low.ogg':
-                img.src = "./images/piano_icon.png";
-                sampleBox.style.backgroundColor = '#82cd52';
-                break;
-            case 'HIMITSU Drum Beat.ogg':
-                img.src = "./images/drums_icon.png";
-                break;
-            case 'HIMITSU Main Melody.ogg':
-                img.src = "./images/synth_icon.png";
-                sampleBox.style.backgroundColor = '#64d5f7';
-                break;
-            case 'HIMITSU Cute Vocals.ogg':
-                img.src = "./images/vocals_icon.png";
-                sampleBox.style.backgroundColor = '#e998ff';
-                break;
-            case 'HIMITSU Soft Synth.ogg':
-                img.src = "./images/synth_icon.png";
-                sampleBox.style.backgroundColor = '#93e6ff';
-                break;
-        }
+        if(sample == 0 || sample == 9 || sample == 10 || sample == 13 || sample == 14 || sample == 15) {
+            img.src = "./images/synth_icon.png";
+            sampleBox.style.backgroundColor = '#27a0c4';
+        } else if(sample == 1 || sample == 3 || sample == 16 || sample == 17 || sample == 18) {
+            img.src = "./images/piano_icon.png";
+            sampleBox.style.backgroundColor = '#bdff92';
+        } else if(sample == 5 || sample == 12) {
+            img.src = "./images/vocals_icon.png";
+            sampleBox.style.backgroundColor = '#e998ff';
+        } else if(sample == 4 || sample == 11){
+            img.src = "./images/drums_icon.png";
+        } else if(sample == 21 || sample == 22 || sample == 23){
+            img.src = "./images/drums_icon.png";
+            sampleBox.style.backgroundColor = 'slategrey';
+        } else if(sample == 2 || sample == 6 || sample == 8 || sample == 19 || sample == 20){
+            img.src = "./images/synth_icon.png";
+            sampleBox.style.backgroundColor = '#93e6ff';
+        }   
         
         //Create a preview button
         let playButton = document.createElement('i');
@@ -208,6 +197,7 @@ function Desktop() {
             //Global play/stop button
             } else if (playButton.tagName === 'I' && playButton.className === 'fa fa-play' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop') {   
                 if(playButton.className === 'fa fa-play') {
+                    document.querySelector('#starting-point').style.pointerEvents = 'none';
                     if(startingPoint !== undefined && startingPoint !== '0') {
                         SampleHandler.playChannels(startingPoint, startingPoint);
                         playButton.removeAttribute('class');
@@ -218,6 +208,7 @@ function Desktop() {
                         playButton.setAttribute('class', 'fa fa-stop');
                     }
                 } else {
+                    document.querySelector('#starting-point').style.pointerEvents = '';
                     SampleHandler.stopAll();
                     if(recordChecker === false) {
                         SampleHandler.audioRecorder(false);

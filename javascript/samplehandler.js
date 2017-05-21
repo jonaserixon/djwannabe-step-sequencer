@@ -97,15 +97,16 @@ Channel.prototype = {
                 // Add the border to the playing sample slot
                 let playingSlot = this.sampleslotDivs[startPoint];
                 playingSlot.style.boxShadow = '0 0 10px 3px rgba( 109, 250, 157 , 1)';
-            }.bind(this), audio.buffer.duration * i * 1000));
+            }.bind(this), 5.51 * i * 1000));
             
             audio.onended = function() {
                 this.sampleslotDivs[startPoint].style.boxShadow = '';
-                
-                for(let i = 1; i < 6; i++) {
-                    document.querySelector('#channel' + i + 'Slot' + indicator).style.boxShadow = '0 0 3px 3px rgba(194, 216, 233, 0.8)';
+                if(indicator !== undefined) {
+                    for(let i = 1; i < 6; i++) {
+                        document.querySelector('#channel' + i + 'Slot' + indicator).style.boxShadow = '0 0 3px 3px rgba(194, 216, 233, 0.8)';
+                    }
                 }
-
+                
                 if(startPoint == 15) {
                     document.querySelector('#play-all-button').removeAttribute('class');
                     document.querySelector('#play-all-button').setAttribute('class', 'fa fa-play');
@@ -341,11 +342,11 @@ function muteChannel(id) {
 }
 
 function unmuteChannel(id) {
-    if(id == 'm1') { channel1.channelGain.gain.value = 1; }
-    if(id == 'm2') { channel2.channelGain.gain.value = 1; }    
-    if(id == 'm3') { channel3.channelGain.gain.value = 1; }
-    if(id == 'm4') { channel4.channelGain.gain.value = 1; }
-    if(id == 'm5') { channel5.channelGain.gain.value = 1; }
+    if(id == 'm1') { channel1.channelGain.gain.value = 0.75; }
+    if(id == 'm2') { channel2.channelGain.gain.value = 0.75; }    
+    if(id == 'm3') { channel3.channelGain.gain.value = 0.75; }
+    if(id == 'm4') { channel4.channelGain.gain.value = 0.75; }
+    if(id == 'm5') { channel5.channelGain.gain.value = 0.75; }
 }
 
 function audioRecorder(recording) {

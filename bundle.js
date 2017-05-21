@@ -18,11 +18,31 @@ exports.audioSamples = function() {
         audioPath + " Piano Low.ogg",
         audioPath + " Drum Beat.ogg",
         audioPath + " Cute Vocals.ogg",
-        audioPath + " Main Melody.ogg"
+        audioPath + " Main Melody.ogg",
+
+        audioPath + " Stories Bass.ogg",
+        audioPath + " Stories Bells.ogg",
+        audioPath + " Stories Big Synth Chord.ogg",
+        audioPath + " Stories Big Synth Chord v2.ogg",
+        audioPath + " Stories Drum beat.ogg",
+        audioPath + " Stories Hatsune Miku.ogg",
+        audioPath + " Stories Lead Melody.ogg",
+        audioPath + " Stories Lead Melody v2.ogg",
+        audioPath + " Stories Lead Melody v3.ogg",
+        audioPath + " Stories Piano1.ogg",
+        audioPath + " Stories Piano Build.ogg",
+        audioPath + " Stories Piano Build v2.ogg",
+        audioPath + " Stories Pluck.ogg",
+        audioPath + " Stories Sine Pluck.ogg",
+
+        './audio/FX Cymbals Crash.ogg',
+        './audio/FX Reverbed crash +  kick.ogg',
+        './audio/FX Reverbed kick.ogg',
     ];   
 }
 },{}],3:[function(require,module,exports){
 const SampleHandler = require('./samplehandler');
+const audioSamples = require('./audioSamples');
 
 let idCounter = 0;
 let playChecker = true;
@@ -79,7 +99,8 @@ function Desktop() {
                     return;
                 }
             } 
-            samplebox(idCounter, $(event.target).text(), event);
+            samplebox(idCounter, event.target.getAttribute('sample-id'), event, $(event.target).text());
+            console.log(event.target.getAttribute('sample-id'));
             idCounter += 1;
         }
     });
@@ -91,7 +112,7 @@ function Desktop() {
      * @param id = idCounter
      * @param sample = path to sample
      */
-    function samplebox(id, sample, event) {
+    function samplebox(id, sample, event, sampleName) {
         //Make samplebox draggable
         $(function () {
             $('.draggable-content').draggable({
@@ -117,47 +138,34 @@ function Desktop() {
             });   
         });
 
-        //document.querySelector('.draggable-content').parentElement
-
         //Create a samplebox
         let sampleBox = document.createElement('div');
         sampleBox.setAttribute('class', 'draggable-content');
         sampleBox.setAttribute('id', 'samplebox' + id);
         sampleBox.setAttribute('sample-id', event.target.getAttribute('sample-id'));
-        sampleBox.setAttribute('title', sample);
+        sampleBox.setAttribute('title', sampleName);
         sampleBox.setAttribute('original-box', sample);
         let img = document.createElement('img');
         
         //Set color and image
-        switch(sample) {
-            case 'HIMITSU Big Synth Chord.ogg':
-                img.src = "./images/synth_icon.png";
-                sampleBox.style.backgroundColor = '#27a0c4';
-                break;
-            case 'HIMITSU Soft Piano.ogg':
-                img.src = "./images/piano_icon.png";
-                sampleBox.style.backgroundColor = '#bdff92';
-                break;
-            case 'HIMITSU Piano Low.ogg':
-                img.src = "./images/piano_icon.png";
-                sampleBox.style.backgroundColor = '#82cd52';
-                break;
-            case 'HIMITSU Drum Beat.ogg':
-                img.src = "./images/drums_icon.png";
-                break;
-            case 'HIMITSU Main Melody.ogg':
-                img.src = "./images/synth_icon.png";
-                sampleBox.style.backgroundColor = '#64d5f7';
-                break;
-            case 'HIMITSU Cute Vocals.ogg':
-                img.src = "./images/vocals_icon.png";
-                sampleBox.style.backgroundColor = '#e998ff';
-                break;
-            case 'HIMITSU Soft Synth.ogg':
-                img.src = "./images/synth_icon.png";
-                sampleBox.style.backgroundColor = '#93e6ff';
-                break;
-        }
+        if(sample == 0 || sample == 9 || sample == 10 || sample == 13 || sample == 14 || sample == 15) {
+            img.src = "./images/synth_icon.png";
+            sampleBox.style.backgroundColor = '#27a0c4';
+        } else if(sample == 1 || sample == 3 || sample == 16 || sample == 17 || sample == 18) {
+            img.src = "./images/piano_icon.png";
+            sampleBox.style.backgroundColor = '#bdff92';
+        } else if(sample == 5 || sample == 12) {
+            img.src = "./images/vocals_icon.png";
+            sampleBox.style.backgroundColor = '#e998ff';
+        } else if(sample == 4 || sample == 11){
+            img.src = "./images/drums_icon.png";
+        } else if(sample == 21 || sample == 22 || sample == 23){
+            img.src = "./images/drums_icon.png";
+            sampleBox.style.backgroundColor = 'slategrey';
+        } else if(sample == 2 || sample == 6 || sample == 8 || sample == 19 || sample == 20){
+            img.src = "./images/synth_icon.png";
+            sampleBox.style.backgroundColor = '#93e6ff';
+        }   
         
         //Create a preview button
         let playButton = document.createElement('i');
@@ -232,6 +240,7 @@ function Desktop() {
             //Global play/stop button
             } else if (playButton.tagName === 'I' && playButton.className === 'fa fa-play' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop') {   
                 if(playButton.className === 'fa fa-play') {
+                    document.querySelector('#starting-point').style.pointerEvents = 'none';
                     if(startingPoint !== undefined && startingPoint !== '0') {
                         SampleHandler.playChannels(startingPoint, startingPoint);
                         playButton.removeAttribute('class');
@@ -242,6 +251,7 @@ function Desktop() {
                         playButton.setAttribute('class', 'fa fa-stop');
                     }
                 } else {
+                    document.querySelector('#starting-point').style.pointerEvents = '';
                     SampleHandler.stopAll();
                     if(recordChecker === false) {
                         SampleHandler.audioRecorder(false);
@@ -319,7 +329,7 @@ function Desktop() {
 }
 
 module.exports = Desktop;
-},{"./samplehandler":4}],4:[function(require,module,exports){
+},{"./audioSamples":2,"./samplehandler":4}],4:[function(require,module,exports){
 const audioSamples = require('./audioSamples');
 
 let wrapper = document.querySelector('#wrapper');
@@ -419,15 +429,16 @@ Channel.prototype = {
                 // Add the border to the playing sample slot
                 let playingSlot = this.sampleslotDivs[startPoint];
                 playingSlot.style.boxShadow = '0 0 10px 3px rgba( 109, 250, 157 , 1)';
-            }.bind(this), audio.buffer.duration * i * 1000));
+            }.bind(this), 5.51 * i * 1000));
             
             audio.onended = function() {
                 this.sampleslotDivs[startPoint].style.boxShadow = '';
-                
-                for(let i = 1; i < 6; i++) {
-                    document.querySelector('#channel' + i + 'Slot' + indicator).style.boxShadow = '0 0 3px 3px rgba(194, 216, 233, 0.8)';
+                if(indicator !== undefined) {
+                    for(let i = 1; i < 6; i++) {
+                        document.querySelector('#channel' + i + 'Slot' + indicator).style.boxShadow = '0 0 3px 3px rgba(194, 216, 233, 0.8)';
+                    }
                 }
-
+                
                 if(startPoint == 15) {
                     document.querySelector('#play-all-button').removeAttribute('class');
                     document.querySelector('#play-all-button').setAttribute('class', 'fa fa-play');
@@ -663,11 +674,11 @@ function muteChannel(id) {
 }
 
 function unmuteChannel(id) {
-    if(id == 'm1') { channel1.channelGain.gain.value = 1; }
-    if(id == 'm2') { channel2.channelGain.gain.value = 1; }    
-    if(id == 'm3') { channel3.channelGain.gain.value = 1; }
-    if(id == 'm4') { channel4.channelGain.gain.value = 1; }
-    if(id == 'm5') { channel5.channelGain.gain.value = 1; }
+    if(id == 'm1') { channel1.channelGain.gain.value = 0.75; }
+    if(id == 'm2') { channel2.channelGain.gain.value = 0.75; }    
+    if(id == 'm3') { channel3.channelGain.gain.value = 0.75; }
+    if(id == 'm4') { channel4.channelGain.gain.value = 0.75; }
+    if(id == 'm5') { channel5.channelGain.gain.value = 0.75; }
 }
 
 function audioRecorder(recording) {
