@@ -1,5 +1,4 @@
 const SampleHandler = require('./samplehandler');
-const audioSamples = require('./audioSamples');
 
 let idCounter = 0;
 let playChecker = true;
@@ -224,26 +223,23 @@ function Desktop() {
                     SampleHandler.muteChannel(checkedChannel[i]);
                 }
                 for(let j = 0; j < notChecked.length; j++) {
-                    SampleHandler.unmuteChannel(notChecked[j]);
+                    SampleHandler.unmuteChannel(notChecked[j], playButton.id);
                 }
             //Record button
         } else if(playButton.id === 'record-button') {
             let chromeChecker = MediaRecorder.isTypeSupported('audio/webm;codecs=opus');
             if(chromeChecker) {
-                return alert('The recorder is only available in Firefox!');
+                setTimeout(function() { return alert('The recorder is only available in Firefox!'); }, 1);
             } 
                 if(recordChecker) {
-                    SampleHandler.playChannels(false);
                     SampleHandler.audioRecorder(true);
                     recordChecker = false;
                 } else {
-                    SampleHandler.stopAll();
                     SampleHandler.audioRecorder(false);
                     recordChecker = true;
                 }
             //Project-controller locker
         } else if(playButton.id === 'locker') {
-            console.log('hehehehehe');
                 if(playButton.className === 'fa fa-lock') {
                     $('#project-controller').draggable({containment: 'document'});
                     $('#project-controller').draggable('enable');
@@ -258,6 +254,35 @@ function Desktop() {
         }
     });
 
+    //Space play/stop button
+    document.addEventListener('keypress', function(event) {
+        if(event.keyCode === 0 || event.keyCode === 32) {
+            event.preventDefault();
+            console.log('space');
+            let playButton = document.querySelector('#play-all-button');
+
+            if(playButton.className === 'fa fa-play') {
+                    document.querySelector('#starting-point').style.pointerEvents = 'none';
+                    if(startingPoint !== undefined && startingPoint !== '0') {
+                        SampleHandler.playChannels(startingPoint, startingPoint);
+                        playButton.removeAttribute('class');
+                        playButton.setAttribute('class', 'fa fa-stop');
+                    } else {
+                        SampleHandler.playChannels(false);
+                        playButton.removeAttribute('class');
+                        playButton.setAttribute('class', 'fa fa-stop');
+                    }
+                } else {
+                    document.querySelector('#starting-point').style.pointerEvents = '';
+                    SampleHandler.stopAll();
+                    if(recordChecker === false) {
+                        SampleHandler.audioRecorder(false);
+                        recordChecker = true;
+                    }
+                }
+        }
+    })
+
     //Playback starting point
     document.querySelector('#starting-point').addEventListener('change', function(event) {
         startingPoint = this.options[this.selectedIndex].value;
@@ -271,7 +296,6 @@ function Desktop() {
         for(let i = 1; i < 6; i++) {
             document.querySelector('#channel' + i + 'Slot' + startingPoint).style.boxShadow = '0 0 3px 3px rgba(194, 216, 233, 0.8)';
         }
-        
     });
 
     //Sample library minimizer

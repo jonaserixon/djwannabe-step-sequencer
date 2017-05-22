@@ -171,6 +171,7 @@ $('#garbageCan').droppable({
         }    
 });
 
+let previousSlot;
 function makeDraggable(id) {
     $(function () {
             $(id).draggable({
@@ -181,16 +182,38 @@ function makeDraggable(id) {
                 opacity: 0.5,
                 snap: '.sample-slot',
                 snapMode: 'inner',
+                tolerance: 'fit',
                 drag: function(event, ui) {
                     document.querySelector('#garbageCan').style.boxShadow = '0 0 6px 3px rgba(169, 255, 250, 0.6)';
                     document.querySelector('#garbageCan').style.borderRadius = '5px';
                     document.querySelector('#garbageCan').style.backgroundColor = '#1e4059';
-                    document.querySelector('#garbageCan').style.opacity = '0.8';                    
+                    document.querySelector('#garbageCan').style.opacity = '0.8';  
+
+                    previousSlot = $(this).attr('previous-slot');   
                 },
                 stop: function(event, ui) {
                     document.querySelector('#garbageCan').style.boxShadow = '';
                     document.querySelector('#garbageCan').style.backgroundColor = '';
                     document.querySelector('#garbageCan').style.opacity = '';
+                    let draggableParent = document.querySelector('#' + $(this).attr("id")).parentElement.id;
+                        
+                    console.log('previous: ' + previousSlot);   
+                    console.log('droppable: ' + draggableParent);
+
+                    if(previousSlot == draggableParent) {
+                        return;
+                    } else {
+                        if(previousSlot !== undefined) {
+                            let preSlotNum = previousSlot.substr(previousSlot.length - 1);
+                            if(previousSlot.includes('channel1Slot')) { channel1.addSample(preSlotNum, "./audio/Silence.ogg"); }
+                            if(previousSlot.includes('channel2Slot')) { channel2.addSample(preSlotNum, "./audio/Silence.ogg"); }
+                            if(previousSlot.includes('channel3Slot')) { channel3.addSample(preSlotNum, "./audio/Silence.ogg"); }
+                            if(previousSlot.includes('channel4Slot')) { channel4.addSample(preSlotNum, "./audio/Silence.ogg"); }
+                            if(previousSlot.includes('channel5Slot')) { channel5.addSample(preSlotNum, "./audio/Silence.ogg"); }
+                        } else {
+                            return;
+                        }
+                    }
                 },
             });   
         });
@@ -230,15 +253,15 @@ function droppableDivs() {
             if(droppableId.includes('channel5Slot')) { droppableHandler(droppableId, draggableUi, droppableHelper, draggableSampleId, channel5); }   
 
             if(ui.draggable.attr("original-box")) {
-                let clonedBox = ui.draggable.clone().prop('id', 'yolo' + idCounter);
+                let clonedBox = ui.draggable.clone().prop('id', 'clonedBox' + idCounter);
                 $(this).append(clonedBox);
                 clonedBox.position({of: $(this), my: 'left top', at: 'left top'});
                 clonedBox.attr('previous-slot', droppableId);
                 clonedBox.removeAttr('original-box');
                 clonedBox.removeClass();
                 clonedBox.prop('class', 'draggable-content');
-                let playButton = $('#yolo' + idCounter + '> i').attr('id');
-                document.querySelector('#' + playButton).setAttribute('id', 'cloned' + idCounter);
+                let playButton = $('#clonedBox' + idCounter + '> i').attr('id');
+                document.querySelector('#' + playButton).setAttribute('id', 'clonedPlaybutton' + idCounter);
                 makeDraggable('.draggable-content');
             } else {
                 draggableUi.attr('previous-slot', droppableId);
@@ -246,39 +269,6 @@ function droppableDivs() {
                 ui.draggable.position({of: $(this), my: 'left top', at: 'left top'});
             }
             idCounter++;
-            // console.log(document.querySelectorAll('#playlist-container .draggable-content').length);
-        },
-        out: function(event, ui) { 
-            let previousSlot = ui.draggable.attr("previous-slot"); 
-            let draggableId = document.querySelector('#' + ui.draggable.attr("id"));
-            let droppableId = $(this).attr("id");
-            let dropper = document.querySelector('#' + droppableId);
-
-            dropper.addEventListener('mouseup', function() {
-                let test = setTimeout(function() {
-                    if(dropper.firstElementChild) {
-                        console.log('KVAR');
-                        return;
-                    } else {
-                        console.log('OUT');
-                        if(previousSlot !== undefined) {
-                            let preSlotNum = previousSlot.substr(previousSlot.length - 1);
-                            if(previousSlot.includes('channel1Slot')) { channel1.addSample(preSlotNum, "./audio/Silence.ogg"); }
-                            if(previousSlot.includes('channel2Slot')) { channel2.addSample(preSlotNum, "./audio/Silence.ogg"); }
-                            if(previousSlot.includes('channel3Slot')) { channel3.addSample(preSlotNum, "./audio/Silence.ogg"); }
-                            if(previousSlot.includes('channel4Slot')) { channel4.addSample(preSlotNum, "./audio/Silence.ogg"); }
-                            if(previousSlot.includes('channel5Slot')) { channel5.addSample(preSlotNum, "./audio/Silence.ogg"); }
-                        } else {
-                            return;
-                        }
-                    }
-                }, 100);
-                
-            })
-            
-
-            
-                       
         }
     });
 }
@@ -361,12 +351,12 @@ function muteChannel(id) {
     if(id == 'm5') { channel5.channelGain.gain.value = 0; }
 }
 
-function unmuteChannel(id) {
-    if(id == 'm1') { channel1.channelGain.gain.value = 0.75; }
-    if(id == 'm2') { channel2.channelGain.gain.value = 0.75; }    
-    if(id == 'm3') { channel3.channelGain.gain.value = 0.75; }
-    if(id == 'm4') { channel4.channelGain.gain.value = 0.75; }
-    if(id == 'm5') { channel5.channelGain.gain.value = 0.75; }
+function unmuteChannel(id, volumeValue) {
+    if(id == 'm1') { channel1.channelGain.gain.value = document.querySelector('#mixVolume1').value / 100; }
+    if(id == 'm2') { channel2.channelGain.gain.value = document.querySelector('#mixVolume2').value / 100; }    
+    if(id == 'm3') { channel3.channelGain.gain.value = document.querySelector('#mixVolume3').value / 100; }
+    if(id == 'm4') { channel4.channelGain.gain.value = document.querySelector('#mixVolume4').value / 100; }
+    if(id == 'm5') { channel5.channelGain.gain.value = document.querySelector('#mixVolume5').value / 100; }
 }
 
 function audioRecorder(recording) {

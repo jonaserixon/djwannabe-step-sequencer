@@ -45,10 +45,8 @@ body {
   margin-top: 10px;
   height: 62px;
   width: 62px;
-  /*background-image: url("../images/playlist_bg.jpg");*/
   border: 3px solid black;
   border-radius: 10px 10px 10px;   
-  /*background: rgba(24, 56, 80, 0.6);*/
   background: linear-gradient(#2a4e6a, black, #2a4e6a);
   opacity: 1;
   box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.6);
@@ -63,11 +61,11 @@ body {
 
 #playlist-container {
   margin-top: 0px;
-  background-color: #1e4059;
+  background-color: #274f6d;
   width: 1300px; 
   height: 550px;
   border-radius: 10px 10px 10px;
-  box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.9);
 }
 
 
@@ -101,7 +99,7 @@ body {
 #title-bar {
     background: #86abc4;
     height: 25px;
-    margin-top: 50px;
+    margin-top: 90px;
     text-align: center;
     border-radius: 5px;
 }
@@ -342,7 +340,7 @@ body {
 
   #playlist-container {
     width: 1090px; 
-    height: 440px;
+    height: 400px;
   }
 
   #sample-counter {
@@ -350,7 +348,7 @@ body {
     margin-top: -73px;
   }
 
-  #snaptarget1 { height: 65px; width:1070px; margin-left: 10px; margin-top: 30px;  background-color: #061a29; border-radius: 5px; box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
+  #snaptarget1 { height: 65px; width:1070px; margin-left: 10px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
   #snaptarget2 { height: 65px; width:1070px; margin-left: 10px; margin-top: -65px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
   #snaptarget3 { height: 65px; width:1070px; margin-left: 10px; margin-top: -65px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
   #snaptarget4 { height: 65px; width:1070px; margin-left: 10px; margin-top: -65px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
