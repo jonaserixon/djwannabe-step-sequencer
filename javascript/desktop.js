@@ -118,7 +118,7 @@ function Desktop() {
             img.src = "./images/drums_icon.png";
         } else if(sample == 21 || sample == 22 || sample == 23){
             img.src = "./images/drums_icon.png";
-            sampleBox.style.backgroundColor = 'slategrey';
+            sampleBox.style.backgroundColor = '#d94949';
         } else if(sample == 2 || sample == 6 || sample == 8 || sample == 19 || sample == 20){
             img.src = "./images/synth_icon.png";
             sampleBox.style.backgroundColor = '#93e6ff';
