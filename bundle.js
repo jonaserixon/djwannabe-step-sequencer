@@ -551,23 +551,27 @@ function makeDraggable(id) {
                     document.querySelector('#garbageCan').style.boxShadow = '';
                     document.querySelector('#garbageCan').style.backgroundColor = '';
                     document.querySelector('#garbageCan').style.opacity = '';
-                    let draggableParent = document.querySelector('#' + $(this).attr("id")).parentElement.id;
-                        
+                    let draggableParent = document.querySelector('#' + $(this).attr("id"));
+                        //.parentElement.id
                     console.log('previous: ' + previousSlot);   
                     console.log('droppable: ' + draggableParent);
 
-                    if(previousSlot == draggableParent) {
+                    if(draggableParent == null) {
                         return;
                     } else {
-                        if(previousSlot !== undefined) {
-                            let preSlotNum = previousSlot.substr(previousSlot.length - 1);
-                            if(previousSlot.includes('channel1Slot')) { channel1.addSample(preSlotNum, "./audio/Silence.ogg"); }
-                            if(previousSlot.includes('channel2Slot')) { channel2.addSample(preSlotNum, "./audio/Silence.ogg"); }
-                            if(previousSlot.includes('channel3Slot')) { channel3.addSample(preSlotNum, "./audio/Silence.ogg"); }
-                            if(previousSlot.includes('channel4Slot')) { channel4.addSample(preSlotNum, "./audio/Silence.ogg"); }
-                            if(previousSlot.includes('channel5Slot')) { channel5.addSample(preSlotNum, "./audio/Silence.ogg"); }
-                        } else {
+                        if(previousSlot == draggableParent.parentElement.id) {
                             return;
+                        } else {
+                            if(previousSlot !== undefined) {
+                                let preSlotNum = previousSlot.substr(previousSlot.length - 1);
+                                if(previousSlot.includes('channel1Slot')) { channel1.addSample(preSlotNum, "./audio/Silence.ogg"); }
+                                if(previousSlot.includes('channel2Slot')) { channel2.addSample(preSlotNum, "./audio/Silence.ogg"); }
+                                if(previousSlot.includes('channel3Slot')) { channel3.addSample(preSlotNum, "./audio/Silence.ogg"); }
+                                if(previousSlot.includes('channel4Slot')) { channel4.addSample(preSlotNum, "./audio/Silence.ogg"); }
+                                if(previousSlot.includes('channel5Slot')) { channel5.addSample(preSlotNum, "./audio/Silence.ogg"); }
+                            } else {
+                                return;
+                            }
                         }
                     }
                 },
