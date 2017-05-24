@@ -44,14 +44,12 @@ exports.audioSamples = function() {
 const SampleHandler = require('./samplehandler');
 
 let idCounter = 0;
-let playChecker = true;
+let playChecker = true; //Check whether a sample should be played or not
 let muteChecker = true;
-let recordChecker = true;
+let recordChecker = true; //Check whether to record or not
 let timer; 
 let lastPlayed;
-let startingPoint;
-let channelSetter;
-let slotSetter;
+let startingPoint;  //Playback starting point
 
 function Desktop() {
     let wrapper = document.querySelector('#wrapper');
@@ -85,7 +83,7 @@ function Desktop() {
 
     createChannel(6, 16);
     
-    //Sends audiosample path to samplebox()
+    //Sends audiosample name to samplebox()
     sampleList.addEventListener('click', function(event) {
         document.querySelector('#box ul').style.boxShadow = 'none';
         if(event.target.id === 'sample-list' || event.target.id === 'library-h3' || event.target.tagName === 'I') {
@@ -107,9 +105,10 @@ function Desktop() {
     $('#mixer-board').draggable({containment: 'document'});
     
     /**
-     * Create samplebox
-     * @param id = idCounter
-     * @param sample = path to sample
+     * @param  {} id
+     * @param  {} sample
+     * @param  {} event
+     * @param  {} sampleName
      */
     function samplebox(id, sample, event, sampleName) {
         //Make samplebox draggable
@@ -215,11 +214,13 @@ function Desktop() {
             } else if (playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' && playButton.parentNode.tagName === 'LI' ||playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle' && playButton.parentNode.tagName === 'LI' ) {
                 if(playChecker) {
                     SampleHandler.previewSample(playButton.id, false);
+
                     playButton.removeAttribute('class');
                     playButton.setAttribute('class', 'fa fa-stop-circle');
+
                     playChecker = false;
-                    lastPlayed = playButton;
-                    //Reset preview button
+                    lastPlayed = playButton; //The last played previewsample
+                    //Reset preview button and swap icons
                     timer = setTimeout(function() {
                         playButton.removeAttribute('class');
                         playButton.setAttribute('class', 'fa fa-play-circle');
@@ -240,12 +241,15 @@ function Desktop() {
             } else if (playButton.tagName === 'I' && playButton.className === 'fa fa-play' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop') {   
                 if(playButton.className === 'fa fa-play') {
                     document.querySelector('#starting-point').style.pointerEvents = 'none';
+
                     if(startingPoint !== undefined && startingPoint !== '0') {
                         SampleHandler.playChannels(startingPoint, startingPoint);
+                        //Swap play icon with stop icon 
                         playButton.removeAttribute('class');
                         playButton.setAttribute('class', 'fa fa-stop');
                     } else {
                         SampleHandler.playChannels(false);
+
                         playButton.removeAttribute('class');
                         playButton.setAttribute('class', 'fa fa-stop');
                     }
@@ -382,6 +386,10 @@ let gainNode = context.createGain(); //Master gain
 gainNode.gain.value = 0.75;
 gainNode.connect(dest);              //Enables audio playback during recording
 
+let clicked = false;
+let checkedChannel;
+let notChecked;
+
 /**
  * Represents a channel
  * @constructor
@@ -404,6 +412,8 @@ function Channel(id) {
     this.panNode.pan.value = 0;
     this.channelFilter = context.createBiquadFilter();
     this.channelFilter.frequency.value = 20000;
+    this.convolver = context.createConvolver();
+    this.convolver.buffer = impulseResponse();
 
     this.javascriptNode.onaudioprocess = function() {
             let array =  new Uint8Array(this.analyser.frequencyBinCount);
@@ -426,7 +436,29 @@ function Channel(id) {
     }
 
     loadSound(this, './audio/Silence.ogg');
+
+    // document.getElementsByClassName ('reverb-box').addEventListener('click', function(event) {
+    //     // gainNode.disconnect(0);
+    //     console.log(event.target.id);
+    //     let idSelector = function() { return this.id; };
+    //     checkedChannel = $(".reverb-box:checked").map(idSelector).get();
+    //     notChecked = $(".reverb-box:not(:checked)").map(idSelector).get();
+
+
+    //     console.log(checkedChannel);
+    //     console.log(notChecked);
+    //     // if(checkedChannel.length === 1) {
+    //     //     console.log('Checked: ' + checkedChannel);
+    //     //     clicked = true;
+    //     // }
+        
+    //     // if(notChecked.length === 1) {
+    //     //     console.log('Unchecked: ' + notChecked);
+    //     //     clicked = false;
+    //     // }
+    // });
 }
+
 
 Channel.prototype = {
     addSample: function(sampleSlot, samplePath) {
@@ -439,14 +471,25 @@ Channel.prototype = {
             if(this.samples[startPoint] instanceof AudioBuffer === false) {
                 return;
             }
-
             audio.buffer = this.samples[startPoint];
 
             audio.connect(this.channelFilter);
-            this.channelFilter.connect(this.channelGain);
-            this.channelGain.connect(this.panNode);
-            this.panNode.connect(gainNode);
+            this.channelFilter.connect(this.panNode);
+            this.panNode.connect(this.channelGain);
+            this.channelGain.connect(gainNode);
             gainNode.connect(context.destination);
+            
+
+            // if(clicked) {
+            //     this.channelGain.disconnect(0);
+            //     gainNode.disconnect(0);
+            //     this.channelGain.connect(this.convolver);
+            //     this.convolver.connect(gainNode);
+            //     gainNode.connect(context.destination);
+            // } 
+            
+
+            //plan B: Gör en kopia av koden med annan gain för att toggla reverb
 
             //Connect the volume-meter
             this.channelGain.connect(this.analyser);
@@ -500,8 +543,8 @@ Channel.prototype = {
 };
 
 /**
- * @param  {} droppableId
- * @param  {} draggableUi
+ * @param  {} droppableId - id of the sample slot being dropped on
+ * @param  {} draggableUi - jQuery ui.draggable object
  * @param  {number} droppableHelper - The sample slot that is being dropped on
  * @param  {string} draggableSampleId - Sample-id representing the audio sample from the library list
  * @param  {Channel instance} channel
@@ -546,8 +589,8 @@ $('#garbageCan').droppable({
         }    
 });
 
-let previousSlot;
 function makeDraggable(id) {
+    let previousSlot;
     $(function () {
             $(id).draggable({
                 revert: 'invalid', 
@@ -571,9 +614,6 @@ function makeDraggable(id) {
                     document.querySelector('#garbageCan').style.backgroundColor = '';
                     document.querySelector('#garbageCan').style.opacity = '';
                     let draggableParent = document.querySelector('#' + $(this).attr("id"));
-                        //.parentElement.id
-                    console.log('previous: ' + previousSlot);   
-                    console.log('droppable: ' + draggableParent);
 
                     if(draggableParent === null) {
                         return;
@@ -583,11 +623,26 @@ function makeDraggable(id) {
                         } else {
                             if(previousSlot !== undefined) {
                                 let preSlotNum = previousSlot.substr(previousSlot.length - 1);
-                                if(previousSlot.includes('channel1Slot')) { channel1.addSample(preSlotNum, "./audio/Silence.ogg"); }
-                                if(previousSlot.includes('channel2Slot')) { channel2.addSample(preSlotNum, "./audio/Silence.ogg"); }
-                                if(previousSlot.includes('channel3Slot')) { channel3.addSample(preSlotNum, "./audio/Silence.ogg"); }
-                                if(previousSlot.includes('channel4Slot')) { channel4.addSample(preSlotNum, "./audio/Silence.ogg"); }
-                                if(previousSlot.includes('channel5Slot')) { channel5.addSample(preSlotNum, "./audio/Silence.ogg"); }
+
+                                if(previousSlot.includes('channel1Slot')) { 
+                                    channel1.addSample(preSlotNum, "./audio/Silence.ogg"); 
+                                }
+
+                                if(previousSlot.includes('channel2Slot')) {
+                                     channel2.addSample(preSlotNum, "./audio/Silence.ogg"); 
+                                }
+
+                                if(previousSlot.includes('channel3Slot')) { 
+                                    channel3.addSample(preSlotNum, "./audio/Silence.ogg"); 
+                                }
+
+                                if(previousSlot.includes('channel4Slot')) { 
+                                    channel4.addSample(preSlotNum, "./audio/Silence.ogg"); 
+                                }
+
+                                if(previousSlot.includes('channel5Slot')) { 
+                                    channel5.addSample(preSlotNum, "./audio/Silence.ogg"); 
+                                }
                             } else {
                                 return;
                             }
@@ -598,6 +653,7 @@ function makeDraggable(id) {
         });
 }
 
+//Executed in droppableDivs()
 function createChannels() {
     channel1 = new Channel(1); 
     channel2 = new Channel(2); 
@@ -664,8 +720,7 @@ function droppableDivs() {
         }
     });
 }
-
-            
+          
 /**
  * @param  {Channel instance} channel
  * @param  {string} audiosample
@@ -895,8 +950,30 @@ volumeKnob.addEventListener('input', function() {
         volumeDown.style.color = '#8FB3CD';
         volumeUp.style.color = 'ghostwhite';
     }
-    console.log('Volume: ' + (Math.round(gainNode.gain.value * 100)) + '%');
 })
+
+function impulseResponse(duration = 1, decay = 1, reverse = false) {
+    let length = context.sampleRate * duration;
+    let impulse = context.createBuffer(2, length, context.sampleRate);
+    let impulseL = impulse.getChannelData(0);
+    let impulseR = impulse.getChannelData(1);
+
+    if(!decay)
+        decay = 2.0;
+    for(let i = 0; i < length; i++){
+        let n;
+
+        if(reverse) {
+            n = length - i;
+        } else {
+            n = i;
+        }
+
+        impulseL[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, decay);
+        impulseR[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, decay);
+    }
+    return impulse;
+}
 
 module.exports = {
     playChannels: playChannels,

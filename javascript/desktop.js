@@ -1,14 +1,12 @@
 const SampleHandler = require('./samplehandler');
 
 let idCounter = 0;
-let playChecker = true;
+let playChecker = true; //Check whether a sample should be played or not
 let muteChecker = true;
-let recordChecker = true;
+let recordChecker = true; //Check whether to record or not
 let timer; 
 let lastPlayed;
-let startingPoint;
-let channelSetter;
-let slotSetter;
+let startingPoint;  //Playback starting point
 
 function Desktop() {
     let wrapper = document.querySelector('#wrapper');
@@ -42,7 +40,7 @@ function Desktop() {
 
     createChannel(6, 16);
     
-    //Sends audiosample path to samplebox()
+    //Sends audiosample name to samplebox()
     sampleList.addEventListener('click', function(event) {
         document.querySelector('#box ul').style.boxShadow = 'none';
         if(event.target.id === 'sample-list' || event.target.id === 'library-h3' || event.target.tagName === 'I') {
@@ -64,9 +62,10 @@ function Desktop() {
     $('#mixer-board').draggable({containment: 'document'});
     
     /**
-     * Create samplebox
-     * @param id = idCounter
-     * @param sample = path to sample
+     * @param  {} id
+     * @param  {} sample
+     * @param  {} event
+     * @param  {} sampleName
      */
     function samplebox(id, sample, event, sampleName) {
         //Make samplebox draggable
@@ -172,11 +171,13 @@ function Desktop() {
             } else if (playButton.tagName === 'I' && playButton.className === 'fa fa-play-circle' && playButton.parentNode.tagName === 'LI' ||playButton.tagName === 'I' && playButton.className === 'fa fa-stop-circle' && playButton.parentNode.tagName === 'LI' ) {
                 if(playChecker) {
                     SampleHandler.previewSample(playButton.id, false);
+
                     playButton.removeAttribute('class');
                     playButton.setAttribute('class', 'fa fa-stop-circle');
+
                     playChecker = false;
-                    lastPlayed = playButton;
-                    //Reset preview button
+                    lastPlayed = playButton; //The last played previewsample
+                    //Reset preview button and swap icons
                     timer = setTimeout(function() {
                         playButton.removeAttribute('class');
                         playButton.setAttribute('class', 'fa fa-play-circle');
@@ -197,12 +198,15 @@ function Desktop() {
             } else if (playButton.tagName === 'I' && playButton.className === 'fa fa-play' || playButton.tagName === 'I' && playButton.className === 'fa fa-stop') {   
                 if(playButton.className === 'fa fa-play') {
                     document.querySelector('#starting-point').style.pointerEvents = 'none';
+
                     if(startingPoint !== undefined && startingPoint !== '0') {
                         SampleHandler.playChannels(startingPoint, startingPoint);
+                        //Swap play icon with stop icon 
                         playButton.removeAttribute('class');
                         playButton.setAttribute('class', 'fa fa-stop');
                     } else {
                         SampleHandler.playChannels(false);
+
                         playButton.removeAttribute('class');
                         playButton.setAttribute('class', 'fa fa-stop');
                     }
