@@ -158,7 +158,7 @@ function Desktop() {
                         playChecker = true;
                     }, 5500);
                 } else {
-                    SampleHandler.previewSample(null, true, playButton);
+                    SampleHandler.previewSample(null, true);
                     playButton.removeAttribute('class');
                     playButton.setAttribute('class', 'fa fa-play-circle');
 
@@ -229,7 +229,8 @@ function Desktop() {
         } else if(playButton.id === 'record-button') {
             let chromeChecker = MediaRecorder.isTypeSupported('audio/webm;codecs=opus');
             if(chromeChecker) {
-                setTimeout(function() { return alert('The recorder is only available in Firefox!'); }, 1);
+                alert('The recorder is only available in Firefox!');
+                return;
             } 
                 if(recordChecker) {
                     SampleHandler.audioRecorder(true);
