@@ -32,7 +32,6 @@ let notChecked;
 
 let tuna = new Tuna(context);
 
-
 /**
  * Represents a channel
  * @constructor
@@ -55,8 +54,6 @@ function Channel(id) {
     this.panNode.pan.value = 0;
     this.channelFilter = context.createBiquadFilter();
     this.channelFilter.frequency.value = 20000;
-    this.convolver = context.createConvolver();
-    this.convolver.buffer = impulseResponse();
     this.chorus = new tuna.Chorus({
         rate: 1.5,
         feedback: 0.2,
@@ -74,7 +71,7 @@ function Channel(id) {
             gradient.addColorStop(1, '#00c543');
 
             this.ctx.clearRect(0, 0, 60, 130);
-            this.ctx.fillStyle= gradient;
+            this.ctx.fillStyle = gradient;
             this.ctx.fillRect(0, 130 - average, 25, 130);
         }.bind(this);
 
@@ -85,27 +82,6 @@ function Channel(id) {
     }
 
     loadSound(this, './audio/Silence.ogg');
-
-    // document.getElementsByClassName('reverb-box').addEventListener('click', function(event) {
-    //     // gainNode.disconnect(0);
-    //     console.log(event.target.id);
-        // let idSelector = function() { return this.id; };
-        // checkedChannel = $(".reverb-box:checked").map(idSelector).get();
-        // notChecked = $(".reverb-box:not(:checked)").map(idSelector).get();
-
-
-        // // console.log(checkedChannel);
-        // // console.log(notChecked);
-        // if(checkedChannel.length === 1) {
-        //     console.log('Checked: ' + checkedChannel);
-        //     clicked = true;
-        // }
-        
-        // if(notChecked.length === 1) {
-        //     console.log('Unchecked: ' + notChecked);
-        //     clicked = false;
-        // }
-    // });
 }
 
 Channel.prototype = {
@@ -127,18 +103,8 @@ Channel.prototype = {
             this.panNode.connect(this.channelGain);
             this.channelGain.connect(gainNode);
             gainNode.connect(context.destination);
-            
 
-            // if(clicked) {
-            //     this.channelGain.disconnect(0);
-            //     gainNode.disconnect(0);
-            //     this.channelGain.connect(this.convolver);
-            //     this.convolver.connect(gainNode);
-            //     gainNode.connect(context.destination);
-            // } 
-            
-
-            //plan B: Gör en kopia av koden med annan gainNode för att toggla reverb
+            //Utan att använda tunajs: Gör en kopia av koden med annan gainNode för att bypassa effekter
 
             //Connect the volume-meter
             this.channelGain.connect(this.analyser);

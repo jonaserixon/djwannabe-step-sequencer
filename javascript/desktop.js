@@ -62,10 +62,10 @@ function Desktop() {
     $('#mixer-board').draggable({containment: 'document'});
     
     /**
-     * @param  {} id
-     * @param  {} sample
-     * @param  {} event
-     * @param  {} sampleName
+     * @param  {string} id
+     * @param  {string} sample
+     * @param  {event} event
+     * @param  {string} sampleName
      */
     function samplebox(id, sample, event, sampleName) {
         //Make samplebox draggable
