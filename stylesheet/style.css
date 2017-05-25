@@ -27,11 +27,11 @@ body {
 .main-timeline { display: inline-block; margin-bottom: 75px; }
 
 
-#snaptarget1 { height: 85px; width:1260px; margin-top: 10px; margin-left: 10px; background-color: #061a29; border-radius: 5px;  box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
-#snaptarget2 { height: 85px; width:1260px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
-#snaptarget3 { height: 85px; width:1260px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
-#snaptarget4 { height: 85px; width:1260px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
-#snaptarget5 { height: 85px; width:1260px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
+#snaptarget1 { height: 85px; width:1275px; margin-top: 10px; margin-left: 10px; background-color: #061a29; border-radius: 5px;  box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
+#snaptarget2 { height: 85px; width:1275px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
+#snaptarget3 { height: 85px; width:1275px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
+#snaptarget4 { height: 85px; width:1275px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
+#snaptarget5 { height: 85px; width:1275px; margin-left: 10px; margin-top: -55px; background-color: #061a29; border-radius: 5px; box-shadow: 0 0 1px 3px rgba(0, 0, 0, 0.9); }
 
 #snaptarget1 h3 { float: left; color: #86abc4; margin-left: 5px; margin-top: 40px; margin-right: 10px; }
 #snaptarget2 h3 { float: left; color: #86abc4; margin-left: 5px; margin-top: 40px; margin-right: 10px; }
@@ -62,7 +62,7 @@ body {
 #playlist-container {
   margin-top: 0px;
   background-color: #274f6d;
-  width: 1280px; 
+  width: 1300px; 
   height: 550px;
   border-radius: 10px 10px 10px;
   box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.9);

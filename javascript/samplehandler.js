@@ -1,4 +1,5 @@
 const audioSamples = require('./audioSamples');
+const Tuna = require('tunajs');
 
 let wrapper = document.querySelector('#wrapper');
 let inactiveSamples = document.querySelector('#inactive-samples');
@@ -29,6 +30,9 @@ let clicked = false;
 let checkedChannel;
 let notChecked;
 
+let tuna = new Tuna(context);
+
+
 /**
  * Represents a channel
  * @constructor
@@ -53,6 +57,12 @@ function Channel(id) {
     this.channelFilter.frequency.value = 20000;
     this.convolver = context.createConvolver();
     this.convolver.buffer = impulseResponse();
+    this.chorus = new tuna.Chorus({
+        rate: 1.5,
+        feedback: 0.2,
+        delay: 0.0045,
+        bypass: 1
+    })
 
     this.javascriptNode.onaudioprocess = function() {
             let array =  new Uint8Array(this.analyser.frequencyBinCount);
@@ -76,28 +86,27 @@ function Channel(id) {
 
     loadSound(this, './audio/Silence.ogg');
 
-    // document.getElementsByClassName ('reverb-box').addEventListener('click', function(event) {
+    // document.getElementsByClassName('reverb-box').addEventListener('click', function(event) {
     //     // gainNode.disconnect(0);
     //     console.log(event.target.id);
-    //     let idSelector = function() { return this.id; };
-    //     checkedChannel = $(".reverb-box:checked").map(idSelector).get();
-    //     notChecked = $(".reverb-box:not(:checked)").map(idSelector).get();
+        // let idSelector = function() { return this.id; };
+        // checkedChannel = $(".reverb-box:checked").map(idSelector).get();
+        // notChecked = $(".reverb-box:not(:checked)").map(idSelector).get();
 
 
-    //     console.log(checkedChannel);
-    //     console.log(notChecked);
-    //     // if(checkedChannel.length === 1) {
-    //     //     console.log('Checked: ' + checkedChannel);
-    //     //     clicked = true;
-    //     // }
+        // // console.log(checkedChannel);
+        // // console.log(notChecked);
+        // if(checkedChannel.length === 1) {
+        //     console.log('Checked: ' + checkedChannel);
+        //     clicked = true;
+        // }
         
-    //     // if(notChecked.length === 1) {
-    //     //     console.log('Unchecked: ' + notChecked);
-    //     //     clicked = false;
-    //     // }
+        // if(notChecked.length === 1) {
+        //     console.log('Unchecked: ' + notChecked);
+        //     clicked = false;
+        // }
     // });
 }
-
 
 Channel.prototype = {
     addSample: function(sampleSlot, samplePath) {
@@ -113,7 +122,8 @@ Channel.prototype = {
             audio.buffer = this.samples[startPoint];
 
             audio.connect(this.channelFilter);
-            this.channelFilter.connect(this.panNode);
+            this.channelFilter.connect(this.chorus);
+            this.chorus.connect(this.panNode);
             this.panNode.connect(this.channelGain);
             this.channelGain.connect(gainNode);
             gainNode.connect(context.destination);
@@ -128,7 +138,7 @@ Channel.prototype = {
             // } 
             
 
-            //plan B: Gör en kopia av koden med annan gain för att toggla reverb
+            //plan B: Gör en kopia av koden med annan gainNode för att toggla reverb
 
             //Connect the volume-meter
             this.channelGain.connect(this.analyser);
@@ -217,11 +227,21 @@ $('#garbageCan').droppable({
             
 
             if(previousSlot !== undefined) {
-                if(previousSlot.includes('channel1Slot')) { garbageHandler(droppableHelper, previousSlot, draggableId, channel1); }
-                if(previousSlot.includes('channel2Slot')) { garbageHandler(droppableHelper, previousSlot, draggableId, channel2); }
-                if(previousSlot.includes('channel3Slot')) { garbageHandler(droppableHelper, previousSlot, draggableId, channel3); }
-                if(previousSlot.includes('channel4Slot')) { garbageHandler(droppableHelper, previousSlot, draggableId, channel4); }
-                if(previousSlot.includes('channel5Slot')) { garbageHandler(droppableHelper, previousSlot, draggableId, channel5); }
+                if(previousSlot.includes('channel1Slot')) { 
+                    garbageHandler(droppableHelper, previousSlot, draggableId, channel1); 
+                }
+                if(previousSlot.includes('channel2Slot')) { 
+                    garbageHandler(droppableHelper, previousSlot, draggableId, channel2); 
+                }
+                if(previousSlot.includes('channel3Slot')) { 
+                    garbageHandler(droppableHelper, previousSlot, draggableId, channel3); 
+                }
+                if(previousSlot.includes('channel4Slot')) { 
+                    garbageHandler(droppableHelper, previousSlot, draggableId, channel4); 
+                }
+                if(previousSlot.includes('channel5Slot')) { 
+                    garbageHandler(droppableHelper, previousSlot, draggableId, channel5); 
+                }
             } else {
                 document.querySelector('#inactive-samples').removeChild(draggableId);
             }     
@@ -574,6 +594,42 @@ mixerBoard.addEventListener('input', function(event) {
                 break;
         }
     }
+
+    if(event.target.className === 'reverb-box') {
+        let idSelector = function() { return this.id; };
+        checkedChannel = $(".reverb-box:checked").map(idSelector).get();
+        notChecked = $(".reverb-box:not(:checked)").map(idSelector).get();
+
+        for(let i = 0; i < checkedChannel.length; i++) {
+            switch(checkedChannel[i]) {
+                case 'mixer-reverb1': channel1.chorus.bypass = 0;
+                    break;
+                case 'mixer-reverb2': channel2.chorus.bypass = 0;
+                    break;
+                case 'mixer-reverb3': channel3.chorus.bypass = 0;
+                    break;
+                case 'mixer-reverb4': channel4.chorus.bypass = 0;
+                    break;
+                case 'mixer-reverb5': channel5.chorus.bypass = 0;
+                    break;
+            }
+        }
+        
+        for(let i = 0; i < notChecked.length; i++) {
+            switch(notChecked[i]) {
+                case 'mixer-reverb1': channel1.chorus.bypass = 1;
+                    break;
+                case 'mixer-reverb2': channel2.chorus.bypass = 1;
+                    break;
+                case 'mixer-reverb3': channel3.chorus.bypass = 1;
+                    break;
+                case 'mixer-reverb4': channel4.chorus.bypass = 1;
+                    break;
+                case 'mixer-reverb5': channel5.chorus.bypass = 1;
+                    break;
+            }
+        }
+    }
 })
 
 volumeKnob.addEventListener('input', function() {
@@ -590,29 +646,6 @@ volumeKnob.addEventListener('input', function() {
         volumeUp.style.color = 'ghostwhite';
     }
 })
-
-function impulseResponse(duration = 1, decay = 1, reverse = false) {
-    let length = context.sampleRate * duration;
-    let impulse = context.createBuffer(2, length, context.sampleRate);
-    let impulseL = impulse.getChannelData(0);
-    let impulseR = impulse.getChannelData(1);
-
-    if(!decay)
-        decay = 2.0;
-    for(let i = 0; i < length; i++){
-        let n;
-
-        if(reverse) {
-            n = length - i;
-        } else {
-            n = i;
-        }
-
-        impulseL[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, decay);
-        impulseR[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, decay);
-    }
-    return impulse;
-}
 
 module.exports = {
     playChannels: playChannels,
