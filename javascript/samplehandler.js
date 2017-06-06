@@ -59,12 +59,12 @@ function Channel(id) {
         feedback: 0.2,
         delay: 0.0045,
         bypass: 1
-    })
+    });
 
     this.javascriptNode.onaudioprocess = function() {
             let array =  new Uint8Array(this.analyser.frequencyBinCount);
             this.analyser.getByteFrequencyData(array);
-            let average = this.getAverageVolume(array)
+            let average = this.getAverageVolume(array);
             
             let gradient= this.ctx.createLinearGradient(0,0,25,130);
             gradient.addColorStop(0, '#c56300');
