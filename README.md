@@ -1,9 +1,10 @@
 # djwannabe-step-sequencer
-### Step sequencer developed using the Web Audio API
+### Step sequencer written in Javascript using the Web Audio API
 
-[Here](https://viatrophy.github.io) is the latest version. (Firefox is recommended)
+[**Here**](https://jonaserixon.github.io/djwannabe-step-sequencer/) is the latest version. (Firefox is recommended)
 
 This application was developed for the [Individual Software Development Project](http://coursepress.lnu.se/kurs/individuellt-mjukvaruutvecklingsprojekt/) course.
 
-
-More information [here](https://github.com/1dv430/je222zj-project/wiki)
+* Javascript
+* jQuery
+* Web Audio API
